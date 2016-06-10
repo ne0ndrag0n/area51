@@ -104,9 +104,11 @@ int main()
          0.5f, -0.5f, 0.0f, // Right
          0.0f,  0.5f, 0.0f  // Top
     };
-    GLuint VBO, VAO;
+    GLuint indicies[] = { 0, 1, 2 };
+    GLuint VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
     // Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
     glBindVertexArray(VAO);
 
@@ -117,6 +119,9 @@ int main()
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
 
     glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
 
@@ -134,7 +139,7 @@ int main()
         // Draw our first triangle
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
         // Swap the screen buffers
