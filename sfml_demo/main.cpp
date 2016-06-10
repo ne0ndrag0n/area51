@@ -58,11 +58,6 @@ GLuint compileShaders() {
 }
 
 int main() {
-  // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
-  glewExperimental = GL_TRUE;
-  // Initialize GLEW to setup the OpenGL Function pointers
-  glewInit();
-
   sf::RenderWindow mainWindow(
     sf::VideoMode( 640, 480 ),
     "ne0ndrag0n area51 - SFML & OpenGL Training",
@@ -70,6 +65,13 @@ int main() {
   );
 
   mainWindow.setVerticalSyncEnabled( true );
+
+  // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
+  glewExperimental = GL_TRUE;
+  // Initialize GLEW to setup the OpenGL Function pointers
+  glewInit();
+
+  compileShaders();
 
   while( mainWindow.isOpen() ) {
     sf::Event event;
