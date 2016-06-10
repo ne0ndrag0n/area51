@@ -45,7 +45,7 @@ int main()
     glfwMakeContextCurrent(window);
 
     // Set the required callback functions
-    glfwSetKeyCallback(window, key_callback);
+    //glfwSetKeyCallback(window, key_callback);
 
     // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
     glewExperimental = GL_TRUE;
