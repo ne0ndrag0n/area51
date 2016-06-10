@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
+#include <iostream>
+#include <GL/glew.h>
 
 const GLchar* vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 position;\n"
@@ -57,6 +58,11 @@ GLuint compileShaders() {
 }
 
 int main() {
+  // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
+  glewExperimental = GL_TRUE;
+  // Initialize GLEW to setup the OpenGL Function pointers
+  glewInit();
+
   sf::RenderWindow mainWindow(
     sf::VideoMode( 640, 480 ),
     "ne0ndrag0n area51 - SFML & OpenGL Training",
