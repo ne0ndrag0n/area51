@@ -104,16 +104,6 @@ int main() {
   glBindVertexArray( 0 );
 
   while( mainWindow.isOpen() ) {
-    sf::Event event;
-    while( mainWindow.pollEvent( event ) ) {
-      if( event.type == sf::Event::Closed ) {
-        mainWindow.close();
-        glDeleteVertexArrays( 1, &VAO );
-        glDeleteBuffers( 1, &VBO );
-        return 0;
-      }
-    }
-
     mainWindow.clear( sf::Color::Black );
 
     glUseProgram( program );
@@ -122,6 +112,15 @@ int main() {
     glBindVertexArray( 0 );
 
     mainWindow.display();
+
+    sf::Event event;
+    while( mainWindow.pollEvent( event ) ) {
+      if( event.type == sf::Event::Closed ) {
+        mainWindow.close();
+        glDeleteVertexArrays( 1, &VAO );
+        glDeleteBuffers( 1, &VBO );
+      }
+    }
   }
   return 0;
 }
