@@ -24,15 +24,12 @@ int main() {
 
   glViewport( 0, 0, 640, 480 );
 
+  // Position, Colour, Texture Mapping
   GLfloat vertices[] = {
-    // Top Right
-    0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // Color
-    // Bottom Right
-    0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-    // Bottom Left
-    -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
-    // Top Left
-    -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f
+    0.5f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
+    0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
+    -0.5f,  0.5f, 0.0f,   0.0f, 1.0f, 1.0f,   0.0f, 1.0f
   };
   GLuint indicies[] = { 0, 1, 3, 1, 2, 3 };
 
@@ -46,11 +43,14 @@ int main() {
     glBindBuffer( GL_ARRAY_BUFFER, VBO );
       glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
 
-      glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0 );
+      glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0 );
       glEnableVertexAttribArray( 0 );
 
-      glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3* sizeof(GLfloat)) );
+      glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3* sizeof(GLfloat)) );
       glEnableVertexAttribArray( 1 );
+
+      glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*) ( 6 * sizeof(GLfloat)));
+      glEnableVertexAttribArray( 2 );
     glBindBuffer( GL_ARRAY_BUFFER, 0 ); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
 
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, EBO );
@@ -58,9 +58,34 @@ int main() {
 
   glBindVertexArray( 0 );
 
+
+  GLuint texture;
+  {
+    sf::Image alien;
+    if( !alien.loadFromFile( "alien.png" ) ) {
+      std::cout << "Couldn't load required texture." << std::endl;
+      exit(1);
+    }
+
+    alien.flipVertically();
+
+    glGenTextures( 1, &texture );
+    glBindTexture( GL_TEXTURE_2D, texture );
+      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+      auto size = alien.getSize();
+      glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, alien.getPixelsPtr() );
+      glGenerateMipmap( GL_TEXTURE_2D );
+    glBindTexture( GL_TEXTURE_2D, 0 );
+  }
+
   while( mainWindow.isOpen() ) {
     mainWindow.clear( sf::Color::Black );
 
+    glBindTexture( GL_TEXTURE_2D, texture );
     shader.use();
     glBindVertexArray( VAO );
     glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
