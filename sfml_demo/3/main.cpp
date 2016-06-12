@@ -4,57 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <GL/glew.h>
-
-GLuint compileShaders() {
-  GLuint vertexShader = glCreateShader( GL_VERTEX_SHADER );
-  std::ifstream fs( "vertex.glsl" );
-  std::ostringstream sstream;
-  sstream << fs.rdbuf();
-  auto string = sstream.str();
-  auto cstring = string.c_str();
-  glShaderSource( vertexShader, 1, &cstring, NULL );
-  glCompileShader( vertexShader );
-  GLint success;
-  GLchar infoLog[ 512 ];
-  glGetShaderiv( vertexShader, GL_COMPILE_STATUS, &success );
-  if ( !success ) {
-      glGetShaderInfoLog( vertexShader, 512, NULL, infoLog );
-      std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-      exit(1);
-  }
-
-  GLuint fragmentShader = glCreateShader( GL_FRAGMENT_SHADER );
-  std::ifstream fs2( "fragment.glsl" );
-  std::ostringstream sstream2;
-  sstream2 << fs2.rdbuf();
-  auto string2 = sstream2.str();
-  auto cstring2 = string2.c_str();
-  glShaderSource( fragmentShader, 1, &cstring2, NULL );
-  glCompileShader( fragmentShader );
-  glGetShaderiv( fragmentShader, GL_COMPILE_STATUS, &success );
-  if ( !success ) {
-      glGetShaderInfoLog( fragmentShader, 512, NULL, infoLog );
-      std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-      exit(1);
-  }
-
-  GLuint shaderProgram = glCreateProgram();
-  glAttachShader( shaderProgram, vertexShader );
-  glAttachShader( shaderProgram, fragmentShader );
-  glLinkProgram( shaderProgram );
-
-  glGetProgramiv( shaderProgram, GL_LINK_STATUS, &success );
-  if ( !success ) {
-      glGetProgramInfoLog( shaderProgram, 512, NULL, infoLog );
-      std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-      exit(1);
-  }
-
-  glDeleteShader(vertexShader);
-  glDeleteShader(fragmentShader);
-
-  return shaderProgram;
-}
+#include "shader.hpp"
 
 int main() {
   sf::RenderWindow mainWindow(
@@ -70,7 +20,7 @@ int main() {
   // Initialize GLEW to setup the OpenGL Function pointers
   glewInit();
 
-  GLuint program = compileShaders();
+  Shader shader( "vertex.glsl", "fragment.glsl" );
 
   glViewport( 0, 0, 640, 480 );
 
@@ -82,7 +32,7 @@ int main() {
     // Bottom Left
     -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
     // Top Left
-    -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f 
+    -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f
   };
   GLuint indicies[] = { 0, 1, 3, 1, 2, 3 };
 
@@ -111,7 +61,7 @@ int main() {
   while( mainWindow.isOpen() ) {
     mainWindow.clear( sf::Color::Black );
 
-    glUseProgram( program );
+    shader.use();
     glBindVertexArray( VAO );
     glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
     glBindVertexArray( 0 );
