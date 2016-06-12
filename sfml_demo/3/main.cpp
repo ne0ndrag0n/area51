@@ -59,7 +59,7 @@ int main() {
   glBindVertexArray( 0 );
 
 
-  GLuint texture;
+  GLuint alienTexture;
   {
     sf::Image alien;
     if( !alien.loadFromFile( "alien.png" ) ) {
@@ -69,8 +69,8 @@ int main() {
 
     alien.flipVertically();
 
-    glGenTextures( 1, &texture );
-    glBindTexture( GL_TEXTURE_2D, texture );
+    glGenTextures( 1, &alienTexture );
+    glBindTexture( GL_TEXTURE_2D, alienTexture );
       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
@@ -82,13 +82,42 @@ int main() {
     glBindTexture( GL_TEXTURE_2D, 0 );
   }
 
+  GLuint alienTexture2;
+  {
+    sf::Image alien;
+    if( !alien.loadFromFile( "alien2.png" ) ) {
+      std::cout << "Couldn't load required texture." << std::endl;
+      exit(1);
+    }
+
+    glGenTextures( 1, &alienTexture2 );
+    glBindTexture( GL_TEXTURE_2D, alienTexture2 );
+      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+      auto size = alien.getSize();
+      glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, alien.getPixelsPtr() );
+      glGenerateMipmap( GL_TEXTURE_2D );
+    glBindTexture( GL_TEXTURE_2D, 0 );
+  }
+
+
   while( mainWindow.isOpen() ) {
     mainWindow.clear( sf::Color::Black );
 
-    glBindTexture( GL_TEXTURE_2D, texture );
     shader.use();
+
+    glActiveTexture( GL_TEXTURE0 );
+      glBindTexture( GL_TEXTURE_2D, alienTexture );
+      glUniform1i( glGetUniformLocation( shader.Program, "alien" ), 0 );
+    glActiveTexture( GL_TEXTURE1 );
+      glBindTexture( GL_TEXTURE_2D, alienTexture2 );
+      glUniform1i( glGetUniformLocation( shader.Program, "alien2" ), 1 );
+
     glBindVertexArray( VAO );
-    glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
+      glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
     glBindVertexArray( 0 );
 
     mainWindow.display();
