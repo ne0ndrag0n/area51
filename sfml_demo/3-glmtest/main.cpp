@@ -106,6 +106,7 @@ int main() {
     glBindTexture( GL_TEXTURE_2D, 0 );
   }
 
+  sf::Clock clock;
 
   while( mainWindow.isOpen() ) {
     mainWindow.clear( sf::Color::Black );
@@ -113,7 +114,9 @@ int main() {
     shader.use();
 
     glm::mat4 trans;
-    trans = glm::rotate( trans, glm::radians( 90.0f ), glm::vec3( 0.0, 0.0, 1.0 ) );
+    trans = glm::translate( trans, glm::vec3( 0.5f, -0.5f, 0.0f ) );
+    trans = glm::rotate( trans, glm::radians( ( GLfloat ) clock.getElapsedTime().asSeconds() * 90.0f ), glm::vec3( 0.0, 0.0, 1.0 ) );
+    trans = glm::scale( trans, glm::vec3( 0.5, 0.5, 0.5 ) );
     GLuint transform = glGetUniformLocation( shader.Program, "rotateAndScale" );
     glUniformMatrix4fv( transform, 1, GL_FALSE, glm::value_ptr( trans ) );
 
