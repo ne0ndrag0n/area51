@@ -10,10 +10,11 @@
 #include "shader.hpp"
 
 int main() {
-  sf::RenderWindow mainWindow(
+  sf::Window mainWindow(
     sf::VideoMode( 640, 480 ),
     "ne0ndrag0n area51 - SFML & OpenGL Training",
-    sf::Style::Close
+    sf::Style::Close,
+    sf::ContextSettings( 24, 8, 0, 3, 3 )
   );
 
   mainWindow.setVerticalSyncEnabled( true );
@@ -27,37 +28,67 @@ int main() {
 
   glViewport( 0, 0, 640, 480 );
 
-  // Position, Colour, Texture Mapping
-  GLfloat vertices[] = {
-    0.5f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
-    0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
-    -0.5f,  0.5f, 0.0f,   0.0f, 1.0f, 1.0f,   0.0f, 1.0f
-  };
-  GLuint indicies[] = { 0, 1, 3, 1, 2, 3 };
+  glEnable( GL_DEPTH_TEST );
 
-  GLuint VBO, VAO, EBO;
+  GLfloat vertices[] = {
+      -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+       0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+       0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+       0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+      -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+      -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+      -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+       0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+       0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+       0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+      -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+      -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+      -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+      -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+      -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+      -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+      -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+      -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+       0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+       0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+       0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+       0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+       0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+       0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+      -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+       0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+       0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+       0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+      -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+      -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+      -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+       0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+       0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+       0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+      -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+      -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+  };
+
+  GLuint VBO, VAO;
   glGenVertexArrays( 1, &VAO );
   glGenBuffers( 1, &VBO );
-  glGenBuffers( 1, &EBO );
 
   glBindVertexArray( VAO );
 
     glBindBuffer( GL_ARRAY_BUFFER, VBO );
       glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
 
-      glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0 );
+      glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0 );
       glEnableVertexAttribArray( 0 );
 
-      glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3* sizeof(GLfloat)) );
+      glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3* sizeof(GLfloat)) );
       glEnableVertexAttribArray( 1 );
-
-      glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*) ( 6 * sizeof(GLfloat)));
-      glEnableVertexAttribArray( 2 );
     glBindBuffer( GL_ARRAY_BUFFER, 0 ); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
-
-    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, EBO );
-    glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( indicies ), indicies, GL_STATIC_DRAW );
 
   glBindVertexArray( 0 );
 
@@ -106,15 +137,18 @@ int main() {
     glBindTexture( GL_TEXTURE_2D, 0 );
   }
 
+  sf::Clock clock;
+
   while( mainWindow.isOpen() ) {
-    mainWindow.clear( sf::Color::Black );
+    //mainWindow.clear( sf::Color::Black );
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     shader.use();
 
     // Place model in world
     glm::mat4 model;
-    model = glm::translate( model, glm::vec3( -1.0f, 0.0f, 0.0f ) );
-    model = glm::rotate( model, glm::radians( 55.0f ), glm::vec3( 1.0, 0.0, 0.0 ) );
+    model = glm::rotate( model, glm::radians( ( GLfloat ) clock.getElapsedTime().asSeconds() * 50.0f ), glm::vec3( 0.5f, 1.0f, 0.0f ) );
     // Adjust camera
     glm::mat4 view;
     view = glm::translate( view, glm::vec3( 0.0f, 0.0f, -3.0f ) );
@@ -137,7 +171,7 @@ int main() {
       glUniform1i( glGetUniformLocation( shader.Program, "alien2" ), 1 );
 
     glBindVertexArray( VAO );
-      glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
+      glDrawArrays( GL_TRIANGLES, 0, 36 );
     glBindVertexArray( 0 );
 
     mainWindow.display();
