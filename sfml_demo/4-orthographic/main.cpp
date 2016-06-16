@@ -218,15 +218,24 @@ int main() {
         }
 
         if( event.key.code == sf::Keyboard::W ) {
-          rotAngle = rotAngle + 1.0f;
+          if( !ortho ) {
+            cameraZ = cameraZ + 10.0f;
+          }
         }
 
         if( event.key.code == sf::Keyboard::S ) {
-          rotAngle = rotAngle - 1.0f;
+          if ( !ortho ) {
+            cameraZ = cameraZ - 10.0f;
+          }
         }
 
         if( event.key.code == sf::Keyboard::P ) {
-          ortho = !ortho;
+          if( !ortho ) {
+            ortho = true;
+            cameraZ = 0.0f;
+          } else {
+            ortho = false;
+          }
         }
       }
     }
