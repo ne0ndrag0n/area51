@@ -139,9 +139,17 @@ int main() {
 
   sf::Clock clock;
 
-  GLfloat cameraX = 0.0f;
-  GLfloat cameraY = 0.0f;
+  GLfloat cameraX = 50.0f;
+  GLfloat cameraY = 610.0f;
   GLfloat cameraZ = 0.0f;
+
+  GLfloat rotAngle = 45.0f;
+
+  glm::vec3 cubes[] = {
+    glm::vec3( 0.0f, 0.0f, -900.0f ),
+    glm::vec3( 0.0f, -100.0f, -900.0f )
+  };
+
   while( mainWindow.isOpen() ) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -151,9 +159,11 @@ int main() {
     // Adjust camera
     glm::mat4 view;
     view = glm::translate( view, glm::vec3( cameraX, cameraY, cameraZ ) );
+    view = glm::rotate( view, glm::radians( rotAngle ), glm::vec3( -1.0f, 0.0f, 0.0f ) );
+    view = glm::rotate( view, glm::radians( rotAngle ), glm::vec3( 0.0f, 0.0f, -1.0f ) );
     // Apply correct projection (to have real-world perspective)
     glm::mat4 projection;
-    projection = glm::ortho( 0.0f, 640.0f, 0.0f, 480.0f, 0.0f, 1000.0f );
+    projection = glm::ortho( -320.0f, 320.0f, -240.0f, 240.0f, 0.0f, 1000.0f );
 
     GLuint uModel = glGetUniformLocation( shader.Program, "model" );
     GLuint uView = glGetUniformLocation( shader.Program, "view" );
@@ -169,11 +179,13 @@ int main() {
       glUniform1i( glGetUniformLocation( shader.Program, "alien2" ), 1 );
 
     glBindVertexArray( VAO );
-      glm::mat4 model;
-      model = glm::translate( model, glm::vec3( 320.0f, 240.0f, -500.0f ) );
-      glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
+      for( int i = 0; i != 2; i++ ) {
+        glm::mat4 model;
+        model = glm::translate( model, cubes[ i ] );
+        glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
 
-      glDrawArrays( GL_TRIANGLES, 0, 36 );
+        glDrawArrays( GL_TRIANGLES, 0, 36 );
+      }
     glBindVertexArray( 0 );
 
     mainWindow.display();
@@ -204,11 +216,11 @@ int main() {
         }
 
         if( event.key.code == sf::Keyboard::W ) {
-          cameraZ = cameraZ + 10.0f;
+          rotAngle = rotAngle + 1.0f;
         }
 
         if( event.key.code == sf::Keyboard::S ) {
-          cameraZ = cameraZ - 10.0f;
+          rotAngle = rotAngle - 1.0f;
         }
       }
     }
