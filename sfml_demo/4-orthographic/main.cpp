@@ -150,6 +150,8 @@ int main() {
     glm::vec3( 0.0f, -100.0f, -900.0f )
   };
 
+  bool ortho = true;
+
   while( mainWindow.isOpen() ) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -163,7 +165,7 @@ int main() {
     view = glm::rotate( view, glm::radians( rotAngle ), glm::vec3( 0.0f, 0.0f, -1.0f ) );
     // Apply correct projection (to have real-world perspective)
     glm::mat4 projection;
-    projection = glm::ortho( -320.0f, 320.0f, -240.0f, 240.0f, 0.0f, 1000.0f );
+    projection = ortho ? glm::ortho( -320.0f, 320.0f, -240.0f, 240.0f, 0.0f, 1000.0f ) : glm::perspective( 45.0f, (float)640/(float)480, 0.1f, 1000.0f );
 
     GLuint uModel = glGetUniformLocation( shader.Program, "model" );
     GLuint uView = glGetUniformLocation( shader.Program, "view" );
@@ -221,6 +223,10 @@ int main() {
 
         if( event.key.code == sf::Keyboard::S ) {
           rotAngle = rotAngle - 1.0f;
+        }
+
+        if( event.key.code == sf::Keyboard::P ) {
+          ortho = !ortho;
         }
       }
     }
