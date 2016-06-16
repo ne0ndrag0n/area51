@@ -140,7 +140,7 @@ int main() {
   sf::Clock clock;
 
   GLfloat cameraX = 0.0f;
-  GLfloat cameraY = 600.0f;
+  GLfloat cameraY = 0.0f;
   GLfloat cameraZ = 0.0f;
   while( mainWindow.isOpen() ) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -151,8 +151,6 @@ int main() {
     // Adjust camera
     glm::mat4 view;
     view = glm::translate( view, glm::vec3( cameraX, cameraY, cameraZ ) );
-    view = glm::rotate( view, glm::radians( 45.0f ), glm::vec3( -1.0f, 0.0f, 0.0f ) );
-    view = glm::rotate( view, glm::radians( 45.0f ), glm::vec3( 0.0f, 0.0f, -1.0f ) );
     // Apply correct projection (to have real-world perspective)
     glm::mat4 projection;
     projection = glm::ortho( 0.0f, 640.0f, 0.0f, 480.0f, 0.0f, 1000.0f );
@@ -172,7 +170,7 @@ int main() {
 
     glBindVertexArray( VAO );
       glm::mat4 model;
-      model = glm::translate( model, glm::vec3( 320.0f, 200.0f, -500.0f ) );
+      model = glm::translate( model, glm::vec3( 320.0f, 240.0f, -500.0f ) );
       glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
 
       glDrawArrays( GL_TRIANGLES, 0, 36 );
