@@ -139,8 +139,8 @@ int main() {
 
   sf::Clock clock;
 
-  GLfloat cameraX = 300.0f;
-  GLfloat cameraY = 800.0f;
+  GLfloat cameraX = 50.0f;
+  GLfloat cameraY = 610.0f;
   GLfloat cameraZ = 0.0f;
 
   GLfloat rotAngle = 45.0f;
@@ -165,7 +165,7 @@ int main() {
     view = glm::rotate( view, glm::radians( rotAngle ), glm::vec3( 0.0f, 0.0f, -1.0f ) );
     // Apply correct projection (to have real-world perspective)
     glm::mat4 projection;
-    projection = ortho ? glm::ortho( 0.0f, 640.0f, 0.0f, 480.0f, 0.0f, 1000.0f ) : glm::perspective( 45.0f, (float)640/(float)480, 0.1f, 1000.0f );
+    projection = ortho ? glm::ortho( -320.0f, 320.0f, -240.0f, 240.0f, 0.0f, 1000.0f ) : glm::perspective( 45.0f, (float)640/(float)480, 0.1f, 1000.0f );
 
     GLuint uModel = glGetUniformLocation( shader.Program, "model" );
     GLuint uView = glGetUniformLocation( shader.Program, "view" );
