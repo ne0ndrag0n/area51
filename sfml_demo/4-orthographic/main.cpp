@@ -143,7 +143,9 @@ int main() {
   GLfloat cameraY = 610.0f;
   GLfloat cameraZ = 0.0f;
 
-  GLfloat rotAngle = 45.0f;
+  GLfloat rotAngleX = 45.0f;
+  GLfloat rotAngleY = 0.0f;
+  GLfloat rotAngleZ = 45.0f;
 
   glm::vec3 cubes[] = {
     glm::vec3( 0.0f, 0.0f, -900.0f ),
@@ -161,8 +163,9 @@ int main() {
     // Adjust camera
     glm::mat4 view;
     view = glm::translate( view, glm::vec3( cameraX, cameraY, cameraZ ) );
-    view = glm::rotate( view, glm::radians( rotAngle ), glm::vec3( -1.0f, 0.0f, 0.0f ) );
-    view = glm::rotate( view, glm::radians( rotAngle ), glm::vec3( 0.0f, 0.0f, -1.0f ) );
+    view = glm::rotate( view, glm::radians( rotAngleX ), glm::vec3( -1.0f, 0.0f, 0.0f ) );
+    view = glm::rotate( view, glm::radians( rotAngleY ), glm::vec3( 0.0f, -1.0f, 0.0f ) );
+    view = glm::rotate( view, glm::radians( rotAngleZ ), glm::vec3( 0.0f, 0.0f, -1.0f ) );
     // Apply correct projection (to have real-world perspective)
     glm::mat4 projection;
     projection = ortho ? glm::ortho( -320.0f, 320.0f, -240.0f, 240.0f, 0.0f, 1000.0f ) : glm::perspective( 45.0f, (float)640/(float)480, 0.1f, 1000.0f );
@@ -229,10 +232,27 @@ int main() {
           }
         }
 
+        if( event.key.code == sf::Keyboard::F && !ortho ) {
+          rotAngleY = rotAngleY - 1.0f;
+
+        }
+        if( event.key.code == sf::Keyboard::H && !ortho ) {
+          rotAngleY = rotAngleY + 1.0f;
+        }
+        if( event.key.code == sf::Keyboard::T && !ortho ) {
+          rotAngleX = rotAngleX - 1.0f;
+        }
+        if( event.key.code == sf::Keyboard::G && !ortho ) {
+          rotAngleX = rotAngleX + 1.0f;
+        }
+
         if( event.key.code == sf::Keyboard::P ) {
           if( !ortho ) {
             ortho = true;
             cameraZ = 0.0f;
+
+            rotAngleX = rotAngleZ = 45.0f;
+            rotAngleY = 0.0f;
           } else {
             ortho = false;
           }
