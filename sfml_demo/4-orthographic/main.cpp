@@ -140,12 +140,12 @@ int main() {
   sf::Clock clock;
 
   GLfloat cameraX = 50.0f;
-  GLfloat cameraY = 610.0f;
+  GLfloat cameraY = 0.0f;
   GLfloat cameraZ = 0.0f;
 
-  GLfloat rotAngleX = 45.0f;
+  GLfloat rotAngleX = 0.0f;
   GLfloat rotAngleY = 0.0f;
-  GLfloat rotAngleZ = 45.0f;
+  GLfloat rotAngleZ = 0.0f;
 
   glm::vec3 cubes[] = {
     glm::vec3( 0.0f, 0.0f, -900.0f ),
@@ -233,17 +233,17 @@ int main() {
         }
 
         if( event.key.code == sf::Keyboard::F && !ortho ) {
-          rotAngleY = rotAngleY - 1.0f;
+          rotAngleY = rotAngleY + 1.0f;
 
         }
         if( event.key.code == sf::Keyboard::H && !ortho ) {
-          rotAngleY = rotAngleY + 1.0f;
+          rotAngleY = rotAngleY - 1.0f;
         }
         if( event.key.code == sf::Keyboard::T && !ortho ) {
-          rotAngleX = rotAngleX - 1.0f;
+          rotAngleX = rotAngleX + 1.0f;
         }
         if( event.key.code == sf::Keyboard::G && !ortho ) {
-          rotAngleX = rotAngleX + 1.0f;
+          rotAngleX = rotAngleX - 1.0f;
         }
 
         if( event.key.code == sf::Keyboard::P ) {
