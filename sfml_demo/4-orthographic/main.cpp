@@ -139,14 +139,10 @@ int main() {
 
   sf::Clock clock;
 
-  glm::vec3 camera( 50.0f, 600.0f, 0.0f );
+  glm::vec3 camera( 750.0f, 750.0f, -50.0f );
   glm::vec3 lookingAt( 0.0f, 0.0f, -800.0f );
   // Assuming our world is flat up against a wall, with positive Z being the top of the camera
-  glm::vec3 up( 0.0f, 0.0f, 1.0f );
-
-  GLfloat rotAngleX = 45.0f;
-  GLfloat rotAngleY = 0.0f;
-  GLfloat rotAngleZ = 45.0f;
+  glm::vec3 up( 0.0f, 1.0f, 0.0f );
 
   glm::vec3 cubes[] = {
     glm::vec3( 0.0f, 0.0f, -900.0f ),
@@ -163,18 +159,11 @@ int main() {
 
     // Adjust camera
     glm::mat4 view;
-    if( ortho ) {
-      view = glm::translate( view, camera );
-      view = glm::rotate( view, glm::radians( rotAngleX ), glm::vec3( -1.0f, 0.0f, 0.0f ) );
-      view = glm::rotate( view, glm::radians( rotAngleY ), glm::vec3( 0.0f, -1.0f, 0.0f ) );
-      view = glm::rotate( view, glm::radians( rotAngleZ ), glm::vec3( 0.0f, 0.0f, -1.0f ) );
-    } else {
-      // Testing lookat
-      view = glm::lookAt( camera, lookingAt, up );
-    }
+    view = glm::lookAt( camera, lookingAt, up );
+
     // Apply correct projection (to have real-world perspective)
     glm::mat4 projection;
-    projection = ortho ? glm::ortho( -320.0f, 320.0f, -240.0f, 240.0f, 0.0f, 1000.0f ) : glm::perspective( 45.0f, (float)640/(float)480, 0.1f, 2000.0f );
+    projection = ortho ? glm::ortho( -320.0f, 320.0f, -240.0f, 240.0f, 0.0f, 2000.0f ) : glm::perspective( 45.0f, (float)640/(float)480, 0.1f, 2000.0f );
 
     GLuint uModel = glGetUniformLocation( shader.Program, "model" );
     GLuint uView = glGetUniformLocation( shader.Program, "view" );
@@ -213,12 +202,6 @@ int main() {
         if( event.key.code == sf::Keyboard::P ) {
           if( !ortho ) {
             ortho = true;
-            camera.x = 50.0f;
-            camera.y = 600.0f;
-            camera.z = 0.0f;
-
-            rotAngleX = rotAngleZ = 45.0f;
-            rotAngleY = 0.0f;
           } else {
             ortho = false;
             camera = glm::vec3( 750.0f, 750.0f, -50.0f );
