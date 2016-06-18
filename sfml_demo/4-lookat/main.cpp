@@ -143,7 +143,7 @@ int main() {
   GLfloat cameraY = 0.0f;
   GLfloat cameraZ = 0.0f;
 
-  GLfloat rotAngle = 10.0f;
+  GLfloat rotAngle = -45.0f;
 
   glm::vec3 cubes[] = {
     glm::vec3( 0.0f, 0.0f, -900.0f ),
@@ -160,16 +160,12 @@ int main() {
 
     // Adjust camera
     glm::mat4 view;
-    glm::mat4 rotateCamera;
     //view = glm::translate( view, glm::vec3( cameraX, cameraY, cameraZ ) );
     //view = glm::rotate( view, glm::radians( rotAngle ), glm::vec3( -1.0f, 0.0f, 0.0f ) );
     //view = glm::rotate( view, glm::radians( rotAngle ), glm::vec3( 0.0f, 0.0f, -1.0f ) );
-    //rotateCamera = glm::rotate( rotateCamera, glm::radians( 45.0f ), glm::vec3( -1.0f, 0.0f, 0.0f ) );
-    rotateCamera = glm::rotate( rotateCamera, glm::radians( 45.0f ), glm::vec3( 0.0f, 0.0f, -1.0f ) );
-    glm::vec4 rotation = rotateCamera * glm::vec4( cameraX, cameraY, cameraZ, 1.0f );
-    glm::vec3 newCamera( rotation );
-    std::cout << newCamera.x << ' ' << newCamera.y << ' ' << newCamera.z << std::endl;
-    view = glm::lookAt( newCamera, glm::vec3( 0.0f, 0.0f, -1.0f ) + newCamera, glm::vec3( 0.0f, 1.0f, 0.0f ) );
+    view = glm::lookAt( glm::vec3( cameraX, cameraY, cameraZ ), glm::vec3( 0.0f, 0.0f, -1.0f ) + glm::vec3( cameraX, cameraY, cameraZ ),
+      glm::vec3( sin( glm::radians( rotAngle ) ), cos( glm::radians( rotAngle ) ), 0.0f )
+    );
     // Apply correct projection (to have real-world perspective)
     glm::mat4 projection;
     projection = ortho ? glm::ortho( -320.0f, 320.0f, -240.0f, 240.0f, 0.0f, 1000.0f ) : glm::perspective( 45.0f, (float)640/(float)480, 0.1f, 1000.0f );
