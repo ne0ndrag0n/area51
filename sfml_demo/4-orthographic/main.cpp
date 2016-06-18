@@ -140,6 +140,9 @@ int main() {
   sf::Clock clock;
 
   glm::vec3 camera( 50.0f, 600.0f, 0.0f );
+  glm::vec3 lookingAt( 0.0f, 0.0f, -800.0f );
+  // Assuming our world is flat up against a wall, with positive Z being the top of the camera
+  glm::vec3 up( 0.0f, 0.0f, 1.0f );
 
   GLfloat rotAngleX = 45.0f;
   GLfloat rotAngleY = 0.0f;
@@ -167,17 +170,11 @@ int main() {
       view = glm::rotate( view, glm::radians( rotAngleZ ), glm::vec3( 0.0f, 0.0f, -1.0f ) );
     } else {
       // Testing lookat
-      view = glm::lookAt(
-        // Camera position is locked in a test
-        // This shows us the side of the cubes
-        camera,
-        glm::vec3( 0.0f, 0.0f, -800.0f ),
-        glm::vec3( 0.0f, 0.0f, 1.0f )
-      );
+      view = glm::lookAt( camera, lookingAt, up );
     }
     // Apply correct projection (to have real-world perspective)
     glm::mat4 projection;
-    projection = ortho ? glm::ortho( -320.0f, 320.0f, -240.0f, 240.0f, 0.0f, 1000.0f ) : glm::perspective( 45.0f, (float)640/(float)480, 0.1f, 1000.0f );
+    projection = ortho ? glm::ortho( -320.0f, 320.0f, -240.0f, 240.0f, 0.0f, 1000.0f ) : glm::perspective( 45.0f, (float)640/(float)480, 0.1f, 2000.0f );
 
     GLuint uModel = glGetUniformLocation( shader.Program, "model" );
     GLuint uView = glGetUniformLocation( shader.Program, "view" );
@@ -224,9 +221,9 @@ int main() {
             rotAngleY = 0.0f;
           } else {
             ortho = false;
-            camera.x = 500.0f;
-            camera.y = 0.0f;
-            camera.z = -600.0f;
+            camera = glm::vec3( 0.0f, 600.0f, -50.0f );
+            lookingAt = glm::vec3( 0.0f, 0.0f, -800.0f );
+            up = glm::vec3( 0.0f, 1.0f, 0.0f );
           }
         }
 
