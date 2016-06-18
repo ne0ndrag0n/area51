@@ -139,9 +139,7 @@ int main() {
 
   sf::Clock clock;
 
-  GLfloat cameraX = 50.0f;
-  GLfloat cameraY = 600.0f;
-  GLfloat cameraZ = 0.0f;
+  glm::vec3 camera( 50.0f, 600.0f, 0.0f );
 
   GLfloat rotAngleX = 45.0f;
   GLfloat rotAngleY = 0.0f;
@@ -149,7 +147,7 @@ int main() {
 
   glm::vec3 cubes[] = {
     glm::vec3( 0.0f, 0.0f, -900.0f ),
-    glm::vec3( 0.0f, -100.0f, -900.0f )
+    glm::vec3( 100.0f, 0.0f, -900.0f )
   };
 
   bool ortho = true;
@@ -163,7 +161,7 @@ int main() {
     // Adjust camera
     glm::mat4 view;
     if( ortho ) {
-      view = glm::translate( view, glm::vec3( cameraX, cameraY, cameraZ ) );
+      view = glm::translate( view, camera );
       view = glm::rotate( view, glm::radians( rotAngleX ), glm::vec3( -1.0f, 0.0f, 0.0f ) );
       view = glm::rotate( view, glm::radians( rotAngleY ), glm::vec3( 0.0f, -1.0f, 0.0f ) );
       view = glm::rotate( view, glm::radians( rotAngleZ ), glm::vec3( 0.0f, 0.0f, -1.0f ) );
@@ -172,8 +170,8 @@ int main() {
       view = glm::lookAt(
         // Camera position is locked in a test
         // This shows us the side of the cubes
-        glm::vec3( 500.0f, 0.0f, -900.0f ),
-        glm::vec3( 0.0f, 0.0f, -1000.0f ),
+        camera,
+        glm::vec3( 0.0f, 0.0f, -800.0f ),
         glm::vec3( 0.0f, 0.0f, 1.0f )
       );
     }
@@ -215,47 +213,24 @@ int main() {
       }
 
       if( event.type == sf::Event::KeyPressed ) {
-        if( event.key.code == sf::Keyboard::Up ) {
-          cameraY = cameraY - 10.0f;
-        }
-
-        if( event.key.code == sf::Keyboard::Down ) {
-          cameraY = cameraY + 10.0f;
-        }
-
-        if( event.key.code == sf::Keyboard::Left ) {
-          cameraX = cameraX + 10.0f;
-        }
-
-        if( event.key.code == sf::Keyboard::Right ) {
-          cameraX = cameraX - 10.0f;
-        }
-
-        if( event.key.code == sf::Keyboard::W ) {
-          if( !ortho ) {
-            cameraZ = cameraZ + 10.0f;
-          }
-        }
-
-        if( event.key.code == sf::Keyboard::S ) {
-          if ( !ortho ) {
-            cameraZ = cameraZ - 10.0f;
-          }
-        }
-
         if( event.key.code == sf::Keyboard::P ) {
           if( !ortho ) {
             ortho = true;
-            cameraZ = 0.0f;
+            camera.x = 50.0f;
+            camera.y = 600.0f;
+            camera.z = 0.0f;
 
             rotAngleX = rotAngleZ = 45.0f;
             rotAngleY = 0.0f;
           } else {
             ortho = false;
+            camera.x = 500.0f;
+            camera.y = 0.0f;
+            camera.z = -600.0f;
           }
         }
 
-        std::cout << cameraX << ", " << cameraY << ", " << cameraZ << std::endl;
+        std::cout << camera.x << ", " << camera.y << ", " << camera.z << std::endl;
       }
     }
   }
