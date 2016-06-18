@@ -221,7 +221,7 @@ int main() {
             rotAngleY = 0.0f;
           } else {
             ortho = false;
-            camera = glm::vec3( 0.0f, 600.0f, -50.0f );
+            camera = glm::vec3( 0.0f, 750.0f, -50.0f );
             lookingAt = glm::vec3( 0.0f, 0.0f, -800.0f );
             up = glm::vec3( 0.0f, 1.0f, 0.0f );
           }
