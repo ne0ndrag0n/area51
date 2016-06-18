@@ -139,7 +139,7 @@ int main() {
 
   sf::Clock clock;
 
-  glm::vec3 camera( 750.0f, 750.0f, -50.0f );
+  glm::vec3 camera( 300.0f, 300.0f, -500.0f );
   glm::vec3 lookingAt( 0.0f, 0.0f, -800.0f );
   // Assuming our world is flat up against a wall, with positive Z being the top of the camera
   glm::vec3 up( 0.0f, 1.0f, 0.0f );
@@ -200,14 +200,7 @@ int main() {
 
       if( event.type == sf::Event::KeyPressed ) {
         if( event.key.code == sf::Keyboard::P ) {
-          if( !ortho ) {
-            ortho = true;
-          } else {
-            ortho = false;
-            camera = glm::vec3( 750.0f, 750.0f, -50.0f );
-            lookingAt = glm::vec3( 0.0f, 0.0f, -800.0f );
-            up = glm::vec3( 0.0f, 1.0f, 0.0f );
-          }
+          ortho = !ortho;
         }
 
         std::cout << camera.x << ", " << camera.y << ", " << camera.z << std::endl;
