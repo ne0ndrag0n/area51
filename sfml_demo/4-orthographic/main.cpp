@@ -140,12 +140,12 @@ int main() {
   sf::Clock clock;
 
   GLfloat cameraX = 50.0f;
-  GLfloat cameraY = 0.0f;
+  GLfloat cameraY = 600.0f;
   GLfloat cameraZ = 0.0f;
 
-  GLfloat rotAngleX = 0.0f;
+  GLfloat rotAngleX = 45.0f;
   GLfloat rotAngleY = 0.0f;
-  GLfloat rotAngleZ = 0.0f;
+  GLfloat rotAngleZ = 45.0f;
 
   glm::vec3 cubes[] = {
     glm::vec3( 0.0f, 0.0f, -900.0f ),
