@@ -10,7 +10,7 @@
 #include "shader.hpp"
 
 int main() {
-  sf::Window mainWindow(
+  sf::RenderWindow mainWindow(
     sf::VideoMode( 640, 480 ),
     "ne0ndrag0n area51 - SFML & OpenGL Training",
     sf::Style::Close,
@@ -138,6 +138,16 @@ int main() {
   }
 
   sf::Clock clock;
+  sf::Font dosvga;
+  if( !dosvga.loadFromFile( "font.ttf" ) ) {
+    std::cout << "Couldn't load font.ttf" << std::endl;
+    return 1;
+  }
+
+  sf::Text text;
+  text.setFont( dosvga );
+  text.setCharacterSize( 16 );
+  text.setColor( sf::Color::White );
 
   glm::vec3 camera( 300.0f, 300.0f, -500.0f );
   glm::vec3 lookingAt( 0.0f, 0.0f, -800.0f );
@@ -187,6 +197,11 @@ int main() {
         glDrawArrays( GL_TRIANGLES, 0, 36 );
       }
     glBindVertexArray( 0 );
+
+    mainWindow.pushGLStates();
+      text.setString( ortho ? "Isometric" : "First-person" );
+      mainWindow.draw( text );
+    mainWindow.popGLStates();
 
     mainWindow.display();
 
