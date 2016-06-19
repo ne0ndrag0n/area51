@@ -12,7 +12,7 @@
 int main() {
   sf::RenderWindow mainWindow(
     sf::VideoMode( 640, 480 ),
-    "ne0ndrag0n area51 - SFML & OpenGL Training",
+    "OpenGL",
     sf::Style::Close,
     sf::ContextSettings( 24, 8, 0, 3, 3 )
   );
@@ -168,7 +168,12 @@ int main() {
 
   glm::vec3 cubes[] = {
     glm::vec3( 0.0f, 0.0f, -900.0f ),
-    glm::vec3( 0.0f, 0.0f, -800.0f )
+    glm::vec3( 0.0f, 0.0f, -800.0f ),
+
+    glm::vec3( -100.0f, -100.0f, -900.0f ),
+    glm::vec3( -500.0f, -500.0f, -900.0f ),
+    glm::vec3( -700.0f, -700.0f, -900.0f ),
+    glm::vec3( -1000.0f, -1000.0f, -900.0f )
   };
 
   bool ortho = false;
@@ -201,7 +206,7 @@ int main() {
       glUniform1i( glGetUniformLocation( shader.Program, "alien2" ), 1 );
 
     glBindVertexArray( VAO );
-      for( int i = 0; i != 2; i++ ) {
+      for( int i = 0; i != 6; i++ ) {
         glm::mat4 model;
         model = glm::translate( model, cubes[ i ] );
         glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
