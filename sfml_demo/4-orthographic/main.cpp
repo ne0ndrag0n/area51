@@ -162,17 +162,16 @@ int main() {
   cameraCoords.setPosition( 0, 32 );
 
   glm::vec2 worldPosition( 10.0f, 10.0f );
-  glm::vec3 camera( 300.0f, 300.0f, -500.0f );
+  glm::vec3 camera( -300.0f, -300.0f, -500.0f );
   glm::vec3 lookingAt( 0.0f, 0.0f, -800.0f );
-  // Assuming our world is flat up against a wall, with positive Z being the top of the camera
-  glm::vec3 up( 0.0f, 1.0f, 0.0f );
+  glm::vec3 up( 0.0f, 0.0f, 1.0f );
 
   glm::vec3 cubes[] = {
     glm::vec3( 0.0f, 0.0f, -900.0f ),
-    glm::vec3( 100.0f, 0.0f, -900.0f )
+    glm::vec3( 0.0f, 0.0f, -800.0f )
   };
 
-  bool ortho = true;
+  bool ortho = false;
 
   while( mainWindow.isOpen() ) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
