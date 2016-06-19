@@ -149,6 +149,19 @@ int main() {
   text.setCharacterSize( 16 );
   text.setColor( sf::Color::White );
 
+  sf::Text coords;
+  coords.setFont( dosvga );
+  coords.setCharacterSize( 16 );
+  coords.setColor( sf::Color::Red );
+  coords.setPosition( 0, 16 );
+
+  sf::Text cameraCoords;
+  cameraCoords.setFont( dosvga );
+  cameraCoords.setCharacterSize( 16 );
+  cameraCoords.setColor( sf::Color::Cyan );
+  cameraCoords.setPosition( 0, 32 );
+
+  glm::vec2 worldPosition( 10.0f, 10.0f );
   glm::vec3 camera( 300.0f, 300.0f, -500.0f );
   glm::vec3 lookingAt( 0.0f, 0.0f, -800.0f );
   // Assuming our world is flat up against a wall, with positive Z being the top of the camera
@@ -162,14 +175,14 @@ int main() {
   bool ortho = true;
 
   while( mainWindow.isOpen() ) {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     shader.use();
 
     // Adjust camera
     glm::mat4 view;
-    view = glm::lookAt( camera, lookingAt, up );
+    view = glm::lookAt( camera + glm::vec3( worldPosition, 0.0f ), lookingAt + glm::vec3( worldPosition, 0.0f ), up );
 
     // Apply correct projection (to have real-world perspective)
     glm::mat4 projection;
@@ -200,7 +213,16 @@ int main() {
 
     mainWindow.pushGLStates();
       text.setString( ortho ? "Isometric" : "First-person" );
+      std::stringstream s;
+      s << worldPosition.x << ", " << worldPosition.y;
+      coords.setString( s.str().c_str() );
+      s.str("");
+      s.clear();
+      s << camera.x + worldPosition.x << ", " << camera.y + worldPosition.y << ", " << camera.z;
+      cameraCoords.setString( s.str().c_str() );
       mainWindow.draw( text );
+      mainWindow.draw( coords );
+      mainWindow.draw( cameraCoords );
     mainWindow.popGLStates();
 
     mainWindow.display();
@@ -218,7 +240,21 @@ int main() {
           ortho = !ortho;
         }
 
-        std::cout << camera.x << ", " << camera.y << ", " << camera.z << std::endl;
+        if( event.key.code == sf::Keyboard::Up ) {
+          worldPosition.y = worldPosition.y + 10.0f;
+        }
+
+        if( event.key.code == sf::Keyboard::Down ) {
+          worldPosition.y = worldPosition.y - 10.0f;
+        }
+
+        if( event.key.code == sf::Keyboard::Right ) {
+          worldPosition.x = worldPosition.x + 10.0f;
+        }
+
+        if( event.key.code == sf::Keyboard::Left ) {
+          worldPosition.x = worldPosition.x - 10.0f;
+        }
       }
     }
   }
