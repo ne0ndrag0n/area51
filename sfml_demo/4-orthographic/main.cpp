@@ -254,9 +254,10 @@ int main() {
 
       if( !( mouseDelta.x == 0 && mouseDelta.y == 0 ) ) {
         // the yaw and pitch have to get done
-        GLfloat xOffset = -( mouseDelta.x * 0.1f );
-        GLfloat yOffset = -( mouseDelta.y * 0.1f );
+        GLfloat xOffset = -mouseDelta.x * 0.07f;
+        GLfloat yOffset = -mouseDelta.y * 0.07f;
 
+        // Flip because our world is ass-backwards
         yaw += xOffset;
         pitch += yOffset;
 
