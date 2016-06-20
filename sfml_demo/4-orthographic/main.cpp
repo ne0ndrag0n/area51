@@ -161,19 +161,19 @@ int main() {
   cameraCoords.setColor( sf::Color::Cyan );
   cameraCoords.setPosition( 0, 32 );
 
-  glm::vec2 worldPosition( 10.0f, 10.0f );
-  glm::vec3 camera( -300.0f, -300.0f, -500.0f );
-  glm::vec3 lookingAt( 0.0f, 0.0f, -800.0f );
+  glm::vec3 worldPosition( 10.0f, 10.0f, 0.0f );
+  glm::vec3 camera( -300.0f, -300.0f, -550.0f );
+  glm::vec3 lookingAt( 0.0f, 0.0f, -850.0f );
   glm::vec3 up( 0.0f, 0.0f, 1.0f );
 
   glm::vec3 cubes[] = {
-    glm::vec3( 0.0f, 0.0f, -900.0f ),
-    glm::vec3( 0.0f, 0.0f, -800.0f ),
+    glm::vec3( 0.0f, 0.0f, -950.0f ),
+    glm::vec3( 0.0f, 0.0f, -850.0f ),
 
-    glm::vec3( -100.0f, -100.0f, -900.0f ),
-    glm::vec3( -500.0f, -500.0f, -900.0f ),
-    glm::vec3( -700.0f, -700.0f, -900.0f ),
-    glm::vec3( -1000.0f, -1000.0f, -900.0f )
+    glm::vec3( -100.0f, -100.0f, -950.0f ),
+    glm::vec3( -500.0f, -500.0f, -950.0f ),
+    glm::vec3( -700.0f, -700.0f, -950.0f ),
+    glm::vec3( -1000.0f, -1000.0f, -950.0f )
   };
 
   bool ortho = false;
@@ -186,7 +186,9 @@ int main() {
 
     // Adjust camera
     glm::mat4 view;
-    view = glm::lookAt( camera + glm::vec3( worldPosition, 0.0f ), lookingAt + glm::vec3( worldPosition, 0.0f ), up );
+    // If you are in perspective mode:
+    // - Your camera position will not change without moving around.
+    view = glm::lookAt( camera + worldPosition, lookingAt + worldPosition, up );
 
     // Apply correct projection (to have real-world perspective)
     glm::mat4 projection;
