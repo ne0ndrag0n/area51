@@ -241,7 +241,11 @@ int main() {
 
       if( event.type == sf::Event::KeyPressed ) {
         if( event.key.code == sf::Keyboard::P ) {
-          ortho = !ortho;
+          if( ortho ) {
+            ortho = false;
+          } else {
+            ortho = true;
+          }
         }
 
         if( event.key.code == sf::Keyboard::Up ) {
