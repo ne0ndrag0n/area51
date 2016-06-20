@@ -182,6 +182,9 @@ int main() {
   // lookingAt = camera + direction
   glm::vec3 direction = glm::normalize( lookingAt - camera );
   glm::vec3 up( 0.0f, 0.0f, 1.0f );
+  sf::Vector2i center( 320, 240 );
+  GLfloat yaw = 0.0f;
+  GLfloat pitch = 0.0f;
 
   glm::vec3 cubes[] = {
     glm::vec3( 0.0f, 0.0f, -950.0f ),
@@ -247,7 +250,33 @@ int main() {
     mainWindow.display();
 
     if( !ortho ) {
-      sf::Mouse::setPosition( sf::Vector2i( 320, 240 ), mainWindow );
+      sf::Vector2i mouseDelta = sf::Mouse::getPosition( mainWindow ) - center;
+
+      if( !( mouseDelta.x == 0 && mouseDelta.y == 0 ) ) {
+        // the yaw and pitch have to get done
+        GLfloat xOffset = -( mouseDelta.x * 0.1f );
+        GLfloat yOffset = -( mouseDelta.y * 0.1f );
+
+        yaw += xOffset;
+        pitch += yOffset;
+
+        if( pitch > 89.0f ) {
+          pitch = 89.0f;
+        }
+        if( pitch < -89.0f ) {
+          pitch = -89.0f;
+        }
+
+        std::cout << "Yaw: " << yaw << " Pitch: " << pitch << std::endl;
+        glm::vec3 newDirection(
+          cos( glm::radians( yaw ) ) * cos( glm::radians( pitch ) ),
+          sin( glm::radians( pitch ) ),
+          sin( glm::radians( yaw ) ) * cos( glm::radians( pitch ) )
+        );
+        direction = glm::normalize( newDirection );
+      }
+
+      sf::Mouse::setPosition( center, mainWindow );
     }
 
     sf::Event event;
