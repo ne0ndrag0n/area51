@@ -171,10 +171,7 @@ int main() {
 
   // In BlueBear, you may enter the house itself using a perspective projection! Depending on what is planned, these constraints will not
   // apply in that mode. Each mode begins with the same constaints as isometric mode, but some may or may not be kept:
-  // Explorer View: All bets are off; you can go anywhere and do what you want. Do not use the worldPosition vector; just compute the worldPosition,
-  // camera, and lookingAt to feed it an initial value subject to transformation via the mouse and keyboard. Clip by detecting the position of
-  // the camera and not allowing it to intersect with objects or walls. Mouse changes the point you're looking at; yaw along X, and pitch along Y.
-  // There are no constraints on lookingAt. There are no constraints on camera.
+  // Explorer View: All bets are off; you can go anywhere and do what you want. Compute the direction vector based on the pitch and yaw of the mouse.
   // Doll's-Eye View: This is explorer view, locked to the Z-height of the doll. The camera never goes higher or lower than the doll's eye height.
 
   // This is the aforementioned "height from the lookat point". The less this is, the bigger the scene will appear.
@@ -197,6 +194,7 @@ int main() {
   };
 
   bool ortho = false;
+  mainWindow.setMouseCursorVisible( ortho );
 
   while( mainWindow.isOpen() ) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -248,6 +246,10 @@ int main() {
 
     mainWindow.display();
 
+    if( !ortho ) {
+      sf::Mouse::setPosition( sf::Vector2i( 320, 240 ), mainWindow );
+    }
+
     sf::Event event;
     while( mainWindow.pollEvent( event ) ) {
       if( event.type == sf::Event::Closed ) {
@@ -260,8 +262,10 @@ int main() {
         if( event.key.code == sf::Keyboard::P ) {
           if( ortho ) {
             ortho = false;
+            mainWindow.setMouseCursorVisible( false );
           } else {
             ortho = true;
+            mainWindow.setMouseCursorVisible( true );
           }
         }
 
