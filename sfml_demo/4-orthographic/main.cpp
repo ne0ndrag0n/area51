@@ -180,9 +180,10 @@ int main() {
   // This is the aforementioned "height from the lookat point". The less this is, the bigger the scene will appear.
   GLfloat cameraHeight = 300.0f;
   // Z will never be used here, as worldPosition refers to a relative value added to the origin of the lookingAt and camera positions.
-  glm::vec3 worldPosition( 0.0f, 0.0f, 0.0f );
   glm::vec3 lookingAt( 0.0f, 0.0f, -900.0f );
   glm::vec3 camera( -cameraHeight, -cameraHeight, lookingAt.z + cameraHeight );
+  // lookingAt = camera + direction
+  glm::vec3 direction = glm::normalize( lookingAt - camera );
   glm::vec3 up( 0.0f, 0.0f, 1.0f );
 
   glm::vec3 cubes[] = {
@@ -207,7 +208,7 @@ int main() {
     glm::mat4 view;
     // If you are in perspective mode:
     // - Your camera position will not change without moving around.
-    view = glm::lookAt( camera + worldPosition, lookingAt + worldPosition, up );
+    view = glm::lookAt( camera, camera + direction, up );
 
     // Apply correct projection (to have real-world perspective)
     glm::mat4 projection;
@@ -239,15 +240,10 @@ int main() {
     mainWindow.pushGLStates();
       text.setString( ortho ? "Isometric" : "First-person" );
       std::stringstream s;
-      s << worldPosition.x << ", " << worldPosition.y;
+      s << camera.x << ", " << camera.y << ", " << camera.z;
       coords.setString( s.str().c_str() );
-      s.str("");
-      s.clear();
-      s << camera.x + worldPosition.x << ", " << camera.y + worldPosition.y << ", " << camera.z;
-      cameraCoords.setString( s.str().c_str() );
       mainWindow.draw( text );
       mainWindow.draw( coords );
-      mainWindow.draw( cameraCoords );
     mainWindow.popGLStates();
 
     mainWindow.display();
@@ -270,19 +266,23 @@ int main() {
         }
 
         if( event.key.code == sf::Keyboard::Up ) {
-          worldPosition.y = worldPosition.y + 10.0f;
+          //worldPosition.y = worldPosition.y + 10.0f;
+          camera.y = camera.y + 10.0f;
         }
 
         if( event.key.code == sf::Keyboard::Down ) {
-          worldPosition.y = worldPosition.y - 10.0f;
+          //worldPosition.y = worldPosition.y - 10.0f;
+          camera.y = camera.y - 10.0f;
         }
 
         if( event.key.code == sf::Keyboard::Right ) {
-          worldPosition.x = worldPosition.x + 10.0f;
+          //worldPosition.x = worldPosition.x + 10.0f;
+          camera.x = camera.x + 10.0f;
         }
 
         if( event.key.code == sf::Keyboard::Left ) {
-          worldPosition.x = worldPosition.x - 10.0f;
+          //worldPosition.x = worldPosition.x - 10.0f;
+          camera.x = camera.x - 10.0f;
         }
       }
     }
