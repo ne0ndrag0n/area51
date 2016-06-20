@@ -161,9 +161,28 @@ int main() {
   cameraCoords.setColor( sf::Color::Cyan );
   cameraCoords.setPosition( 0, 32 );
 
-  glm::vec3 worldPosition( 10.0f, 10.0f, 0.0f );
-  glm::vec3 camera( -300.0f, -300.0f, -550.0f );
-  glm::vec3 lookingAt( 0.0f, 0.0f, -850.0f );
+  // BlueBear is normally played through an isometric projection. Which isn't really true isometric, it's just the "90s isometric" look using an
+  // orthographic projection and strategically placed camera. Our camera up vector is +Z, so objects on top of objects have increasing Z values.
+  // THE IMPORTANT BIT: ** The camera goes -X and -Y for as much as the camera goes +Z from the Z of the point it looks at. **
+  // Read that again carefully. This forms a 45 degree camera angle (because of 45-45-90 triangles). Explanation:
+  // The camera looks at a point 100 units from the ground and 300 units up from that point (arbitrary values). The height of the camera mostly
+  // affects the appearance of the perspective view. Therefore, the camera is as high up from the floor (at Z-1000) as high as the point it looks at,
+  // plus the Z distance from that point it is looking at. In the standard case, that makes a Z distance of 400 pixels from the floor (-600).
+
+  // In BlueBear, you may enter the house itself using a perspective projection! Depending on what is planned, these constraints will not
+  // apply in that mode. Each mode begins with the same constaints as isometric mode, but some may or may not be kept:
+  // Explorer View: All bets are off; you can go anywhere and do what you want. Do not use the worldPosition vector; just compute the worldPosition,
+  // camera, and lookingAt to feed it an initial value subject to transformation via the mouse and keyboard. Clip by detecting the position of
+  // the camera and not allowing it to intersect with objects or walls. Mouse changes the point you're looking at; yaw along X, and pitch along Y.
+  // There are no constraints on lookingAt. There are no constraints on camera.
+  // Doll's-Eye View: This is explorer view, locked to the Z-height of the doll. The camera never goes higher or lower than the doll's eye height.
+
+  // This is the aforementioned "height from the lookat point". The less this is, the bigger the scene will appear.
+  GLfloat cameraHeight = 300.0f;
+  // Z will never be used here, as worldPosition refers to a relative value added to the origin of the lookingAt and camera positions.
+  glm::vec3 worldPosition( 0.0f, 0.0f, 0.0f );
+  glm::vec3 lookingAt( 0.0f, 0.0f, -900.0f );
+  glm::vec3 camera( -cameraHeight, -cameraHeight, lookingAt.z + cameraHeight );
   glm::vec3 up( 0.0f, 0.0f, 1.0f );
 
   glm::vec3 cubes[] = {
