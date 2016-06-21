@@ -180,7 +180,8 @@ int main() {
   glm::vec3 lookingAt( 0.0f, 0.0f, -900.0f );
   glm::vec3 camera( -cameraHeight, -cameraHeight, lookingAt.z + cameraHeight );
   // lookingAt = camera + direction
-  glm::vec3 direction = glm::normalize( lookingAt - camera );
+  glm::vec3 originalDirection = glm::normalize( lookingAt - camera );
+  glm::vec3 direction = originalDirection;
   glm::vec3 up( 0.0f, 0.0f, 1.0f );
   sf::Vector2i center( 320, 240 );
   GLfloat yaw = 0.0f;
@@ -241,9 +242,13 @@ int main() {
     mainWindow.pushGLStates();
       text.setString( ortho ? "Isometric" : "First-person" );
       std::stringstream s;
-      s << camera.x << ", " << camera.y << ", " << camera.z;
+      s << "Camera: " << camera.x << ", " << camera.y << ", " << camera.z;
       coords.setString( s.str().c_str() );
       mainWindow.draw( text );
+      std::stringstream t;
+      t << "Direction: " << direction.x << ", " << direction.y << ", " << direction.z << std::endl;
+      cameraCoords.setString( t.str().c_str() );
+      mainWindow.draw( cameraCoords );
       mainWindow.draw( coords );
     mainWindow.popGLStates();
 
@@ -293,9 +298,12 @@ int main() {
           if( ortho ) {
             ortho = false;
             mainWindow.setMouseCursorVisible( false );
+            sf::Mouse::setPosition( center, mainWindow );
           } else {
             ortho = true;
             mainWindow.setMouseCursorVisible( true );
+
+            direction = originalDirection;
           }
         }
 
