@@ -9,9 +9,13 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "shader.hpp"
 
+const int SCREEN_WIDTH = 1024;
+const int SCREEN_HEIGHT = 768;
+float zoom = 2.0f;
+
 int main() {
   sf::RenderWindow mainWindow(
-    sf::VideoMode( 640, 480 ),
+    sf::VideoMode( SCREEN_WIDTH, SCREEN_HEIGHT ),
     "OpenGL",
     sf::Style::Close,
     sf::ContextSettings( 24, 8, 0, 3, 3 )
@@ -26,7 +30,7 @@ int main() {
 
   Shader shader( "vertex.glsl", "fragment.glsl" );
 
-  glViewport( 0, 0, 640, 480 );
+  glViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
 
   glEnable( GL_DEPTH_TEST );
 
@@ -190,7 +194,7 @@ int main() {
   glm::vec3 originalDirection = glm::normalize( lookingAt - camera );
   glm::vec3 direction = originalDirection;
   glm::vec3 up( 0.0f, 0.0f, 1.0f );
-  sf::Vector2i center( 320, 240 );
+  sf::Vector2i center( ( SCREEN_WIDTH / 2 ), ( SCREEN_HEIGHT / 2 ) );
   GLfloat yaw = 0.0f;
   GLfloat pitch = 0.0f;
 
@@ -221,7 +225,9 @@ int main() {
 
     // Apply correct projection (to have real-world perspective)
     glm::mat4 projection;
-    projection = ortho ? glm::ortho( -320.0f, 320.0f, -240.0f, 240.0f, 0.0f, 2000.0f ) : glm::perspective( 45.0f, (float)640/(float)480, 0.1f, 2000.0f );
+    GLfloat widthHalf = ( (float)SCREEN_WIDTH / 2 ) * zoom;
+    GLfloat heightHalf = ( (float)SCREEN_HEIGHT / 2 ) * zoom;
+    projection = ortho ? glm::ortho( -widthHalf, widthHalf, -heightHalf, heightHalf, -2000.0f, 5000.0f ) : glm::perspective( 45.0f, (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 5000.0f );
 
     GLuint isFloor = glGetUniformLocation( shader.Program, "isFloorTile" );
     GLuint uModel = glGetUniformLocation( shader.Program, "model" );
@@ -239,8 +245,8 @@ int main() {
 
     glBindVertexArray( VAO );
       // Floor tiles
-      for( int x = -10; x != 10; x++ ) {
-        for( int y = -10; y != 10; y++ ) {
+      for( int x = -16; x != 16; x++ ) {
+        for( int y = -16; y != 16; y++ ) {
           glm::mat4 model;
           model = glm::translate( model, glm::vec3( (GLfloat)(x * 100.0f), (GLfloat)(y * 100.0f), -1000.0f ) );
           glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
@@ -347,6 +353,14 @@ int main() {
         if( event.key.code == sf::Keyboard::Left ) {
           //worldPosition.x = worldPosition.x - 10.0f;
           camera.x = camera.x - 10.0f;
+        }
+
+        if( event.key.code == sf::Keyboard::Add && zoom != 1.0f ) {
+          zoom -= 0.25f;
+        }
+
+        if( event.key.code == sf::Keyboard::Subtract && zoom != 3.0f ) {
+          zoom += 0.25f;
         }
       }
     }
