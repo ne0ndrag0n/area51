@@ -253,8 +253,9 @@ int main() {
       sf::Vector2i mouseDelta = sf::Mouse::getPosition( mainWindow ) - center;
 
       if( !( mouseDelta.x == 0 && mouseDelta.y == 0 ) ) {
-        // the yaw and pitch have to get done
-        GLfloat xOffset = -mouseDelta.x * 0.07f;
+        // These are the correct settings for an up normal of Y, not Z
+        // Adjust them to work for an up normal of Z...
+        GLfloat xOffset = mouseDelta.x * 0.07f;
         GLfloat yOffset = -mouseDelta.y * 0.07f;
 
         // Flip because our world is ass-backwards
