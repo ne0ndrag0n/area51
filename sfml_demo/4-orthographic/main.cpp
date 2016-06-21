@@ -196,7 +196,7 @@ int main() {
     glm::vec3( -1000.0f, -1000.0f, -950.0f )
   };
 
-  bool ortho = false;
+  bool ortho = true;
   mainWindow.setMouseCursorVisible( ortho );
 
   while( mainWindow.isOpen() ) {
@@ -255,7 +255,7 @@ int main() {
       if( !( mouseDelta.x == 0 && mouseDelta.y == 0 ) ) {
         // These are the correct settings for an up normal of Y, not Z
         // Adjust them to work for an up normal of Z...
-        GLfloat xOffset = mouseDelta.x * 0.07f;
+        GLfloat xOffset = -mouseDelta.x * 0.07f;
         GLfloat yOffset = -mouseDelta.y * 0.07f;
 
         // Flip because our world is ass-backwards
