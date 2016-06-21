@@ -269,11 +269,10 @@ int main() {
           pitch = -89.0f;
         }
 
-        std::cout << "Yaw: " << yaw << " Pitch: " << pitch << std::endl;
         glm::vec3 newDirection(
           cos( glm::radians( yaw ) ) * cos( glm::radians( pitch ) ),
-          sin( glm::radians( pitch ) ),
-          sin( glm::radians( yaw ) ) * cos( glm::radians( pitch ) )
+          sin( glm::radians( yaw ) ) * cos( glm::radians( pitch ) ),
+          sin( glm::radians( pitch ) )
         );
         direction = glm::normalize( newDirection );
       }
