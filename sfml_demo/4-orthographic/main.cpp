@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "shader.hpp"
+#include "camera.hpp"
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
@@ -185,18 +186,7 @@ int main() {
   // Explorer View: All bets are off; you can go anywhere and do what you want. Compute the direction vector based on the pitch and yaw of the mouse.
   // Doll's-Eye View: This is explorer view, locked to the Z-height of the doll. The camera never goes higher or lower than the doll's eye height.
 
-  // This is the aforementioned "height from the lookat point". The less this is, the bigger the scene will appear.
-  GLfloat cameraHeight = 300.0f;
-  // Z will never be used here, as worldPosition refers to a relative value added to the origin of the lookingAt and camera positions.
-  glm::vec3 lookingAt( 0.0f, 0.0f, -900.0f );
-  glm::vec3 camera( -cameraHeight, -cameraHeight, lookingAt.z + cameraHeight );
-  // lookingAt = camera + direction
-  glm::vec3 originalDirection = glm::normalize( lookingAt - camera );
-  glm::vec3 direction = originalDirection;
-  glm::vec3 up( 0.0f, 0.0f, 1.0f );
   sf::Vector2i center( ( SCREEN_WIDTH / 2 ), ( SCREEN_HEIGHT / 2 ) );
-  GLfloat yaw = 0.0f;
-  GLfloat pitch = 0.0f;
 
   glm::vec3 cubes[] = {
     glm::vec3( 0.0f, 0.0f, -950.0f ),
@@ -208,33 +198,17 @@ int main() {
     glm::vec3( -1000.0f, -1000.0f, -950.0f )
   };
 
-  bool ortho = true;
-  mainWindow.setMouseCursorVisible( ortho );
+  LotCamera lotCamera( shader.Program, SCREEN_WIDTH, SCREEN_HEIGHT );
+  mainWindow.setMouseCursorVisible( lotCamera.ortho );
 
   while( mainWindow.isOpen() ) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     shader.use();
-
-    // Adjust camera
-    glm::mat4 view;
-    // If you are in perspective mode:
-    // - Your camera position will not change without moving around.
-    view = glm::lookAt( camera, camera + direction, up );
-
-    // Apply correct projection (to have real-world perspective)
-    glm::mat4 projection;
-    GLfloat widthHalf = ( (float)SCREEN_WIDTH / 2 ) * zoom;
-    GLfloat heightHalf = ( (float)SCREEN_HEIGHT / 2 ) * zoom;
-    projection = ortho ? glm::ortho( -widthHalf, widthHalf, -heightHalf, heightHalf, -2000.0f, 5000.0f ) : glm::perspective( 45.0f, (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 5000.0f );
+    lotCamera.position();
 
     GLuint isFloor = glGetUniformLocation( shader.Program, "isFloorTile" );
-    GLuint uModel = glGetUniformLocation( shader.Program, "model" );
-    GLuint uView = glGetUniformLocation( shader.Program, "view" );
-    glUniformMatrix4fv( uView, 1, GL_FALSE, glm::value_ptr( view ) );
-    GLuint uProjection = glGetUniformLocation( shader.Program, "projection" );
-    glUniformMatrix4fv( uProjection, 1, GL_FALSE, glm::value_ptr( projection ) );
 
     glActiveTexture( GL_TEXTURE0 );
       glBindTexture( GL_TEXTURE_2D, alienTexture );
@@ -242,6 +216,8 @@ int main() {
     glActiveTexture( GL_TEXTURE1 );
       glBindTexture( GL_TEXTURE_2D, alienTexture2 );
       glUniform1i( glGetUniformLocation( shader.Program, "alien2" ), 1 );
+
+    GLuint uModel = glGetUniformLocation( shader.Program, "model" );
 
     glBindVertexArray( VAO );
       // Floor tiles
@@ -268,48 +244,19 @@ int main() {
     glBindVertexArray( 0 );
 
     mainWindow.pushGLStates();
-      text.setString( ortho ? "Isometric" : "First-person" );
-      std::stringstream s;
-      s << "Camera: " << camera.x << ", " << camera.y << ", " << camera.z;
-      coords.setString( s.str().c_str() );
+      text.setString( lotCamera.ortho ? "Isometric" : "First-person" );
+      coords.setString( lotCamera.positionToString().c_str() );
+      cameraCoords.setString( lotCamera.directionToString().c_str() );
       mainWindow.draw( text );
-      std::stringstream t;
-      t << "Direction: " << direction.x << ", " << direction.y << ", " << direction.z << std::endl;
-      cameraCoords.setString( t.str().c_str() );
       mainWindow.draw( cameraCoords );
       mainWindow.draw( coords );
     mainWindow.popGLStates();
 
     mainWindow.display();
 
-    if( !ortho ) {
+    if( !lotCamera.ortho ) {
       sf::Vector2i mouseDelta = sf::Mouse::getPosition( mainWindow ) - center;
-
-      if( !( mouseDelta.x == 0 && mouseDelta.y == 0 ) ) {
-        // These are the correct settings for an up normal of Y, not Z
-        // Adjust them to work for an up normal of Z...
-        GLfloat xOffset = -mouseDelta.x * 0.07f;
-        GLfloat yOffset = -mouseDelta.y * 0.07f;
-
-        // Flip because our world is ass-backwards
-        yaw += xOffset;
-        pitch += yOffset;
-
-        if( pitch > 89.0f ) {
-          pitch = 89.0f;
-        }
-        if( pitch < -89.0f ) {
-          pitch = -89.0f;
-        }
-
-        glm::vec3 newDirection(
-          cos( glm::radians( yaw ) ) * cos( glm::radians( pitch ) ),
-          sin( glm::radians( yaw ) ) * cos( glm::radians( pitch ) ),
-          sin( glm::radians( pitch ) )
-        );
-        direction = glm::normalize( newDirection );
-      }
-
+      lotCamera.updateFirstPersonView( mouseDelta.x, mouseDelta.y );
       sf::Mouse::setPosition( center, mainWindow );
     }
 
@@ -323,44 +270,38 @@ int main() {
 
       if( event.type == sf::Event::KeyPressed ) {
         if( event.key.code == sf::Keyboard::P ) {
-          if( ortho ) {
-            ortho = false;
+          if( lotCamera.ortho ) {
+            lotCamera.setOrthographic( false );
             mainWindow.setMouseCursorVisible( false );
             sf::Mouse::setPosition( center, mainWindow );
           } else {
-            ortho = true;
+            lotCamera.setOrthographic( true );
             mainWindow.setMouseCursorVisible( true );
-
-            direction = originalDirection;
           }
         }
 
         if( event.key.code == sf::Keyboard::Up ) {
-          //worldPosition.y = worldPosition.y + 10.0f;
-          camera.y = camera.y + 10.0f;
+          lotCamera.move( 0.0f, 10.0f, 0.0f );
         }
 
         if( event.key.code == sf::Keyboard::Down ) {
-          //worldPosition.y = worldPosition.y - 10.0f;
-          camera.y = camera.y - 10.0f;
+          lotCamera.move( 0.0f, -10.0f, 0.0f );
         }
 
         if( event.key.code == sf::Keyboard::Right ) {
-          //worldPosition.x = worldPosition.x + 10.0f;
-          camera.x = camera.x + 10.0f;
+          lotCamera.move( 10.0f, 0.0f, 0.0f );
         }
 
         if( event.key.code == sf::Keyboard::Left ) {
-          //worldPosition.x = worldPosition.x - 10.0f;
-          camera.x = camera.x - 10.0f;
+          lotCamera.move( -10.0f, 0.0f, 0.0f );
         }
 
         if( event.key.code == sf::Keyboard::Add && zoom != 1.0f ) {
-          zoom -= 0.25f;
+          lotCamera.zoomIn();
         }
 
         if( event.key.code == sf::Keyboard::Subtract && zoom != 3.0f ) {
-          zoom += 0.25f;
+          lotCamera.zoomOut();
         }
       }
     }
