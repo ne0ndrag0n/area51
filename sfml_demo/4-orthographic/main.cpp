@@ -71,7 +71,14 @@ int main() {
      50.0f,  50.0f,  50.0f,  1.0f, 0.0f,
      50.0f,  50.0f,  50.0f,  1.0f, 0.0f,
     -50.0f,  50.0f,  50.0f,  0.0f, 0.0f,
-    -50.0f,  50.0f, -50.0f,  0.0f, 1.0f
+    -50.0f,  50.0f, -50.0f,  0.0f, 1.0f,
+
+    -50.0f, 50.0f, 0.0f,     0.0f, 1.0f,
+    50.0f, 50.0f, 0.0f,      1.0f, 1.0f,
+    -50.0f, -50.0f, 0.0f,    0.0f, 0.0f,
+    -50.0f, -50.0f, 0.0f,    0.0f, 0.0f,
+    50.0f, 50.0f, 0.0f,      1.0f, 1.0f,
+    50.0f, -50.0f, 0.0f,     1.0f, 0.0f
   };
 
   GLuint VBO, VAO;
@@ -96,7 +103,7 @@ int main() {
   GLuint alienTexture;
   {
     sf::Image alien;
-    if( !alien.loadFromFile( "alien.png" ) ) {
+    if( !alien.loadFromFile( "box.png" ) ) {
       std::cout << "Couldn't load required texture." << std::endl;
       exit(1);
     }
@@ -119,7 +126,7 @@ int main() {
   GLuint alienTexture2;
   {
     sf::Image alien;
-    if( !alien.loadFromFile( "alien2.png" ) ) {
+    if( !alien.loadFromFile( "floor.png" ) ) {
       std::cout << "Couldn't load required texture." << std::endl;
       exit(1);
     }
@@ -216,6 +223,7 @@ int main() {
     glm::mat4 projection;
     projection = ortho ? glm::ortho( -320.0f, 320.0f, -240.0f, 240.0f, 0.0f, 2000.0f ) : glm::perspective( 45.0f, (float)640/(float)480, 0.1f, 2000.0f );
 
+    GLuint isFloor = glGetUniformLocation( shader.Program, "isFloorTile" );
     GLuint uModel = glGetUniformLocation( shader.Program, "model" );
     GLuint uView = glGetUniformLocation( shader.Program, "view" );
     glUniformMatrix4fv( uView, 1, GL_FALSE, glm::value_ptr( view ) );
@@ -230,11 +238,25 @@ int main() {
       glUniform1i( glGetUniformLocation( shader.Program, "alien2" ), 1 );
 
     glBindVertexArray( VAO );
+      // Floor tiles
+      for( int x = -10; x != 10; x++ ) {
+        for( int y = -10; y != 10; y++ ) {
+          glm::mat4 model;
+          model = glm::translate( model, glm::vec3( (GLfloat)(x * 100.0f), (GLfloat)(y * 100.0f), -1000.0f ) );
+          glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
+
+          glUniform1i( isFloor, 1 );
+          glDrawArrays( GL_TRIANGLES, 36, 6 );
+        }
+      }
+
+      // Cube tiles
       for( int i = 0; i != 6; i++ ) {
         glm::mat4 model;
         model = glm::translate( model, cubes[ i ] );
         glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
 
+        glUniform1i( isFloor, 0 );
         glDrawArrays( GL_TRIANGLES, 0, 36 );
       }
     glBindVertexArray( 0 );

@@ -6,6 +6,8 @@ out vec4 color;
 uniform sampler2D alien;
 uniform sampler2D alien2;
 
+uniform bool isFloorTile;
+
 void main() {
-  color = mix( texture( alien, fragTexture ), texture( alien2, fragTexture ), 0.2 );
+  color = isFloorTile ? texture( alien2, fragTexture ) : texture( alien, fragTexture );
 }
