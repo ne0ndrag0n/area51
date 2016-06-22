@@ -9,5 +9,5 @@ uniform sampler2D alien2;
 uniform bool isFloorTile;
 
 void main() {
-  color = isFloorTile ? texture( alien2, fragTexture ) : texture( alien, fragTexture );
+  color = texture( alien2, fragTexture );
 }

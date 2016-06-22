@@ -54,6 +54,23 @@ class Mesh {
 
       glBindVertexArray( 0 );
     }
+
+    void draw( Shader shader ) {
+        for( int i = 0; i != textures.size(); i++ ) {
+          glActiveTexture( GL_TEXTURE0 + i );
+            std::stringstream stream;
+            stream << "texture" << i;
+            std::string uniformName = stream.str();
+            glBindTexture( GL_TEXTURE_2D, textures[ i ] );
+            glUniform1i(
+              glGetUniformLocation( shader.Program, uniformName.c_str() ), i
+            );
+        }
+
+        glBindVertexArray( VAO );
+          glDrawElements( GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0 );
+        glBindVertexArray( 0 );
+    }
 };
 
 #endif
