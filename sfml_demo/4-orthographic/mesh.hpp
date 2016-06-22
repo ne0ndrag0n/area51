@@ -63,7 +63,7 @@ class Mesh {
       glBindVertexArray( 0 );
     }
 
-    void draw( Shader shader ) {
+    void draw( Shader shader, glm::vec3 position ) {
         for( int i = 0; i != textures.size(); i++ ) {
           glActiveTexture( GL_TEXTURE0 + i );
             std::stringstream stream;
@@ -76,6 +76,10 @@ class Mesh {
         }
 
         glBindVertexArray( VAO );
+          glm::mat4 model;
+          model = glm::translate( model, position );
+          glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
+          
           glDrawElements( GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0 );
         glBindVertexArray( 0 );
     }

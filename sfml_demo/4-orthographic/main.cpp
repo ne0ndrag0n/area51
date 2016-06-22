@@ -144,15 +144,15 @@ int main() {
 
     glBindVertexArray( VAO );
       // Floor tiles
-      for( int x = -16; x != 16; x++ ) {
-        for( int y = -16; y != 16; y++ ) {
+      //for( int x = -16; x != 16; x++ ) {
+        //for( int y = -16; y != 16; y++ ) {
           glm::mat4 model;
-          model = glm::translate( model, glm::vec3( (GLfloat)(x * 100.0f), (GLfloat)(y * 100.0f), -1000.0f ) );
+          model = glm::translate( model, glm::vec3( 0.0f, 0.0f, -1000.0f ) );
           glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
 
           glDrawArrays( GL_TRIANGLES, 0, 6 );
-        }
-      }
+        //}
+      //}
     glBindVertexArray( 0 );
 
     mainWindow.pushGLStates();
