@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "shader.hpp"
 #include "camera.hpp"
+#include "mesh.hpp"
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
@@ -232,6 +233,7 @@ int main() {
         }
       }
 
+      /*
       // Cube tiles
       for( int i = 0; i != 6; i++ ) {
         glm::mat4 model;
@@ -241,6 +243,7 @@ int main() {
         glUniform1i( isFloor, 0 );
         glDrawArrays( GL_TRIANGLES, 0, 36 );
       }
+      */
     glBindVertexArray( 0 );
 
     mainWindow.pushGLStates();
