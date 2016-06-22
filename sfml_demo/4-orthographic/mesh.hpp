@@ -9,6 +9,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 class Mesh {
 
@@ -22,7 +25,12 @@ class Mesh {
       glm::vec2 textureCoordinates;
     };
 
-    using Texture = GLuint;
+    struct Texture {
+      GLuint id;
+      std::string type;
+      aiString path;
+    };
+
     using Index = GLuint;
 
     std::vector< Vertex > vertices;
@@ -61,7 +69,7 @@ class Mesh {
             std::stringstream stream;
             stream << "texture" << i;
             std::string uniformName = stream.str();
-            glBindTexture( GL_TEXTURE_2D, textures[ i ] );
+            glBindTexture( GL_TEXTURE_2D, textures[ i ].id );
             glUniform1i(
               glGetUniformLocation( shader.Program, uniformName.c_str() ), i
             );

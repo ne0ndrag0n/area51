@@ -10,6 +10,7 @@
 #include "shader.hpp"
 #include "camera.hpp"
 #include "mesh.hpp"
+#include "model.hpp"
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
