@@ -213,10 +213,10 @@ int main() {
 
     glActiveTexture( GL_TEXTURE0 );
       glBindTexture( GL_TEXTURE_2D, alienTexture );
-      glUniform1i( glGetUniformLocation( shader.Program, "alien" ), 0 );
+      glUniform1i( glGetUniformLocation( shader.Program, "texture0" ), 0 );
     glActiveTexture( GL_TEXTURE1 );
       glBindTexture( GL_TEXTURE_2D, alienTexture2 );
-      glUniform1i( glGetUniformLocation( shader.Program, "alien2" ), 1 );
+      glUniform1i( glGetUniformLocation( shader.Program, "texture1" ), 1 );
 
     GLuint uModel = glGetUniformLocation( shader.Program, "model" );
 
