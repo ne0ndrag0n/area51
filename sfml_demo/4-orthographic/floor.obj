@@ -1,0 +1,22 @@
+# Floor tile
+
+mtllib resource.mtl
+
+g HardwoodFloor
+
+# Square going clockwise from the top left 100 units across
+v -50.0 50.0 0.0
+v 50.0 50.0 0.0
+v 50.0 -50.0 0.0
+v -50.0 -50.0 0.0
+
+# texture coordinates clockwise from the top left
+vt 0.0 1.0
+vt 1.0 1.0
+vt 1.0 0.0
+vt 0.0 0.0
+
+# two triangles to make a single square
+usemtl hardwood
+f 1/1 2/2 4/4
+f 4/4 2/2 3/3
