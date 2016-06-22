@@ -37,49 +37,9 @@ int main() {
 
   glEnable( GL_DEPTH_TEST );
 
+  Model m( "./floor.obj" );
+
   GLfloat vertices[] = {
-    -50.0f, -50.0f, -50.0f,  0.0f, 0.0f,
-     50.0f, -50.0f, -50.0f,  1.0f, 0.0f,
-     50.0f,  50.0f, -50.0f,  1.0f, 1.0f,
-     50.0f,  50.0f, -50.0f,  1.0f, 1.0f,
-    -50.0f,  50.0f, -50.0f,  0.0f, 1.0f,
-    -50.0f, -50.0f, -50.0f,  0.0f, 0.0f,
-
-    -50.0f, -50.0f,  50.0f,  0.0f, 0.0f,
-     50.0f, -50.0f,  50.0f,  1.0f, 0.0f,
-     50.0f,  50.0f,  50.0f,  1.0f, 1.0f,
-     50.0f,  50.0f,  50.0f,  1.0f, 1.0f,
-    -50.0f,  50.0f,  50.0f,  0.0f, 1.0f,
-    -50.0f, -50.0f,  50.0f,  0.0f, 0.0f,
-
-    -50.0f,  50.0f,  50.0f,  1.0f, 0.0f,
-    -50.0f,  50.0f, -50.0f,  1.0f, 1.0f,
-    -50.0f, -50.0f, -50.0f,  0.0f, 1.0f,
-    -50.0f, -50.0f, -50.0f,  0.0f, 1.0f,
-    -50.0f, -50.0f,  50.0f,  0.0f, 0.0f,
-    -50.0f,  50.0f,  50.0f,  1.0f, 0.0f,
-
-     50.0f,  50.0f,  50.0f,  1.0f, 0.0f,
-     50.0f,  50.0f, -50.0f,  1.0f, 1.0f,
-     50.0f, -50.0f, -50.0f,  0.0f, 1.0f,
-     50.0f, -50.0f, -50.0f,  0.0f, 1.0f,
-     50.0f, -50.0f,  50.0f,  0.0f, 0.0f,
-     50.0f,  50.0f,  50.0f,  1.0f, 0.0f,
-
-    -50.0f, -50.0f, -50.0f,  0.0f, 1.0f,
-     50.0f, -50.0f, -50.0f,  1.0f, 1.0f,
-     50.0f, -50.0f,  50.0f,  1.0f, 0.0f,
-     50.0f, -50.0f,  50.0f,  1.0f, 0.0f,
-    -50.0f, -50.0f,  50.0f,  0.0f, 0.0f,
-    -50.0f, -50.0f, -50.0f,  0.0f, 1.0f,
-
-    -50.0f,  50.0f, -50.0f,  0.0f, 1.0f,
-     50.0f,  50.0f, -50.0f,  1.0f, 1.0f,
-     50.0f,  50.0f,  50.0f,  1.0f, 0.0f,
-     50.0f,  50.0f,  50.0f,  1.0f, 0.0f,
-    -50.0f,  50.0f,  50.0f,  0.0f, 0.0f,
-    -50.0f,  50.0f, -50.0f,  0.0f, 1.0f,
-
     -50.0f, 50.0f, 0.0f,     0.0f, 1.0f,
     50.0f, 50.0f, 0.0f,      1.0f, 1.0f,
     -50.0f, -50.0f, 0.0f,    0.0f, 0.0f,
@@ -105,30 +65,6 @@ int main() {
     glBindBuffer( GL_ARRAY_BUFFER, 0 ); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
 
   glBindVertexArray( 0 );
-
-
-  GLuint alienTexture;
-  {
-    sf::Image alien;
-    if( !alien.loadFromFile( "box.png" ) ) {
-      std::cout << "Couldn't load required texture." << std::endl;
-      exit(1);
-    }
-
-    alien.flipVertically();
-
-    glGenTextures( 1, &alienTexture );
-    glBindTexture( GL_TEXTURE_2D, alienTexture );
-      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-
-      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-      auto size = alien.getSize();
-      glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, alien.getPixelsPtr() );
-      glGenerateMipmap( GL_TEXTURE_2D );
-    glBindTexture( GL_TEXTURE_2D, 0 );
-  }
 
   GLuint alienTexture2;
   {
@@ -190,16 +126,6 @@ int main() {
 
   sf::Vector2i center( ( SCREEN_WIDTH / 2 ), ( SCREEN_HEIGHT / 2 ) );
 
-  glm::vec3 cubes[] = {
-    glm::vec3( 0.0f, 0.0f, -950.0f ),
-    glm::vec3( 0.0f, 0.0f, -850.0f ),
-
-    glm::vec3( -100.0f, -100.0f, -950.0f ),
-    glm::vec3( -500.0f, -500.0f, -950.0f ),
-    glm::vec3( -700.0f, -700.0f, -950.0f ),
-    glm::vec3( -1000.0f, -1000.0f, -950.0f )
-  };
-
   LotCamera lotCamera( shader.Program, SCREEN_WIDTH, SCREEN_HEIGHT );
   mainWindow.setMouseCursorVisible( lotCamera.ortho );
 
@@ -210,14 +136,9 @@ int main() {
     shader.use();
     lotCamera.position();
 
-    GLuint isFloor = glGetUniformLocation( shader.Program, "isFloorTile" );
-
     glActiveTexture( GL_TEXTURE0 );
-      glBindTexture( GL_TEXTURE_2D, alienTexture );
-      glUniform1i( glGetUniformLocation( shader.Program, "texture0" ), 0 );
-    glActiveTexture( GL_TEXTURE1 );
       glBindTexture( GL_TEXTURE_2D, alienTexture2 );
-      glUniform1i( glGetUniformLocation( shader.Program, "texture1" ), 1 );
+      glUniform1i( glGetUniformLocation( shader.Program, "texture0" ), 0 );
 
     GLuint uModel = glGetUniformLocation( shader.Program, "model" );
 
@@ -229,22 +150,9 @@ int main() {
           model = glm::translate( model, glm::vec3( (GLfloat)(x * 100.0f), (GLfloat)(y * 100.0f), -1000.0f ) );
           glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
 
-          glUniform1i( isFloor, 1 );
-          glDrawArrays( GL_TRIANGLES, 36, 6 );
+          glDrawArrays( GL_TRIANGLES, 0, 6 );
         }
       }
-
-      /*
-      // Cube tiles
-      for( int i = 0; i != 6; i++ ) {
-        glm::mat4 model;
-        model = glm::translate( model, cubes[ i ] );
-        glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
-
-        glUniform1i( isFloor, 0 );
-        glDrawArrays( GL_TRIANGLES, 0, 36 );
-      }
-      */
     glBindVertexArray( 0 );
 
     mainWindow.pushGLStates();
