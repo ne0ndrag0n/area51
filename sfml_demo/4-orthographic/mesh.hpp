@@ -17,6 +17,9 @@ class Mesh {
 
   private:
     GLuint VAO, VBO, EBO;
+    // Meshes depend on OpenGL global states - You really shouldn't be copying 'em.
+    Mesh( const Mesh& );
+    Mesh& operator=( const Mesh& );
 
   public:
     struct Vertex {
@@ -40,6 +43,12 @@ class Mesh {
     Mesh( std::vector< Vertex > vertices, std::vector< Index > indices, std::vector< Texture > textures ) :
       vertices( vertices ), indices( indices ), textures( textures ) {
       setupMesh();
+    }
+
+    ~Mesh() {
+      glDeleteVertexArrays( 1, &VAO );
+      glDeleteBuffers( 1, &VBO );
+      glDeleteBuffers( 1, &EBO );
     }
 
     void setupMesh() {

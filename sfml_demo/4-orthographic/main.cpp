@@ -13,8 +13,8 @@
 #include "mesh.hpp"
 #include "model.hpp"
 
-const int SCREEN_WIDTH = 500;
-const int SCREEN_HEIGHT = 500;
+const int SCREEN_WIDTH = 1024;
+const int SCREEN_HEIGHT = 576;
 float zoom = 2.0f;
 
 int main() {
@@ -138,8 +138,6 @@ int main() {
     while( mainWindow.pollEvent( event ) ) {
       if( event.type == sf::Event::Closed ) {
         mainWindow.close();
-        //glDeleteVertexArrays( 1, &VAO );
-        //glDeleteBuffers( 1, &VBO );
       }
 
       if( event.type == sf::Event::KeyPressed ) {

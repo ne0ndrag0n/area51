@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <memory>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -22,13 +23,13 @@ class Model {
       loadModel( path );
     }
     void draw( Shader shader ) {
-      for( Mesh& mesh : meshes ) {
-        mesh.draw( shader );
+      for( auto& meshPtr : meshes ) {
+        meshPtr->draw( shader );
       }
     }
 
   private:
-    std::vector< Mesh > meshes;
+    std::vector< std::unique_ptr< Mesh > > meshes;
     std::string directory;
 
     void loadModel( std::string path ) {
@@ -48,7 +49,7 @@ class Model {
     void processNode( aiNode* node, const aiScene* scene ) {
       for( int i = 0; i < node->mNumMeshes; i++ ) {
         aiMesh* mesh = scene->mMeshes[ node->mMeshes[ i ] ];
-        this->meshes.push_back( this->processMesh( mesh, scene ) );
+        this->processMesh( mesh, scene );
       }
 
       for( int i = 0; i < node->mNumChildren; i++ ) {
@@ -56,7 +57,7 @@ class Model {
       }
     }
 
-    Mesh processMesh( aiMesh* mesh, const aiScene* scene ) {
+    void processMesh( aiMesh* mesh, const aiScene* scene ) {
       std::vector< Mesh::Vertex > vertices;
       std::vector< Mesh::Index > indices;
       std::vector< Mesh::Texture > textures;
@@ -86,7 +87,7 @@ class Model {
         textures = loadMaterialTextures( material, aiTextureType_DIFFUSE, "texture_diffuse" );
       }
 
-      return Mesh( vertices, indices, textures );
+      meshes.emplace_back( std::make_unique< Mesh >( vertices, indices, textures ) );
     }
 
     std::vector< Mesh::Texture > loadMaterialTextures( aiMaterial* material, aiTextureType type, std::string typeName ) {
