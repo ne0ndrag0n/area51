@@ -2,7 +2,3 @@ newmtl hardwood
 Kd 1.0 1.0 1.0
 illum 0
 map_Kd floor.png
-
-newmtl neon_green
-Kd 0.0000 1.0000 0.0000
-illum 0
