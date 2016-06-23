@@ -82,9 +82,9 @@ int main() {
   cameraCoords.setPosition( 0, 32 );
 
   std::vector< glm::vec3 > boxes = {
-    glm::vec3( 0.0f, 0.0f, -950.0f ),
-    glm::vec3( 0.0f, 0.0f, -850.0f ),
-    glm::vec3( 0.0f, 0.0f, -750.0f )
+    glm::vec3( 0.0f, 0.0f, -9.5f ),
+    glm::vec3( 0.0f, 0.0f, -8.5f ),
+    glm::vec3( 0.0f, 0.0f, -7.5f )
   };
 
   while( mainWindow.isOpen() ) {
@@ -100,7 +100,7 @@ int main() {
     for( int x = -16; x != 16; x++ ) {
       for( int y = -16; y != 16; y++ ) {
         glm::mat4 model;
-        model = glm::translate( model, glm::vec3( (GLfloat)(x * 100.0f), (GLfloat)(y * 100.0f), -1000.0f ) );
+        model = glm::translate( model, glm::vec3( (GLfloat)x, (GLfloat)y, -10.0f ) );
         glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
 
         m.draw( shader );
@@ -155,19 +155,19 @@ int main() {
         }
 
         if( event.key.code == sf::Keyboard::Up ) {
-          lotCamera.move( 0.0f, 10.0f, 0.0f );
+          lotCamera.move( 0.0f, 0.1f, 0.0f );
         }
 
         if( event.key.code == sf::Keyboard::Down ) {
-          lotCamera.move( 0.0f, -10.0f, 0.0f );
+          lotCamera.move( 0.0f, -0.1f, 0.0f );
         }
 
         if( event.key.code == sf::Keyboard::Right ) {
-          lotCamera.move( 10.0f, 0.0f, 0.0f );
+          lotCamera.move( 0.1f, 0.0f, 0.0f );
         }
 
         if( event.key.code == sf::Keyboard::Left ) {
-          lotCamera.move( -10.0f, 0.0f, 0.0f );
+          lotCamera.move( -0.1f, 0.0f, 0.0f );
         }
 
         if( event.key.code == sf::Keyboard::Add && zoom != 1.0f ) {

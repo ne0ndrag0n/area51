@@ -16,8 +16,8 @@ class LotCamera {
     glm::mat4 projection;
     GLuint program;
 
-    GLfloat cameraHeight = 300.0f;
-    glm::vec3 lookingAt = glm::vec3( 0.0f, 0.0f, -900.0f );
+    GLfloat cameraHeight = 3.0f;
+    glm::vec3 lookingAt = glm::vec3( 0.0f, 0.0f, -9.0f );
     glm::vec3 camera = glm::vec3( -cameraHeight, -cameraHeight, lookingAt.z + cameraHeight );
     const glm::vec3 originalDirection = glm::vec3( glm::normalize( lookingAt - camera ) );
     glm::vec3 up = glm::vec3( 0.0f, 0.0f, 1.0f );
@@ -75,13 +75,13 @@ class LotCamera {
     }
 
     void position() {
-      GLfloat scaledWidthHalf = widthHalf * zoom;
-      GLfloat scaledHeightHalf = heightHalf * zoom;
+      GLfloat scaledWidthHalf = ( widthHalf * zoom ) / 100.0f;
+      GLfloat scaledHeightHalf = ( heightHalf * zoom ) / 100.0f;
 
       view = glm::lookAt( camera, camera + direction, up );
       projection = ortho ?
-         glm::ortho( -scaledWidthHalf, scaledWidthHalf, -scaledHeightHalf, scaledHeightHalf, -2000.0f, 5000.0f ) :
-         glm::perspective( 45.0f, perspectiveAspectRatio, 0.1f, 5000.0f );
+         glm::ortho( -scaledWidthHalf, scaledWidthHalf, -scaledHeightHalf, scaledHeightHalf, -20.0f, 50.0f ) :
+         glm::perspective( 45.0f, perspectiveAspectRatio, 0.1f, 50.0f );
       // Set uniforms
       glUniformMatrix4fv( glGetUniformLocation( program, "view" ), 1, GL_FALSE, glm::value_ptr( view ) );
       glUniformMatrix4fv( glGetUniformLocation( program, "projection" ), 1, GL_FALSE, glm::value_ptr( projection ) );
