@@ -20,7 +20,6 @@ class LotCamera {
     glm::vec3 lookingAt = glm::vec3( 0.0f, 0.0f, -900.0f );
     glm::vec3 camera = glm::vec3( -cameraHeight, -cameraHeight, lookingAt.z + cameraHeight );
     const glm::vec3 originalDirection = glm::vec3( glm::normalize( lookingAt - camera ) );
-    glm::vec3 direction = originalDirection;
     glm::vec3 up = glm::vec3( 0.0f, 0.0f, 1.0f );
     GLfloat yaw = 0.0f;
     GLfloat pitch = 0.0f;
@@ -32,6 +31,7 @@ class LotCamera {
     const float zoomIncrement = 0.25f;
 
   public:
+    glm::vec3 direction = originalDirection;
     bool ortho = true;
 
     LotCamera( GLuint program, int screenWidth, int screenHeight ) : program( program ) {
