@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -12,8 +13,8 @@
 #include "mesh.hpp"
 #include "model.hpp"
 
-const int SCREEN_WIDTH = 1024;
-const int SCREEN_HEIGHT = 768;
+const int SCREEN_WIDTH = 500;
+const int SCREEN_HEIGHT = 500;
 float zoom = 2.0f;
 
 int main() {
@@ -54,7 +55,37 @@ int main() {
   LotCamera lotCamera( shader.Program, SCREEN_WIDTH, SCREEN_HEIGHT );
   mainWindow.setMouseCursorVisible( lotCamera.ortho );
 
-  Model m( "./floor.obj" );
+  Model m( "floor/floor.obj" );
+  Model box( "box/box.obj" );
+
+  sf::Font dosvga;
+  if( !dosvga.loadFromFile( "font.ttf" ) ) {
+    std::cout << "Couldn't load font.ttf" << std::endl;
+    return 1;
+  }
+
+  sf::Text text;
+  text.setFont( dosvga );
+  text.setCharacterSize( 16 );
+  text.setColor( sf::Color::White );
+
+  sf::Text coords;
+  coords.setFont( dosvga );
+  coords.setCharacterSize( 16 );
+  coords.setColor( sf::Color::Red );
+  coords.setPosition( 0, 16 );
+
+  sf::Text cameraCoords;
+  cameraCoords.setFont( dosvga );
+  cameraCoords.setCharacterSize( 16 );
+  cameraCoords.setColor( sf::Color::Cyan );
+  cameraCoords.setPosition( 0, 32 );
+
+  std::vector< glm::vec3 > boxes = {
+    glm::vec3( 0.0f, 0.0f, -950.0f ),
+    glm::vec3( 0.0f, 0.0f, -850.0f ),
+    glm::vec3( 0.0f, 0.0f, -750.0f )
+  };
 
   while( mainWindow.isOpen() ) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -63,16 +94,37 @@ int main() {
     shader.use();
     lotCamera.position();
 
+    GLuint uModel = glGetUniformLocation( shader.Program, "model" );
+
+    // Draw the world
     for( int x = -16; x != 16; x++ ) {
       for( int y = -16; y != 16; y++ ) {
         glm::mat4 model;
         model = glm::translate( model, glm::vec3( (GLfloat)(x * 100.0f), (GLfloat)(y * 100.0f), -1000.0f ) );
-        glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
+        glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
 
         m.draw( shader );
       }
     }
 
+    // Drop a box in the centre
+    for( auto& position : boxes ) {
+      glm::mat4 model;
+      model = glm::translate( model, position );
+      glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
+
+      box.draw( shader );
+    }
+
+    mainWindow.pushGLStates();
+      text.setString( lotCamera.ortho ? "Isometric" : "First-person" );
+      coords.setString( lotCamera.positionToString().c_str() );
+      cameraCoords.setString( lotCamera.directionToString().c_str() );
+
+      mainWindow.draw( text );
+      mainWindow.draw( coords );
+      mainWindow.draw( cameraCoords );
+    mainWindow.popGLStates();
 
     mainWindow.display();
 
