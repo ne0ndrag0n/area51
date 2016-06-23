@@ -75,7 +75,10 @@ class Mesh {
     }
 
     void draw( Shader shader ) {
-        for( int i = 0; i != textures.size(); i++ ) {
+      auto numTextures = textures.size();
+
+      if( numTextures > 0 ) {
+        for( int i = 0; i != numTextures; i++ ) {
           glActiveTexture( GL_TEXTURE0 + i );
             std::stringstream stream;
             stream << "texture" << i;
@@ -89,6 +92,7 @@ class Mesh {
         glBindVertexArray( VAO );
           glDrawElements( GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0 );
         glBindVertexArray( 0 );
+      }
     }
 };
 
