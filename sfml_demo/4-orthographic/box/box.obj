@@ -2,7 +2,7 @@
 
 mtllib resource.mtl
 
-g WaterBox
+o WaterBox
 
 v -0.5 0.5 0.5
 v 0.5 0.5 0.5

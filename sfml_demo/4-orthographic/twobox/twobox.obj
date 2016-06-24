@@ -1,7 +1,7 @@
 # smaller box with hovering box above it
 
 mtllib resource.mtl
-g TinyBox
+o TinyBox
 
 v -0.15 0.15 0.15
 v 0.15 0.15 0.15
