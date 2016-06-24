@@ -21,6 +21,7 @@ class Model {
   public:
     Model( std::string path ) {
       loadModel( path );
+      std::cout << "Number of meshes: " << meshes.size() << std::endl;
     }
     void draw( Shader shader ) {
       for( auto& meshPtr : meshes ) {

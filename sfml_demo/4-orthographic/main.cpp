@@ -57,6 +57,7 @@ int main() {
 
   Model m( "floor/floor.obj" );
   Model box( "box/box.obj" );
+  Model smallBox( "twobox/twobox.obj" );
 
   sf::Font dosvga;
   if( !dosvga.loadFromFile( "font.ttf" ) ) {
@@ -87,6 +88,10 @@ int main() {
     glm::vec3( 0.0f, 0.0f, -7.5f )
   };
 
+  std::vector< glm::vec3 > smallBoxes = {
+    glm::vec3( 0.0f, 1.0f, -9.85f )
+  };
+
   while( mainWindow.isOpen() ) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -107,13 +112,20 @@ int main() {
       }
     }
 
-    // Drop a box in the centre
     for( auto& position : boxes ) {
       glm::mat4 model;
       model = glm::translate( model, position );
       glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
 
       box.draw( shader );
+    }
+
+    for( auto& position : smallBoxes ) {
+      glm::mat4 model;
+      model = glm::translate( model, position );
+      glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
+
+      smallBox.draw( shader );
     }
 
     mainWindow.pushGLStates();
