@@ -35,21 +35,8 @@ int main() {
   Shader shader( "vertex.glsl", "fragment.glsl" );
 
   glViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
-
   glEnable( GL_DEPTH_TEST );
 
-  // BlueBear is normally played through an isometric projection. Which isn't really true isometric, it's just the "90s isometric" look using an
-  // orthographic projection and strategically placed camera. Our camera up vector is +Z, so objects on top of objects have increasing Z values.
-  // THE IMPORTANT BIT: ** The camera goes -X and -Y for as much as the camera goes +Z from the Z of the point it looks at. **
-  // Read that again carefully. This forms a 45 degree camera angle (because of 45-45-90 triangles). Explanation:
-  // The camera looks at a point 100 units from the ground and 300 units up from that point (arbitrary values). The height of the camera mostly
-  // affects the appearance of the perspective view. Therefore, the camera is as high up from the floor (at Z-1000) as high as the point it looks at,
-  // plus the Z distance from that point it is looking at. In the standard case, that makes a Z distance of 400 pixels from the floor (-600).
-
-  // In BlueBear, you may enter the house itself using a perspective projection! Depending on what is planned, these constraints will not
-  // apply in that mode. Each mode begins with the same constaints as isometric mode, but some may or may not be kept:
-  // Explorer View: All bets are off; you can go anywhere and do what you want. Compute the direction vector based on the pitch and yaw of the mouse.
-  // Doll's-Eye View: This is explorer view, locked to the Z-height of the doll. The camera never goes higher or lower than the doll's eye height.
   sf::Vector2i center( ( SCREEN_WIDTH / 2 ), ( SCREEN_HEIGHT / 2 ) );
 
   LotCamera lotCamera( shader.Program, SCREEN_WIDTH, SCREEN_HEIGHT );
