@@ -86,32 +86,21 @@ int main() {
     shader.use();
     lotCamera.position();
 
-    GLuint uModel = glGetUniformLocation( shader.Program, "model" );
-
     // Draw the world
     for( int x = -16; x != 16; x++ ) {
       for( int y = -16; y != 16; y++ ) {
-        glm::mat4 model;
-        model = glm::translate( model, glm::vec3( (GLfloat)x, (GLfloat)y, -10.0f ) );
-        glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
-
+        m.setWorldPosition( glm::vec3( (GLfloat)x, (GLfloat)y, -10.0f ) );
         m.draw( shader );
       }
     }
 
     for( auto& position : boxes ) {
-      glm::mat4 model;
-      model = glm::translate( model, position );
-      glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
-
+      box.setWorldPosition( position );
       box.draw( shader );
     }
 
     for( auto& position : smallBoxes ) {
-      glm::mat4 model;
-      model = glm::translate( model, position );
-      glUniformMatrix4fv( uModel, 1, GL_FALSE, glm::value_ptr( model ) );
-
+      smallBox.setWorldPosition( position );
       smallBox.draw( shader );
     }
 
