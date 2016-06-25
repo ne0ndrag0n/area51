@@ -16,21 +16,34 @@
 #include <GL/glew.h>
 #include "mesh.hpp"
 
+/**
+ * split c/p'd from bluebear
+ */
+std::vector<std::string> split(const std::string &text, char sep) {
+  std::vector<std::string> tokens;
+  std::size_t start = 0, end = 0;
+  while ((end = text.find(sep, start)) != std::string::npos) {
+    tokens.push_back(text.substr(start, end - start));
+    start = end + 1;
+  }
+  tokens.push_back(text.substr(start));
+  return tokens;
+}
+
 class Model {
 
   public:
     Model( std::string path ) {
       loadModel( path );
-      std::cout << "Number of meshes: " << meshes.size() << std::endl;
     }
     void draw( Shader shader ) {
-      for( auto& meshPtr : meshes ) {
-        meshPtr->draw( shader );
+      for( auto& pair : meshes ) {
+        pair.second->draw( shader );
       }
     }
 
   private:
-    std::vector< std::unique_ptr< Mesh > > meshes;
+    std::map< std::string, std::unique_ptr< Mesh > > meshes;
     std::string directory;
 
     void loadModel( std::string path ) {
@@ -50,7 +63,7 @@ class Model {
     void processNode( aiNode* node, const aiScene* scene ) {
       for( int i = 0; i < node->mNumMeshes; i++ ) {
         aiMesh* mesh = scene->mMeshes[ node->mMeshes[ i ] ];
-        this->processMesh( mesh, scene );
+        this->processMesh( mesh, scene, node->mName.C_Str() );
       }
 
       for( int i = 0; i < node->mNumChildren; i++ ) {
@@ -58,7 +71,7 @@ class Model {
       }
     }
 
-    void processMesh( aiMesh* mesh, const aiScene* scene ) {
+    void processMesh( aiMesh* mesh, const aiScene* scene, std::string nodeTitle ) {
       std::vector< Mesh::Vertex > vertices;
       std::vector< Mesh::Index > indices;
       std::vector< Mesh::Texture > textures;
@@ -88,7 +101,8 @@ class Model {
         textures = loadMaterialTextures( material, aiTextureType_DIFFUSE, "texture_diffuse" );
       }
 
-      meshes.emplace_back( std::make_unique< Mesh >( vertices, indices, textures ) );
+      std::cout << "Emplacing " << nodeTitle << std::endl;
+      meshes.emplace( nodeTitle, std::make_unique< Mesh >( vertices, indices, textures ) );
     }
 
     std::vector< Mesh::Texture > loadMaterialTextures( aiMaterial* material, aiTextureType type, std::string typeName ) {
