@@ -17,6 +17,10 @@ class Mesh {
 
   private:
     GLuint VAO, VBO, EBO;
+    // Set origin at the time the mesh is added to the model
+    // This is a pointer to the model's position in the world
+    const glm::vec3* origin;
+    glm::vec3 localPosition;
     // Meshes depend on OpenGL global states - You really shouldn't be copying 'em.
     Mesh( const Mesh& );
     Mesh& operator=( const Mesh& );
@@ -40,8 +44,8 @@ class Mesh {
     std::vector< Index > indices;
     std::vector< Texture > textures;
 
-    Mesh( std::vector< Vertex > vertices, std::vector< Index > indices, std::vector< Texture > textures ) :
-      vertices( vertices ), indices( indices ), textures( textures ) {
+    Mesh( std::vector< Vertex > vertices, std::vector< Index > indices, std::vector< Texture > textures, const glm::vec3* origin ) :
+      vertices( vertices ), indices( indices ), textures( textures ), origin( origin ) {
       setupMesh();
     }
 
@@ -72,6 +76,16 @@ class Mesh {
         glBindBuffer( GL_ARRAY_BUFFER, 0 );
 
       glBindVertexArray( 0 );
+    }
+
+    void setRelativePosition( glm::vec3 localPosition ) {
+      localPosition = *origin + localPosition;
+    }
+
+    void setShaderUniform( Shader shader ) {
+      glm::mat4 model;
+      model = glm::translate( model, localPosition );
+      glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
     }
 
     void draw( Shader shader ) {

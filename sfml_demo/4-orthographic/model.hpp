@@ -119,7 +119,7 @@ class Model {
       }
 
       std::cout << "Emplacing " << nodeTitle << std::endl;
-      meshes.emplace( nodeTitle, std::make_unique< Mesh >( vertices, indices, textures ) );
+      meshes.emplace( nodeTitle, std::make_unique< Mesh >( vertices, indices, textures, &basePosition ) );
     }
 
     std::vector< Mesh::Texture > loadMaterialTextures( aiMaterial* material, aiTextureType type, std::string typeName ) {
