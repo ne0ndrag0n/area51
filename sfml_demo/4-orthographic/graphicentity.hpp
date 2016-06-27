@@ -26,8 +26,13 @@ class GraphicEntity {
     const Model* model;
 
   public:
-    glm::vec3 position;
-    glm::vec3 scale = glm::vec3( 1.0, 1.0, 1.0 );
+    glm::vec3 position = glm::vec3( 0.0f, 0.0f, 0.0f );
+    glm::vec3 scale = glm::vec3( 1.0f, 1.0f, 1.0f );
+    glm::vec3 rotationAxes = glm::vec3( 0.0f, 0.0f, 0.0f );
+    GLfloat rotationAngle = 0.0f;
+    // Performance-related switches
+    bool applyScale = false;
+    bool applyRotation = false;
 
     GraphicEntity( const Model* model ) : model( model ) {}
 };
