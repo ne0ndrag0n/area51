@@ -12,6 +12,7 @@
 #include "camera.hpp"
 #include "mesh.hpp"
 #include "model.hpp"
+#include "graphicentity.hpp"
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 576;
@@ -42,6 +43,7 @@ int main() {
   LotCamera lotCamera( shader.Program, SCREEN_WIDTH, SCREEN_HEIGHT );
   mainWindow.setMouseCursorVisible( lotCamera.ortho );
 
+  // Models may contain multiple Mesh objects
   Model m( "floor/floor.obj" );
   Model box( "box/box.obj" );
   Model smallBox( "twobox/twobox.obj" );
