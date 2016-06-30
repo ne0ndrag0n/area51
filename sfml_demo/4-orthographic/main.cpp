@@ -43,10 +43,10 @@ int main() {
   LotCamera lotCamera( shader.Program, SCREEN_WIDTH, SCREEN_HEIGHT );
   mainWindow.setMouseCursorVisible( lotCamera.ortho );
 
-  // Models may contain multiple Mesh objects
-  Model m( "floor/floor.obj" );
-  Model box( "box/box.obj" );
-  Model smallBox( "twobox/twobox.obj" );
+  // GFXModels may contain multiple Mesh objects
+  GFXModel m( "floor/floor.obj" );
+  GFXModel box( "box/box.obj" );
+  GFXModel smallBox( "twobox/twobox.obj" );
 
   sf::Font dosvga;
   if( !dosvga.loadFromFile( "font.ttf" ) ) {

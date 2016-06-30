@@ -30,10 +30,10 @@ std::vector<std::string> split(const std::string &text, char sep) {
   return tokens;
 }
 
-class Model {
+class GFXModel {
 
   public:
-    Model( std::string path ) {
+    GFXModel( std::string path ) {
       loadModel( path );
     }
     void draw( Shader shader ) {

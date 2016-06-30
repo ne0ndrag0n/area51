@@ -16,14 +16,14 @@
 #include <GL/glew.h>
 
 /**
- * A GraphicEntity is a specific instance of a graphic model placed on a lot. It contains
+ * A GFXInstance is a specific instance of a graphic model placed on a lot. It contains
  * a position vector and other associated states (depending on the type of model).
  */
-class GraphicEntity {
+class GFXInstance {
 
   private:
     // The referred-to model
-    const Model* model;
+    const GFXModel* model;
 
   public:
     glm::vec3 position = glm::vec3( 0.0f, 0.0f, 0.0f );
@@ -35,7 +35,7 @@ class GraphicEntity {
     bool applyScale = false;
     bool applyRotation = false;
 
-    GraphicEntity( const Model* model ) : model( model ) {}
+    GFXInstance( const GFXModel* model ) : model( model ) {}
 
     /**
      * Apply all transformation matricies to the object given translation, scale, and rotation
