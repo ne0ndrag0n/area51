@@ -37,31 +37,15 @@ class GFXModel {
       loadModel( path );
     }
     void draw( Shader shader ) {
-      // Shader uniforms set before all the models are drawn
-      setShaderUniform( shader );
       for( auto& pair : meshes ) {
         auto& mesh = *( pair.second );
         mesh.draw( shader );
       }
     }
-    void setWorldPosition( glm::vec3 pos ) {
-      basePosition = pos;
-    }
 
   private:
-    glm::vec3 basePosition;
     std::map< std::string, std::unique_ptr< Mesh > > meshes;
     std::string directory;
-
-    /**
-     * Sets the shader model uniform for this model
-     * translations, rotations, and scaling
-     */
-    void setShaderUniform( Shader shader ) {
-      glm::mat4 model;
-      model = glm::translate( model, basePosition );
-      glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
-    }
 
     void loadModel( std::string path ) {
       Assimp::Importer importer;
@@ -119,7 +103,7 @@ class GFXModel {
       }
 
       std::cout << "Emplacing " << nodeTitle << std::endl;
-      meshes.emplace( nodeTitle, std::make_unique< Mesh >( vertices, indices, textures, &basePosition ) );
+      meshes.emplace( nodeTitle, std::make_unique< Mesh >( vertices, indices, textures ) );
     }
 
     std::vector< Mesh::Texture > loadMaterialTextures( aiMaterial* material, aiTextureType type, std::string typeName ) {

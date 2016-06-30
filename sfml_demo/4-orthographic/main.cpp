@@ -91,18 +91,27 @@ int main() {
     // Draw the world
     for( int x = -16; x != 16; x++ ) {
       for( int y = -16; y != 16; y++ ) {
-        m.setWorldPosition( glm::vec3( (GLfloat)x, (GLfloat)y, -10.0f ) );
+        glm::mat4 model;
+        model = glm::translate( model, glm::vec3( (GLfloat)x, (GLfloat)y, -10.0f ) );
+        glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
+
         m.draw( shader );
       }
     }
 
     for( auto& position : boxes ) {
-      box.setWorldPosition( position );
+      glm::mat4 model;
+      model = glm::translate( model, position );
+      glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
+
       box.draw( shader );
     }
 
     for( auto& position : smallBoxes ) {
-      smallBox.setWorldPosition( position );
+      glm::mat4 model;
+      model = glm::translate( model, position );
+      glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
+
       smallBox.draw( shader );
     }
 
