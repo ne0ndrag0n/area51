@@ -36,7 +36,7 @@ class GFXModel {
     GFXModel( std::string path ) {
       loadModel( path );
     }
-    void draw( GLuint shaderProgram ) {
+    void draw( GLuint shaderProgram ) const {
       for( auto& pair : meshes ) {
         auto& mesh = *( pair.second );
         mesh.draw( shaderProgram );

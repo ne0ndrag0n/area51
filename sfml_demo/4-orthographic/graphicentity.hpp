@@ -31,11 +31,12 @@ class GFXInstance {
     glm::vec3 rotationAxes = glm::vec3( 0.0f, 0.0f, 0.0f );
     GLfloat rotationAngle = 0.0f;
     glm::mat4 transform;
+    GLuint shaderProgram;
     // Performance-related switches
     bool applyScale = false;
     bool applyRotation = false;
 
-    GFXInstance( const GFXModel& model ) : model( model ) {}
+    GFXInstance( const GFXModel& model, GLuint shaderProgram ) : model( model ), shaderProgram( shaderProgram ) {}
 
     /**
      * Apply all transformation matricies to the object given translation, scale, and rotation
@@ -44,7 +45,7 @@ class GFXInstance {
      * The call to position() sets the vertex shader uniform for the vertex position. Call it directly
      * before a draw.
      */
-    void setTransformUniform( GLuint shaderProgram ) {
+    void setTransformUniform() {
       transform = glm::mat4();
 
       // There's always going to be a translation
@@ -62,6 +63,11 @@ class GFXInstance {
 
       // Set the uniform for the shader
       glUniformMatrix4fv( glGetUniformLocation( shaderProgram, "model" ), 1, GL_FALSE, glm::value_ptr( transform ) );
+    }
+
+    void drawEntity() {
+      setTransformUniform();
+      model.draw( shaderProgram );
     }
 };
 

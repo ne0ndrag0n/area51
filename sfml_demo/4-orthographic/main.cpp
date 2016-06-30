@@ -81,6 +81,15 @@ int main() {
     glm::vec3( 0.0f, 1.0f, -9.85f )
   };
 
+  GFXInstance b1( box, shader.Program );
+  b1.position = glm::vec3( 0.0f, 0.0f, -9.5f );
+
+  GFXInstance b2( box, shader.Program );
+  b2.position = glm::vec3( 0.0f, 0.0f, -8.5f );
+
+  GFXInstance b3( box, shader.Program );
+  b3.position = glm::vec3( 0.0f, 0.0f, -7.5f );
+
   while( mainWindow.isOpen() ) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
