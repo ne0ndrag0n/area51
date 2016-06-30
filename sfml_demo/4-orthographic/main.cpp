@@ -71,16 +71,6 @@ int main() {
   cameraCoords.setColor( sf::Color::Cyan );
   cameraCoords.setPosition( 0, 32 );
 
-  std::vector< glm::vec3 > boxes = {
-    glm::vec3( 0.0f, 0.0f, -9.5f ),
-    glm::vec3( 0.0f, 0.0f, -8.5f ),
-    glm::vec3( 0.0f, 0.0f, -7.5f )
-  };
-
-  std::vector< glm::vec3 > smallBoxes = {
-    glm::vec3( 0.0f, 1.0f, -9.85f )
-  };
-
   GFXInstance b1( box, shader.Program );
   b1.position = glm::vec3( 0.0f, 0.0f, -9.5f );
 
@@ -90,6 +80,18 @@ int main() {
   GFXInstance b3( box, shader.Program );
   b3.position = glm::vec3( 0.0f, 0.0f, -7.5f );
 
+  GFXInstance smallPair( smallBox, shader.Program );
+  smallPair.position = glm::vec3( 0.0f, 1.0f, -9.85f );
+
+  std::vector< GFXInstance > floorTiles;
+  for( int x = -16; x != 16; x++ ) {
+    for( int y = -16; y != 16; y++ ) {
+      GFXInstance floorTile( m, shader.Program );
+      floorTile.position = glm::vec3( ( GLfloat ) x, ( GLfloat ) y, -10.0f );
+      floorTiles.push_back( floorTile );
+    }
+  }
+
   while( mainWindow.isOpen() ) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -98,31 +100,13 @@ int main() {
     lotCamera.position();
 
     // Draw the world
-    for( int x = -16; x != 16; x++ ) {
-      for( int y = -16; y != 16; y++ ) {
-        glm::mat4 model;
-        model = glm::translate( model, glm::vec3( (GLfloat)x, (GLfloat)y, -10.0f ) );
-        glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
-
-        m.draw( shader.Program );
-      }
+    for( auto& floorTile : floorTiles ) {
+      floorTile.drawEntity();
     }
-
-    for( auto& position : boxes ) {
-      glm::mat4 model;
-      model = glm::translate( model, position );
-      glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
-
-      box.draw( shader.Program );
-    }
-
-    for( auto& position : smallBoxes ) {
-      glm::mat4 model;
-      model = glm::translate( model, position );
-      glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
-
-      smallBox.draw( shader.Program );
-    }
+    b1.drawEntity();
+    b2.drawEntity();
+    b3.drawEntity();
+    smallPair.drawEntity();
 
     mainWindow.pushGLStates();
       text.setString( lotCamera.ortho ? "Isometric" : "First-person" );
