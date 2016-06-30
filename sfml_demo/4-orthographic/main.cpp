@@ -95,7 +95,7 @@ int main() {
         model = glm::translate( model, glm::vec3( (GLfloat)x, (GLfloat)y, -10.0f ) );
         glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
 
-        m.draw( shader );
+        m.draw( shader.Program );
       }
     }
 
@@ -104,7 +104,7 @@ int main() {
       model = glm::translate( model, position );
       glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
 
-      box.draw( shader );
+      box.draw( shader.Program );
     }
 
     for( auto& position : smallBoxes ) {
@@ -112,7 +112,7 @@ int main() {
       model = glm::translate( model, position );
       glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
 
-      smallBox.draw( shader );
+      smallBox.draw( shader.Program );
     }
 
     mainWindow.pushGLStates();

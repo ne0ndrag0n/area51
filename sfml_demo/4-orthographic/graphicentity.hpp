@@ -23,7 +23,7 @@ class GFXInstance {
 
   private:
     // The referred-to model
-    const GFXModel* model;
+    const GFXModel& model;
 
   public:
     glm::vec3 position = glm::vec3( 0.0f, 0.0f, 0.0f );
@@ -35,7 +35,7 @@ class GFXInstance {
     bool applyScale = false;
     bool applyRotation = false;
 
-    GFXInstance( const GFXModel* model ) : model( model ) {}
+    GFXInstance( const GFXModel& model ) : model( model ) {}
 
     /**
      * Apply all transformation matricies to the object given translation, scale, and rotation

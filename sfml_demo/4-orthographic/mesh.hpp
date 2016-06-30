@@ -74,7 +74,7 @@ class Mesh {
       glBindVertexArray( 0 );
     }
 
-    void draw( Shader shader ) {
+    void draw( GLuint shaderProgram ) {
       auto numTextures = textures.size();
 
       if( numTextures > 0 ) {
@@ -85,7 +85,7 @@ class Mesh {
             std::string uniformName = stream.str();
             glBindTexture( GL_TEXTURE_2D, textures[ i ].id );
             glUniform1i(
-              glGetUniformLocation( shader.Program, uniformName.c_str() ), i
+              glGetUniformLocation( shaderProgram, uniformName.c_str() ), i
             );
         }
 
