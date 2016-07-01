@@ -33,18 +33,13 @@ std::vector<std::string> split(const std::string &text, char sep) {
 class GFXModel {
 
   public:
+    std::map< std::string, std::unique_ptr< Mesh > > meshes;
+
     GFXModel( std::string path ) {
       loadModel( path );
     }
-    void draw( GLuint shaderProgram ) const {
-      for( auto& pair : meshes ) {
-        auto& mesh = *( pair.second );
-        mesh.draw( shaderProgram );
-      }
-    }
 
   private:
-    std::map< std::string, std::unique_ptr< Mesh > > meshes;
     std::string directory;
 
     void loadModel( std::string path ) {

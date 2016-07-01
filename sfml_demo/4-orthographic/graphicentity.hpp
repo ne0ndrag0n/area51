@@ -66,8 +66,12 @@ class GFXInstance {
     }
 
     void drawEntity() {
+      // Something will need to be made to set up a transformation mesh for each submesh
       setTransformUniform();
-      model.draw( shaderProgram );
+      for( auto& pair : model.meshes ) {
+        auto& mesh = *( pair.second );
+        mesh.draw( shaderProgram );
+      }
     }
 };
 
