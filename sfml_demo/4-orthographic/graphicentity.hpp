@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <map>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -27,13 +28,19 @@ class GFXInstance {
     const GFXModel& model;
 
   public:
-    GFXTransform baseTransform;
+    std::map< std::string, GFXTransform > transforms;
     GLuint shaderProgram;
 
-    GFXInstance( const GFXModel& model, GLuint shaderProgram ) : model( model ), shaderProgram( shaderProgram ) {}
+    GFXInstance( const GFXModel& model, GLuint shaderProgram ) : model( model ), shaderProgram( shaderProgram ) {
+      transforms.emplace( "_base", GFXTransform{} );
+    }
+
+    GFXTransform& getBaseTransform() {
+      return transforms[ "_base" ];
+    }
 
     void drawEntity() {
-      baseTransform.apply( shaderProgram );
+      getBaseTransform().apply( shaderProgram );
       for( auto& pair : model.meshes ) {
         auto& mesh = *( pair.second );
         mesh.draw( shaderProgram );
