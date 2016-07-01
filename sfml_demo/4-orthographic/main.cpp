@@ -72,22 +72,22 @@ int main() {
   cameraCoords.setPosition( 0, 32 );
 
   GFXInstance b1( box, shader.Program );
-  b1.position = glm::vec3( 0.0f, 0.0f, -9.5f );
+  b1.baseTransform.position = glm::vec3( 0.0f, 0.0f, -9.5f );
 
   GFXInstance b2( box, shader.Program );
-  b2.position = glm::vec3( 0.0f, 0.0f, -8.5f );
+  b2.baseTransform.position = glm::vec3( 0.0f, 0.0f, -8.5f );
 
   GFXInstance b3( box, shader.Program );
-  b3.position = glm::vec3( 0.0f, 0.0f, -7.5f );
+  b3.baseTransform.position = glm::vec3( 0.0f, 0.0f, -7.5f );
 
   GFXInstance smallPair( smallBox, shader.Program );
-  smallPair.position = glm::vec3( 0.0f, 1.0f, -9.85f );
+  smallPair.baseTransform.position = glm::vec3( 0.0f, 1.0f, -9.85f );
 
   std::vector< GFXInstance > floorTiles;
   for( int x = -16; x != 16; x++ ) {
     for( int y = -16; y != 16; y++ ) {
       GFXInstance floorTile( m, shader.Program );
-      floorTile.position = glm::vec3( ( GLfloat ) x, ( GLfloat ) y, -10.0f );
+      floorTile.baseTransform.position = glm::vec3( ( GLfloat ) x, ( GLfloat ) y, -10.0f );
       floorTiles.push_back( floorTile );
     }
   }
