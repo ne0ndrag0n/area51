@@ -39,6 +39,10 @@ class GFXInstance {
       return transforms[ "_base" ];
     }
 
+    void setBaseTransform( GFXTransform transform ) {
+      transforms[ "_base" ] = transform;
+    }
+
     void drawEntity() {
       for( auto& pair : model.meshes ) {
         // Prior to drawing individual meshes within a model, we need to reset the shader to our base transform
