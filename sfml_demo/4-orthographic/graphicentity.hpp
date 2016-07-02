@@ -40,9 +40,14 @@ class GFXInstance {
     }
 
     void drawEntity() {
-      getBaseTransform().apply( shaderProgram );
       for( auto& pair : model.meshes ) {
+        // Prior to drawing individual meshes within a model, we need to reset the shader to our base transform
+        auto baseTransform = getBaseTransform();
+        baseTransform.apply( shaderProgram );
+
         auto& mesh = *( pair.second );
+        // If there are additional transforms that need to be applied, apply them by adding them to the previous transform,
+        // and then using the new transform
         mesh.draw( shaderProgram );
       }
     }
