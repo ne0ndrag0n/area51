@@ -97,7 +97,6 @@ class GFXModel {
         textures = loadMaterialTextures( material, aiTextureType_DIFFUSE, "texture_diffuse" );
       }
 
-      std::cout << "Emplacing " << nodeTitle << std::endl;
       meshes.emplace( nodeTitle, std::make_unique< Mesh >( vertices, indices, textures ) );
     }
 

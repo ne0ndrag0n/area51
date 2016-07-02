@@ -32,7 +32,7 @@ class GFXTransform {
     /**
      * Compose a transform by adding together each of its components: position, scale, rotation axis, and rotation angle.
      *
-     * The new GFXTransform will inherit the applyScale and applyRotation of the left hand side
+     * The new GFXTransform will inherit the applyScale and applyRotation of the right hand side
      */
     friend GFXTransform operator+( const GFXTransform& left, const GFXTransform& right ) {
       GFXTransform result;
@@ -41,8 +41,8 @@ class GFXTransform {
       result.rotationAxes = right.rotationAxes;
       result.rotationAngle = left.rotationAngle + right.rotationAngle;
 
-      result.applyScale = left.applyScale;
-      result.applyRotation = left.applyRotation;
+      result.applyScale = right.applyScale;
+      result.applyRotation = right.applyRotation;
 
       return result;
     }

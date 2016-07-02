@@ -13,6 +13,7 @@
 #include "mesh.hpp"
 #include "model.hpp"
 #include "graphicentity.hpp"
+#include "gfxtransform.hpp"
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 576;
@@ -82,6 +83,12 @@ int main() {
 
   GFXInstance smallPair( smallBox, shader.Program );
   smallPair.getBaseTransform().position = glm::vec3( 0.0f, 1.0f, -9.85f );
+
+  GFXTransform topCubeTransform;
+  topCubeTransform.rotationAngle = 45.0f;
+  topCubeTransform.rotationAxes.z = 1.0f;
+  topCubeTransform.applyRotation = true;
+  smallPair.transforms[ "TopCube" ] = topCubeTransform;
 
   std::vector< GFXInstance > floorTiles;
   for( int x = -16; x != 16; x++ ) {

@@ -52,6 +52,13 @@ class GFXInstance {
         auto& mesh = *( pair.second );
         // If there are additional transforms that need to be applied, apply them by adding them to the previous transform,
         // and then using the new transform
+        // The mesh name is pair.first
+        auto secondaryTransform = transforms.find( pair.first );
+        if( secondaryTransform != transforms.end() ) {
+          auto transformComposition = baseTransform + secondaryTransform->second;
+          // Apply this transform to the shader
+          transformComposition.apply( shaderProgram );
+        }
         mesh.draw( shaderProgram );
       }
     }
