@@ -99,6 +99,8 @@ int main() {
     }
   }
 
+  sf::Clock clock;
+
   while( mainWindow.isOpen() ) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -114,6 +116,8 @@ int main() {
     b2.drawEntity();
     b3.drawEntity();
     smallPair.drawEntity();
+    // Adjust the rotation on the topCubeTransform
+    smallPair.transforms[ "TopCube" ].rotationAngle = glm::radians( ( GLfloat ) clock.getElapsedTime().asSeconds() * 2.0f * 90.0f );
 
     mainWindow.pushGLStates();
       text.setString( lotCamera.ortho ? "Isometric" : "First-person" );
