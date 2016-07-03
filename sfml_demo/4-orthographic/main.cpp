@@ -45,9 +45,9 @@ int main() {
   mainWindow.setMouseCursorVisible( lotCamera.ortho );
 
   // GFXModels may contain multiple Mesh objects
-  GFXModel m( "floor/floor.obj" );
-  GFXModel box( "box/box.obj" );
-  GFXModel smallBox( "twobox/twobox.obj" );
+  GFXModel m( "floor/floor.dae" );
+  GFXModel box( "box/box.dae" );
+  GFXModel smallBox( "twobox/twobox.dae" );
 
   sf::Font dosvga;
   if( !dosvga.loadFromFile( "font.ttf" ) ) {
