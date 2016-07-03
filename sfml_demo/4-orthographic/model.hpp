@@ -57,14 +57,19 @@ class GFXModel {
     }
 
     void processNode( aiNode* node, const aiScene* scene ) {
+      std::cout << "Processing " << node->mName.C_Str() << std::endl;
+
       for( int i = 0; i < node->mNumMeshes; i++ ) {
         aiMesh* mesh = scene->mMeshes[ node->mMeshes[ i ] ];
+        std::cout << '\t' << "Loading mesh " << mesh->mName.C_Str() << std::endl;
         this->processMesh( mesh, scene, node->mName.C_Str() );
       }
 
       for( int i = 0; i < node->mNumChildren; i++ ) {
         processNode( node->mChildren[ i ], scene );
       }
+
+      std::cout << "Done with " << node->mName.C_Str() << std::endl;
     }
 
     void processMesh( aiMesh* mesh, const aiScene* scene, std::string nodeTitle ) {

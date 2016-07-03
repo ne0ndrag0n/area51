@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.77.0 commit date:2016-04-05, commit time:18:12, hash:abf6f08</authoring_tool>
     </contributor>
-    <created>2016-07-02T21:37:41</created>
-    <modified>2016-07-02T21:37:41</modified>
+    <created>2016-07-02T21:56:30</created>
+    <modified>2016-07-02T21:56:30</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -149,18 +149,6 @@
   <library_controllers/>
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
-      <node id="TopCube" name="TopCube" type="NODE">
-        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
-        <instance_geometry url="#TopCube-mesh" name="TopCube">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="greenbox-material" target="#greenbox-material">
-                <bind_vertex_input semantic="UVMap" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
-      </node>
       <node id="BaseCube" name="BaseCube" type="NODE">
         <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
         <instance_geometry url="#BaseCube-mesh" name="BaseCube">
@@ -172,6 +160,18 @@
             </technique_common>
           </bind_material>
         </instance_geometry>
+        <node id="TopCube" name="TopCube" type="NODE">
+          <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+          <instance_geometry url="#TopCube-mesh" name="TopCube">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="greenbox-material" target="#greenbox-material">
+                  <bind_vertex_input semantic="UVMap" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
       </node>
     </visual_scene>
   </library_visual_scenes>
