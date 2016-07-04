@@ -58,7 +58,12 @@ class GFXModel {
 
       directory = path.substr( 0, path.find_last_of( '/' ) );
 
-      processNode( scene->mRootNode, scene );
+      // If the root node has no meshes and only one child, just skip to that child
+      if( scene->mRootNode->mNumChildren == 1 && scene->mRootNode->mNumMeshes == 0 ) {
+        processNode( scene->mRootNode->mChildren[ 0 ], scene );
+      } else {
+        processNode( scene->mRootNode, scene );
+      }
     }
 
     void processNode( aiNode* node, const aiScene* scene ) {
