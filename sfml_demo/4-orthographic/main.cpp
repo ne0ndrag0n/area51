@@ -46,10 +46,8 @@ int main() {
 
   // GFXModels may contain multiple Mesh objects
   GFXModel m( "floor/floor.dae" );
-  /*
-  GFXModel box( "box/box.dae" );
-  GFXModel smallBox( "twobox/twobox.dae" );
-  */
+  //GFXModel box( "box/box.dae" );
+  //GFXModel smallBox( "twobox/twobox.dae" );
 
   sf::Font dosvga;
   if( !dosvga.loadFromFile( "font.ttf" ) ) {
@@ -98,7 +96,7 @@ int main() {
   for( int x = -16; x != 16; x++ ) {
     for( int y = -16; y != 16; y++ ) {
       GFXInstance floorTile( m, shader.Program );
-      floorTile.getBaseTransform().position = glm::vec3( ( GLfloat ) x, ( GLfloat ) y, -10.0f );
+      floorTile.move( glm::vec3( ( GLfloat ) x, ( GLfloat ) y, -10.0f ) );
       floorTiles.push_back( floorTile );
     }
   }
