@@ -50,7 +50,7 @@ class GFXInstance {
       prepareInstanceRecursive( model );
     }
 
-    std::shared_ptr< GFXInstance > findChildByName( std::string& name ) {
+    std::shared_ptr< GFXInstance > findChildByName( std::string name ) {
       auto iterator = children.find( name );
 
       if( iterator != children.end() ) {
@@ -82,6 +82,22 @@ class GFXInstance {
 
       for( auto& pair : children ) {
         pair.second->rotate( angle, axes );
+      }
+    }
+
+    void rotateAngle( GLfloat angle ) {
+      transform.rotationAngle += angle;
+
+      for( auto& pair : children ) {
+        pair.second->rotateAngle( angle );
+      }
+    }
+
+    void setRotationAxes( glm::vec3 axes ) {
+      transform.rotationAxes = axes;
+
+      for( auto& pair : children ) {
+        pair.second->setRotationAxes( axes );
       }
     }
 
