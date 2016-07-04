@@ -40,7 +40,7 @@ class GFXModel {
       loadModel( path );
     }
     // Used internally to generate child nodes
-    GFXModel( aiNode* node, const aiScene* scene ) {
+    GFXModel( aiNode* node, const aiScene* scene, std::string& directory ) : directory( directory ) {
       processNode( node, scene );
     }
 
@@ -71,7 +71,7 @@ class GFXModel {
       }
 
       for( int i = 0; i < node->mNumChildren; i++ ) {
-        children.emplace( node->mChildren[ i ]->mName.C_Str(), std::make_unique< GFXModel >( node->mChildren[ i ], scene ) );
+        children.emplace( node->mChildren[ i ]->mName.C_Str(), std::make_unique< GFXModel >( node->mChildren[ i ], scene, directory ) );
       }
 
       std::cout << "Done with " << node->mName.C_Str() << std::endl;
