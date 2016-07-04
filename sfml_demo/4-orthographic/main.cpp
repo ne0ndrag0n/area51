@@ -46,8 +46,8 @@ int main() {
 
   // GFXModels may contain multiple Mesh objects
   GFXModel m( "floor/floor.dae" );
-  //GFXModel box( "box/box.dae" );
-  //GFXModel smallBox( "twobox/twobox.dae" );
+  GFXModel box( "box/box.dae" );
+  GFXModel smallBox( "twobox/twobox.dae" );
 
   sf::Font dosvga;
   if( !dosvga.loadFromFile( "font.ttf" ) ) {
@@ -72,19 +72,19 @@ int main() {
   cameraCoords.setColor( sf::Color::Cyan );
   cameraCoords.setPosition( 0, 32 );
 
-  /*
   GFXInstance b1( box, shader.Program );
-  b1.getBaseTransform().position = glm::vec3( 0.0f, 0.0f, -9.5f );
+  b1.move( glm::vec3( 0.0f, 0.0f, -9.5f ) );
 
   GFXInstance b2( box, shader.Program );
-  b2.getBaseTransform().position = glm::vec3( 0.0f, 0.0f, -8.5f );
+  b2.move( glm::vec3( 0.0f, 0.0f, -8.5f ) );
 
   GFXInstance b3( box, shader.Program );
-  b3.getBaseTransform().position = glm::vec3( 0.0f, 0.0f, -7.5f );
+  b3.move( glm::vec3( 0.0f, 0.0f, -7.5f ) );
 
   GFXInstance smallPair( smallBox, shader.Program );
-  smallPair.getBaseTransform().position = glm::vec3( 0.0f, 1.0f, -9.85f );
+  smallPair.move( glm::vec3( 0.0f, 1.0f, -9.85f ) );
 
+  /*
   GFXTransform topCubeTransform;
   topCubeTransform.rotationAngle = 45.0f;
   topCubeTransform.rotationAxes.z = 1.0f;
@@ -114,14 +114,13 @@ int main() {
     for( auto& floorTile : floorTiles ) {
       floorTile.drawEntity();
     }
-    /*
+
     b1.drawEntity();
     b2.drawEntity();
     b3.drawEntity();
     smallPair.drawEntity();
     // Adjust the rotation on the topCubeTransform
-    smallPair.transforms[ "TopCube" ].rotationAngle = glm::radians( ( GLfloat ) clock.getElapsedTime().asSeconds() * 2.0f * 90.0f );
-    */
+    //smallPair.transforms[ "TopCube" ].rotationAngle = glm::radians( ( GLfloat ) clock.getElapsedTime().asSeconds() * 2.0f * 90.0f );
 
     mainWindow.pushGLStates();
       text.setString( lotCamera.ortho ? "Isometric" : "First-person" );
