@@ -33,10 +33,15 @@ std::vector<std::string> split(const std::string &text, char sep) {
 class GFXModel {
 
   public:
-    std::map< std::string, std::unique_ptr< Mesh > > meshes;
+    std::map< std::string, std::shared_ptr< Mesh > > meshes;
+    std::map< std::string, std::unique_ptr< GFXModel > > children;
 
     GFXModel( std::string path ) {
       loadModel( path );
+    }
+    // Used internally to generate child nodes
+    GFXModel( aiNode* node, const aiScene* scene ) {
+      processNode( node, scene );
     }
 
   private:
@@ -66,7 +71,7 @@ class GFXModel {
       }
 
       for( int i = 0; i < node->mNumChildren; i++ ) {
-        processNode( node->mChildren[ i ], scene );
+        children.emplace( node->mChildren[ i ]->mName.C_Str(), std::make_unique< GFXModel >( node->mChildren[ i ], scene ) );
       }
 
       std::cout << "Done with " << node->mName.C_Str() << std::endl;
@@ -102,7 +107,7 @@ class GFXModel {
         textures = loadMaterialTextures( material, aiTextureType_DIFFUSE, "texture_diffuse" );
       }
 
-      meshes.emplace( nodeTitle, std::make_unique< Mesh >( vertices, indices, textures ) );
+      meshes.emplace( nodeTitle, std::make_shared< Mesh >( vertices, indices, textures ) );
     }
 
     std::vector< Mesh::Texture > loadMaterialTextures( aiMaterial* material, aiTextureType type, std::string typeName ) {

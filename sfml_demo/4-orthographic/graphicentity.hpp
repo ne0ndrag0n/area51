@@ -27,40 +27,28 @@ class GFXInstance {
     // The referred-to model
     const GFXModel& model;
 
+    void prepareInstanceRecursive( const GFXModel& node ) {
+
+    }
+
+
   public:
-    std::map< std::string, GFXTransform > transforms;
+    GFXTransform transform;
+    std::map< std::string, std::shared_ptr< GFXModel > > children;
     GLuint shaderProgram;
 
     GFXInstance( const GFXModel& model, GLuint shaderProgram ) : model( model ), shaderProgram( shaderProgram ) {
-      transforms.emplace( "_base", GFXTransform{} );
+      prepareInstanceRecursive( model );
+    }
+    GFXInstance( const GFXModel& model, GLuint shaderProgram, GFXTransform& parentTransform ) : model( model ), shaderProgram( shaderProgram ), transform( parentTransform ) {
+      prepareInstanceRecursive( model );
     }
 
-    GFXTransform& getBaseTransform() {
-      return transforms[ "_base" ];
-    }
-
-    void setBaseTransform( GFXTransform transform ) {
-      transforms[ "_base" ] = transform;
-    }
-
+    /**
+     * Traverse this tree and draw all the models within
+     */
     void drawEntity() {
-      for( auto& pair : model.meshes ) {
-        // Prior to drawing individual meshes within a model, we need to reset the shader to our base transform
-        auto baseTransform = getBaseTransform();
-        baseTransform.apply( shaderProgram );
 
-        auto& mesh = *( pair.second );
-        // If there are additional transforms that need to be applied, apply them by adding them to the previous transform,
-        // and then using the new transform
-        // The mesh name is pair.first
-        auto secondaryTransform = transforms.find( pair.first );
-        if( secondaryTransform != transforms.end() ) {
-          auto transformComposition = baseTransform + secondaryTransform->second;
-          // Apply this transform to the shader
-          transformComposition.apply( shaderProgram );
-        }
-        mesh.draw( shaderProgram );
-      }
     }
 };
 
