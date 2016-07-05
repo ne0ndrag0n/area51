@@ -27,7 +27,6 @@ class GFXInstance {
 
   private:
     GLuint shaderProgram;
-    GFXTransform transform;
 
     void prepareInstanceRecursive( const GFXModel& model ) {
       // At this level, copy the list of meshes
@@ -43,6 +42,7 @@ class GFXInstance {
     }
 
   public:
+    GFXTransform transform;
     std::map< std::string, std::shared_ptr< Mesh > > meshes;
     std::map< std::string, std::shared_ptr< GFXInstance > > children;
 
@@ -58,81 +58,15 @@ class GFXInstance {
       }
     }
 
-    void move( glm::vec3 position ) {
-      // Set this node's position by adding to it - Everything is done relative to its current position (which starts out at 0.0f, 0.0f, 0.0f)
-      transform.position += position;
-
-      // Trickle this change down to its children
-      for( auto& pair : children ) {
-        pair.second->move( position );
-      }
-    }
-
-    void scale( glm::vec3 by ) {
-      transform.scale += by;
-
-      for( auto& pair : children ) {
-        pair.second->scale( by );
-      }
-    }
-
-    void rotate( GLfloat angle, glm::vec3 axes ) {
-      transform.rotationAngle += angle;
-      transform.rotationAxes = axes;
-
-      for( auto& pair : children ) {
-        pair.second->rotate( angle, axes );
-      }
-    }
-
-    void rotateAngle( GLfloat angle ) {
-      transform.rotationAngle += angle;
-
-      for( auto& pair : children ) {
-        pair.second->rotateAngle( angle );
-      }
-    }
-
-    void setRotationAxes( glm::vec3 axes ) {
-      transform.rotationAxes = axes;
-
-      for( auto& pair : children ) {
-        pair.second->setRotationAxes( axes );
-      }
-    }
-
-    void resetRotation() {
-      transform.rotationAngle = 0.0f;
-      transform.rotationAxes = glm::vec3( 0.0f, 0.0f, 0.0f );
-
-      for( auto& pair : children ) {
-        pair.second->resetRotation();
-      }
-    }
-
-    void setApplyRotation( bool apply ) {
-      transform.setRotate = apply;
-    }
-
-    void setApplyScale( bool apply ) {
-      transform.setScale = apply;
-    }
-
-    glm::vec3 getPosition() {
-      return transform.position;
-    }
-
-    glm::vec3 getScale() {
-      return transform.scale;
-    }
-
-    std::pair< GLfloat, glm::vec3 > getRotation() {
-      return std::make_pair( transform.rotationAngle, transform.rotationAxes );
+    void drawEntity() {
+      // Pass an identity matrix to mix-in
+      glm::mat4 identity;
+      drawEntity( identity );
     }
 
     // Draw this entity's meshes as well as the meshes of all its children
-    void drawEntity() {
-      transform.sendToShader( shaderProgram );
+    void drawEntity( glm::mat4& parent ) {
+      glm::mat4 nextParent = transform.sendToShader( shaderProgram, parent );
 
       for( auto& pair : meshes ) {
         auto& mesh = *( pair.second );
@@ -141,7 +75,8 @@ class GFXInstance {
       }
 
       for( auto& pair : children ) {
-        pair.second->drawEntity();
+        // Apply the same transform of the parent
+        pair.second->drawEntity( nextParent );
       }
     }
 };

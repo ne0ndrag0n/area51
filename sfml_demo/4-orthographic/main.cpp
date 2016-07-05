@@ -73,26 +73,21 @@ int main() {
   cameraCoords.setPosition( 0, 32 );
 
   GFXInstance b1( box, shader.Program );
-  b1.move( glm::vec3( 0.0f, 0.0f, -9.5f ) );
+  b1.transform.position = glm::vec3( 0.0f, 0.0f, -9.5f );
 
   GFXInstance b2( box, shader.Program );
-  b2.move( glm::vec3( 0.0f, 0.0f, -8.5f ) );
+  b2.transform.position = glm::vec3( 0.0f, 0.0f, -8.5f );
 
   GFXInstance b3( box, shader.Program );
-  b3.move( glm::vec3( 0.0f, 0.0f, -7.5f ) );
+  b3.transform.position = glm::vec3( 0.0f, 0.0f, -7.5f );
 
   GFXInstance smallPair( smallBox, shader.Program );
-  smallPair.move( glm::vec3( 0.0f, 1.0f, -9.85f ) );
+  smallPair.transform.position = glm::vec3( 0.0f, 1.0f, -9.85f );
 
   GFXInstance smallPair2( smallBox, shader.Program );
-  smallPair2.move( glm::vec3( 0.0f, 2.0f, -9.85f ) );
+  smallPair2.transform.position = glm::vec3( 0.0f, 2.0f, -9.85f );
 
   std::vector< GFXInstance > tinyCubes;
-  auto topCube = smallPair.findChildByName( "TopCube" );
-  topCube->setApplyRotation( true );
-  topCube->setApplyScale( true );
-  topCube->setRotationAxes( glm::vec3( 0.0f, 0.0f, 1.0f ) );
-  topCube->scale( glm::vec3( 1.0f, 1.0f, 1.0f ) );
 
   tinyCubes.push_back( smallPair );
   tinyCubes.push_back( smallPair2 );
@@ -101,7 +96,7 @@ int main() {
   for( int x = -16; x != 16; x++ ) {
     for( int y = -16; y != 16; y++ ) {
       GFXInstance floorTile( m, shader.Program );
-      floorTile.move( glm::vec3( ( GLfloat ) x, ( GLfloat ) y, -10.0f ) );
+      floorTile.transform.position = glm::vec3( ( GLfloat ) x, ( GLfloat ) y, -10.0f );
       floorTiles.push_back( floorTile );
     }
   }
@@ -127,8 +122,8 @@ int main() {
       tiny.drawEntity();
     }
     // Adjust the rotation on the topCubeTransform
-    auto rotationAngle = glm::radians( ( GLfloat ) clock.getElapsedTime().asSeconds() * 2.0f * 90.0f );
-    topCube->rotateAngle( rotationAngle - topCube->getRotation().first );
+    //auto rotationAngle = glm::radians( ( GLfloat ) clock.getElapsedTime().asSeconds() * 2.0f * 90.0f );
+    //topCube->rotateAngle( rotationAngle - topCube->getRotation().first );
 
 
     mainWindow.pushGLStates();
