@@ -24,12 +24,14 @@ class GFXTransform {
     GLfloat rotationAngle = 0.0f;
     glm::mat4 matrix;
     bool setRotate = false;
-    bool setScale = false;
 
     GFXTransform() {}
 
     glm::mat4 sendToShader( GLuint shaderProgram, glm::mat4& mixin ) {
       matrix = glm::mat4();
+
+      // Mixin the parent matrix
+      matrix = matrix * mixin;
 
       // There's always going to be a translation
       matrix = glm::translate( matrix, position );
@@ -40,12 +42,7 @@ class GFXTransform {
       }
 
       // Then scale
-      if( setScale ) {
-        matrix = glm::scale( matrix, scale );
-      }
-
-      // Mixin the parent matrix
-      matrix = matrix * mixin;
+      matrix = glm::scale( matrix, scale );
 
       // Set the uniform for the shader
       glUniformMatrix4fv( glGetUniformLocation( shaderProgram, "model" ), 1, GL_FALSE, glm::value_ptr( matrix ) );

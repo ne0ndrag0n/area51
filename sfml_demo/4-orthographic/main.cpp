@@ -83,14 +83,11 @@ int main() {
 
   GFXInstance smallPair( smallBox, shader.Program );
   smallPair.transform.position = glm::vec3( 0.0f, 1.0f, -9.85f );
-
-  GFXInstance smallPair2( smallBox, shader.Program );
-  smallPair2.transform.position = glm::vec3( 0.0f, 2.0f, -9.85f );
+  //auto topCube = smallPair.findChildByName( "TopCube" );
+  //topCube->transform.scale = glm::vec3( 2.0f, 2.0f, 2.0f );
 
   std::vector< GFXInstance > tinyCubes;
-
   tinyCubes.push_back( smallPair );
-  tinyCubes.push_back( smallPair2 );
 
   std::vector< GFXInstance > floorTiles;
   for( int x = -16; x != 16; x++ ) {
