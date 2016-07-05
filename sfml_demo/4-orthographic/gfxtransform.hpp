@@ -20,10 +20,9 @@ class GFXTransform {
   public:
     glm::vec3 position = glm::vec3( 0.0f, 0.0f, 0.0f );
     glm::vec3 scale = glm::vec3( 1.0f, 1.0f, 1.0f );
-    glm::vec3 rotationAxes = glm::vec3( 0.0f, 0.0f, 0.0f );
+    glm::vec3 rotationAxes = glm::vec3( 0.0f, 0.0f, 1.0f );
     GLfloat rotationAngle = 0.0f;
     glm::mat4 matrix;
-    bool setRotate = false;
 
     GFXTransform() {}
 
@@ -37,9 +36,7 @@ class GFXTransform {
       matrix = glm::translate( matrix, position );
 
       // Then rotate
-      if( setRotate ) {
-        matrix = glm::rotate( matrix, rotationAngle, rotationAxes );
-      }
+      matrix = glm::rotate( matrix, rotationAngle, rotationAxes );
 
       // Then scale
       matrix = glm::scale( matrix, scale );

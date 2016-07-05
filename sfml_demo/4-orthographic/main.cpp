@@ -81,13 +81,14 @@ int main() {
   GFXInstance b3( box, shader.Program );
   b3.transform.position = glm::vec3( 0.0f, 0.0f, -7.5f );
 
-  GFXInstance smallPair( smallBox, shader.Program );
-  smallPair.transform.position = glm::vec3( 0.0f, 1.0f, -9.85f );
-  //auto topCube = smallPair.findChildByName( "TopCube" );
-  //topCube->transform.scale = glm::vec3( 2.0f, 2.0f, 2.0f );
-
   std::vector< GFXInstance > tinyCubes;
-  tinyCubes.push_back( smallPair );
+  for( int y = -16; y != 0; y++ ) {
+    for( int x = -16; x != 0; x++ ) {
+      GFXInstance smallPair( smallBox, shader.Program );
+      smallPair.transform.position = glm::vec3( (GLfloat)x, (GLfloat)y, -9.85f );
+      tinyCubes.push_back( smallPair );
+    }
+  }
 
   std::vector< GFXInstance > floorTiles;
   for( int x = -16; x != 16; x++ ) {
@@ -115,13 +116,12 @@ int main() {
     b1.drawEntity();
     b2.drawEntity();
     b3.drawEntity();
+    auto rotationAngle = glm::radians( ( GLfloat ) clock.getElapsedTime().asSeconds() * 2.0f * 90.0f );
     for( auto& tiny : tinyCubes ) {
+      auto top = tiny.findChildByName( "TopCube" );
+      top->transform.rotationAngle = rotationAngle;
       tiny.drawEntity();
     }
-    // Adjust the rotation on the topCubeTransform
-    //auto rotationAngle = glm::radians( ( GLfloat ) clock.getElapsedTime().asSeconds() * 2.0f * 90.0f );
-    //topCube->rotateAngle( rotationAngle - topCube->getRotation().first );
-
 
     mainWindow.pushGLStates();
       text.setString( lotCamera.ortho ? "Isometric" : "First-person" );
