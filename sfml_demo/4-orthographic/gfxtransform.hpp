@@ -26,20 +26,25 @@ class GFXTransform {
 
     GFXTransform() {}
 
-    glm::mat4 sendToShader( GLuint shaderProgram, glm::mat4& mixin ) {
-      matrix = glm::mat4();
+    glm::mat4 sendToShader( GLuint shaderProgram, glm::mat4& mixin, bool& recalculate ) {
 
-      // Mixin the parent matrix
-      matrix = matrix * mixin;
+      if( recalculate ) {
+        matrix = glm::mat4();
 
-      // There's always going to be a translation
-      matrix = glm::translate( matrix, position );
+        // Mixin the parent matrix
+        matrix = matrix * mixin;
 
-      // Then rotate
-      matrix = glm::rotate( matrix, rotationAngle, rotationAxes );
+        // There's always going to be a translation
+        matrix = glm::translate( matrix, position );
 
-      // Then scale
-      matrix = glm::scale( matrix, scale );
+        // Then rotate
+        matrix = glm::rotate( matrix, rotationAngle, rotationAxes );
+
+        // Then scale
+        matrix = glm::scale( matrix, scale );
+
+        recalculate = false;
+      }
 
       // Set the uniform for the shader
       glUniformMatrix4fv( glGetUniformLocation( shaderProgram, "model" ), 1, GL_FALSE, glm::value_ptr( matrix ) );

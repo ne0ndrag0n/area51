@@ -27,6 +27,8 @@ class GFXInstance {
 
   private:
     GLuint shaderProgram;
+    GFXTransform transform;
+    bool dirty = true;
 
     void prepareInstanceRecursive( const GFXModel& model ) {
       // At this level, copy the list of meshes
@@ -42,7 +44,6 @@ class GFXInstance {
     }
 
   public:
-    GFXTransform transform;
     std::map< std::string, std::shared_ptr< Mesh > > meshes;
     std::map< std::string, std::shared_ptr< GFXInstance > > children;
 
@@ -66,7 +67,7 @@ class GFXInstance {
 
     // Draw this entity's meshes as well as the meshes of all its children
     void drawEntity( glm::mat4& parent ) {
-      glm::mat4 nextParent = transform.sendToShader( shaderProgram, parent );
+      glm::mat4 nextParent = transform.sendToShader( shaderProgram, parent, dirty );
 
       for( auto& pair : meshes ) {
         auto& mesh = *( pair.second );
@@ -78,6 +79,50 @@ class GFXInstance {
         // Apply the same transform of the parent
         pair.second->drawEntity( nextParent );
       }
+    }
+
+    void markDirty() {
+      dirty = true;
+
+      for( auto& pair : children ) {
+        pair.second->markDirty();
+      }
+    }
+
+    glm::vec3 getPosition() {
+      return transform.position;
+    }
+
+    void setPosition( const glm::vec3& position ) {
+      transform.position = position;
+      markDirty();
+    }
+
+    glm::vec3 getScale() {
+      return transform.scale;
+    }
+
+    void setScale( const glm::vec3& scale ) {
+      transform.scale = scale;
+      markDirty();
+    }
+
+    glm::vec3 getRotationAxes() {
+      return transform.rotationAxes;
+    }
+
+    void setRotationAxes( const glm::vec3& rotationAxes ) {
+      transform.rotationAxes = rotationAxes;
+      markDirty();
+    }
+
+    GLfloat getRotationAngle() {
+      return transform.rotationAngle;
+    }
+
+    void setRotationAngle( GLfloat rotationAngle ) {
+      transform.rotationAngle = rotationAngle;
+      markDirty();
     }
 };
 

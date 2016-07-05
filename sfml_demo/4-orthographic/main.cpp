@@ -73,19 +73,19 @@ int main() {
   cameraCoords.setPosition( 0, 32 );
 
   GFXInstance b1( box, shader.Program );
-  b1.transform.position = glm::vec3( 0.0f, 0.0f, -9.5f );
+  b1.setPosition( glm::vec3( 0.0f, 0.0f, -9.5f ) );
 
   GFXInstance b2( box, shader.Program );
-  b2.transform.position = glm::vec3( 0.0f, 0.0f, -8.5f );
+  b2.setPosition( glm::vec3( 0.0f, 0.0f, -8.5f ) );
 
   GFXInstance b3( box, shader.Program );
-  b3.transform.position = glm::vec3( 0.0f, 0.0f, -7.5f );
+  b3.setPosition( glm::vec3( 0.0f, 0.0f, -7.5f ) );
 
   std::vector< GFXInstance > tinyCubes;
-  for( int y = -16; y != 0; y++ ) {
-    for( int x = -16; x != 0; x++ ) {
+  for( int y = -4; y != 0; y++ ) {
+    for( int x = -4; x != 0; x++ ) {
       GFXInstance smallPair( smallBox, shader.Program );
-      smallPair.transform.position = glm::vec3( (GLfloat)x, (GLfloat)y, -9.85f );
+      smallPair.setPosition( glm::vec3( (GLfloat)x, (GLfloat)y, -9.85f ) );
       tinyCubes.push_back( smallPair );
     }
   }
@@ -94,7 +94,7 @@ int main() {
   for( int x = -16; x != 16; x++ ) {
     for( int y = -16; y != 16; y++ ) {
       GFXInstance floorTile( m, shader.Program );
-      floorTile.transform.position = glm::vec3( ( GLfloat ) x, ( GLfloat ) y, -10.0f );
+      floorTile.setPosition( glm::vec3( ( GLfloat ) x, ( GLfloat ) y, -10.0f ) );
       floorTiles.push_back( floorTile );
     }
   }
@@ -119,7 +119,7 @@ int main() {
     auto rotationAngle = glm::radians( ( GLfloat ) clock.getElapsedTime().asSeconds() * 2.0f * 90.0f );
     for( auto& tiny : tinyCubes ) {
       auto top = tiny.findChildByName( "TopCube" );
-      top->transform.rotationAngle = rotationAngle;
+      top->setRotationAngle( rotationAngle );
       tiny.drawEntity();
     }
 
