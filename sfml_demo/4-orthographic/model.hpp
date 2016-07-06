@@ -85,7 +85,7 @@ class GFXModel {
     void processMesh( aiMesh* mesh, const aiScene* scene, std::string nodeTitle ) {
       std::vector< Mesh::Vertex > vertices;
       std::vector< Mesh::Index > indices;
-      std::vector< Mesh::Texture > textures;
+      std::vector< std::shared_ptr< Mesh::Texture > > textures;
 
       for( int i = 0; i < mesh->mNumVertices; i++ ) {
         Mesh::Vertex vertex;
@@ -115,15 +115,14 @@ class GFXModel {
       meshes.emplace( nodeTitle, std::make_shared< Mesh >( vertices, indices, textures ) );
     }
 
-    std::vector< Mesh::Texture > loadMaterialTextures( aiMaterial* material, aiTextureType type, std::string typeName ) {
-      std::vector< Mesh::Texture > textures;
+    std::vector< std::shared_ptr< Mesh::Texture > > loadMaterialTextures( aiMaterial* material, aiTextureType type, std::string typeName ) {
+      std::vector< std::shared_ptr< Mesh::Texture > > textures;
 
       auto texCount = material->GetTextureCount( type );
       for( int i = 0; i < texCount; i++ ) {
         aiString str;
         material->GetTexture( type, i, &str );
-        Mesh::Texture texture{ textureFromFile( str.C_Str(), directory ), typeName, str };
-        textures.push_back( texture );
+        textures.push_back( std::make_shared< Mesh::Texture >( textureFromFile( str.C_Str(), directory ), typeName, str ) );
       }
 
       return textures;

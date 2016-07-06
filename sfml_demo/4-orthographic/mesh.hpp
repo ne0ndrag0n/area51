@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <memory>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -29,6 +30,8 @@ class Mesh {
     };
 
     struct Texture {
+      Texture( GLuint id, std::string type, aiString path ) :
+        id( id ), type( type ), path( path ) {}
       GLuint id;
       std::string type;
       aiString path;
@@ -38,9 +41,9 @@ class Mesh {
 
     std::vector< Vertex > vertices;
     std::vector< Index > indices;
-    std::vector< Texture > textures;
+    std::vector< std::shared_ptr< Texture > > textures;
 
-    Mesh( std::vector< Vertex > vertices, std::vector< Index > indices, std::vector< Texture > textures ) :
+    Mesh( std::vector< Vertex > vertices, std::vector< Index > indices, std::vector< std::shared_ptr< Texture > > textures ) :
       vertices( vertices ), indices( indices ), textures( textures ) {
       setupMesh();
     }
@@ -81,9 +84,9 @@ class Mesh {
         for( int i = 0; i != numTextures; i++ ) {
           glActiveTexture( GL_TEXTURE0 + i );
             std::stringstream stream;
-            stream << textures[ i ].type << i;
+            stream << textures[ i ]->type << i;
             std::string uniformName = stream.str();
-            glBindTexture( GL_TEXTURE_2D, textures[ i ].id );
+            glBindTexture( GL_TEXTURE_2D, textures[ i ]->id );
             glUniform1i(
               glGetUniformLocation( shaderProgram, uniformName.c_str() ), i
             );
