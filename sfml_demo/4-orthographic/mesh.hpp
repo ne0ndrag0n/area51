@@ -38,10 +38,11 @@ class Mesh {
     };
 
     using Index = GLuint;
+    using TextureList = std::vector< std::shared_ptr< Texture > >;
 
     std::vector< Vertex > vertices;
     std::vector< Index > indices;
-    std::vector< std::shared_ptr< Texture > > textures;
+    TextureList textures;
 
     Mesh( std::vector< Vertex > vertices, std::vector< Index > indices, std::vector< std::shared_ptr< Texture > > textures ) :
       vertices( vertices ), indices( indices ), textures( textures ) {
