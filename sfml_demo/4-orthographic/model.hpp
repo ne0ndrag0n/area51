@@ -109,7 +109,7 @@ class GFXModel {
       if( mesh->mMaterialIndex >= 0 ) {
         aiMaterial* material = scene->mMaterials[ mesh->mMaterialIndex ];
         // Just do diffuse maps for now
-        textures = loadMaterialTextures( material, aiTextureType_DIFFUSE, "texture_diffuse" );
+        textures = loadMaterialTextures( material, aiTextureType_DIFFUSE, "diffuse" );
       }
 
       meshes.emplace( nodeTitle, std::make_shared< Mesh >( vertices, indices, textures ) );

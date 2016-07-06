@@ -81,7 +81,7 @@ class Mesh {
         for( int i = 0; i != numTextures; i++ ) {
           glActiveTexture( GL_TEXTURE0 + i );
             std::stringstream stream;
-            stream << "texture" << i;
+            stream << textures[ i ].type << i;
             std::string uniformName = stream.str();
             glBindTexture( GL_TEXTURE_2D, textures[ i ].id );
             glUniform1i(

@@ -3,8 +3,8 @@ in vec2 fragTexture;
 
 out vec4 color;
 
-uniform sampler2D texture0;
+uniform sampler2D diffuse0;
 
 void main() {
-  color = texture( texture0, fragTexture );
+  color = texture( diffuse0, fragTexture );
 }
