@@ -15,6 +15,7 @@
 #include <SFML/Graphics.hpp>
 #include <GL/glew.h>
 #include "mesh.hpp"
+#include "material.hpp"
 
 /**
  * split c/p'd from bluebear
@@ -85,7 +86,7 @@ class GFXModel {
     void processMesh( aiMesh* mesh, const aiScene* scene, std::string nodeTitle ) {
       std::vector< Mesh::Vertex > vertices;
       std::vector< Mesh::Index > indices;
-      Mesh::TextureBundle materialTextures;
+      GFXMaterial meshMaterial;
 
       for( int i = 0; i < mesh->mNumVertices; i++ ) {
         Mesh::Vertex vertex;
@@ -109,20 +110,20 @@ class GFXModel {
       if( mesh->mMaterialIndex >= 0 ) {
         aiMaterial* material = scene->mMaterials[ mesh->mMaterialIndex ];
         // Just do diffuse maps for now
-        materialTextures[ "diffuse" ] = loadMaterialTextures( material, aiTextureType_DIFFUSE );
+        meshMaterial.diffuseTextures = loadMaterialTextures( material, aiTextureType_DIFFUSE );
       }
 
-      meshes.emplace( nodeTitle, std::make_shared< Mesh >( vertices, indices, materialTextures ) );
+      meshes.emplace( nodeTitle, std::make_shared< Mesh >( vertices, indices, meshMaterial ) );
     }
 
-    Mesh::TextureList loadMaterialTextures( aiMaterial* material, aiTextureType type ) {
-      Mesh::TextureList textures;
+    GFXMaterial::TextureList loadMaterialTextures( aiMaterial* material, aiTextureType type ) {
+      GFXMaterial::TextureList textures;
 
       auto texCount = material->GetTextureCount( type );
       for( int i = 0; i < texCount; i++ ) {
         aiString str;
         material->GetTexture( type, i, &str );
-        textures.push_back( std::make_shared< Mesh::Texture >( textureFromFile( str.C_Str(), directory ), str ) );
+        textures.push_back( GFXMaterial::Texture( textureFromFile( str.C_Str(), directory ), str ) );
       }
 
       return textures;

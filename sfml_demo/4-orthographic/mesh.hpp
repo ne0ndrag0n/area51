@@ -13,6 +13,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "material.hpp"
 
 class Mesh {
 
@@ -29,23 +30,14 @@ class Mesh {
       glm::vec2 textureCoordinates;
     };
 
-    struct Texture {
-      Texture( GLuint id, aiString path ) :
-        id( id ), path( path ) {}
-      GLuint id;
-      aiString path;
-    };
-
     using Index = GLuint;
-    using TextureList = std::vector< std::shared_ptr< Texture > >;
-    using TextureBundle = std::map< std::string, TextureList >;
 
     std::vector< Vertex > vertices;
     std::vector< Index > indices;
-    TextureBundle materialTextures;
+    GFXMaterial material;
 
-    Mesh( std::vector< Vertex > vertices, std::vector< Index > indices, TextureBundle materialTextures ) :
-      vertices( vertices ), indices( indices ), materialTextures( materialTextures ) {
+    Mesh( std::vector< Vertex > vertices, std::vector< Index > indices, GFXMaterial material ) :
+      vertices( vertices ), indices( indices ), material( material ) {
       setupMesh();
     }
 
@@ -79,20 +71,7 @@ class Mesh {
     }
 
     void draw( GLuint shaderProgram ) {
-      for( auto& pair : materialTextures ) {
-        auto& type = pair.first;
-        auto& textures = pair.second;
-        auto numTextures = textures.size();
-
-        for( int i = 0; i != numTextures; i++ ) {
-          glActiveTexture( GL_TEXTURE0 + i );
-            std::stringstream stream;
-            stream << type << i;
-            std::string uniformName = stream.str();
-            glBindTexture( GL_TEXTURE_2D, textures[ i ]->id );
-            glUniform1i( glGetUniformLocation( shaderProgram, uniformName.c_str() ), i );
-        }
-      }
+      material.sendToShader( shaderProgram );
 
       glBindVertexArray( VAO );
         glDrawElements( GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0 );
