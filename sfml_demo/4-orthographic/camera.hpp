@@ -33,6 +33,7 @@ class LotCamera {
   public:
     glm::vec3 direction = originalDirection;
     bool ortho = true;
+    bool dirty = true;
 
     LotCamera( GLuint program, int screenWidth, int screenHeight ) : program( program ) {
       widthHalf = ( (float)screenWidth / 2 );
@@ -42,6 +43,7 @@ class LotCamera {
 
     void move( GLfloat x, GLfloat y, GLfloat z ) {
       camera += glm::vec3( x, y, z );
+      dirty = true;
     }
 
     bool setOrthographic( bool flag ) {
@@ -51,12 +53,14 @@ class LotCamera {
         direction = originalDirection;
       }
 
+      dirty = true;
       return ortho;
     }
 
     float zoomIn() {
       if( zoom != 1.0f ) {
         zoom -= zoomIncrement;
+        dirty = true;
       }
 
       return zoom;
@@ -65,23 +69,29 @@ class LotCamera {
     float zoomOut() {
       if( zoom != 3.0f ) {
         zoom += zoomIncrement;
+        dirty = true;
       }
 
       return zoom;
     }
 
     float setZoom( float zoomSetting ) {
+      dirty = true;
       return zoom = zoomSetting;
     }
 
     void position() {
-      GLfloat scaledWidthHalf = ( widthHalf * zoom ) / 100.0f;
-      GLfloat scaledHeightHalf = ( heightHalf * zoom ) / 100.0f;
+      if( dirty ) {
+        GLfloat scaledWidthHalf = ( widthHalf * zoom ) / 100.0f;
+        GLfloat scaledHeightHalf = ( heightHalf * zoom ) / 100.0f;
 
-      view = glm::lookAt( camera, camera + direction, up );
-      projection = ortho ?
-         glm::ortho( -scaledWidthHalf, scaledWidthHalf, -scaledHeightHalf, scaledHeightHalf, -20.0f, 50.0f ) :
-         glm::perspective( 45.0f, perspectiveAspectRatio, 0.1f, 50.0f );
+        view = glm::lookAt( camera, camera + direction, up );
+        projection = ortho ?
+           glm::ortho( -scaledWidthHalf, scaledWidthHalf, -scaledHeightHalf, scaledHeightHalf, -20.0f, 50.0f ) :
+           glm::perspective( 45.0f, perspectiveAspectRatio, 0.1f, 50.0f );
+
+        dirty = false;
+      }
       // Set uniforms
       glUniformMatrix4fv( glGetUniformLocation( program, "view" ), 1, GL_FALSE, glm::value_ptr( view ) );
       glUniformMatrix4fv( glGetUniformLocation( program, "projection" ), 1, GL_FALSE, glm::value_ptr( projection ) );
@@ -111,6 +121,7 @@ class LotCamera {
           sin( glm::radians( pitch ) )
         );
         direction = glm::normalize( newDirection );
+        dirty = true;
       }
     }
 
