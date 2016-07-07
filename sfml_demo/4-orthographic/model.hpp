@@ -85,12 +85,12 @@ class GFXModel {
     }
 
     void processMesh( aiMesh* mesh, const aiScene* scene, std::string nodeTitle ) {
-      std::vector< Mesh::Vertex > vertices;
-      std::vector< Mesh::Index > indices;
+      std::vector< Vertex > vertices;
+      std::vector< Index > indices;
       GFXMaterial meshMaterial;
 
       for( int i = 0; i < mesh->mNumVertices; i++ ) {
-        Mesh::Vertex vertex;
+        Vertex vertex;
         vertex.position = glm::vec3( mesh->mVertices[ i ].x, mesh->mVertices[ i ].y, mesh->mVertices[ i ].z );
         vertex.normal = glm::vec3( mesh->mNormals[ i ].x, mesh->mNormals[ i ].y, mesh->mNormals[ i ].z );
         if( mesh->mTextureCoords[ 0 ] ) {

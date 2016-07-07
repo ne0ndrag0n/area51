@@ -15,6 +15,13 @@
 #include <assimp/postprocess.h>
 #include "material.hpp"
 
+struct Vertex {
+  glm::vec3 position;
+  glm::vec3 normal;
+  glm::vec2 textureCoordinates;
+};
+using Index = GLuint;
+
 class Mesh {
 
   private:
@@ -22,22 +29,19 @@ class Mesh {
     // Meshes depend on OpenGL global states - You really shouldn't be copying 'em.
     Mesh( const Mesh& );
     Mesh& operator=( const Mesh& );
-
-  public:
-    struct Vertex {
-      glm::vec3 position;
-      glm::vec3 normal;
-      glm::vec2 textureCoordinates;
-    };
-
-    using Index = GLuint;
-
+    GFXMaterial defaultMaterial;
     std::vector< Vertex > vertices;
     std::vector< Index > indices;
-    GFXMaterial material;
 
+    void drawElements() {
+      glBindVertexArray( VAO );
+        glDrawElements( GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0 );
+      glBindVertexArray( 0 );
+    }
+
+  public:
     Mesh( std::vector< Vertex > vertices, std::vector< Index > indices, GFXMaterial material ) :
-      vertices( vertices ), indices( indices ), material( material ) {
+      vertices( vertices ), indices( indices ), defaultMaterial( material ) {
       setupMesh();
     }
 
@@ -70,13 +74,18 @@ class Mesh {
       glBindVertexArray( 0 );
     }
 
-    void draw( GLuint shaderProgram ) {
-      material.sendToShader( shaderProgram );
+    void drawWithMaterial( GLuint shaderProgram, GFXMaterial& customMaterial ) {
+      customMaterial.sendToShader( shaderProgram );
 
-      glBindVertexArray( VAO );
-        glDrawElements( GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0 );
-      glBindVertexArray( 0 );
+      drawElements();
     }
+
+    void draw( GLuint shaderProgram ) {
+      defaultMaterial.sendToShader( shaderProgram );
+
+      drawElements();
+    }
+
 };
 
 #endif
