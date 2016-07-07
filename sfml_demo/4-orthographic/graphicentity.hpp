@@ -52,11 +52,7 @@ class GFXInstance {
     }
 
     std::shared_ptr< GFXInstance > findChildByName( std::string name ) {
-      auto iterator = children.find( name );
-
-      if( iterator != children.end() ) {
-        return iterator->second;
-      }
+      return children[ name ];
     }
 
     void drawEntity() {
