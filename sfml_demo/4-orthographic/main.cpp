@@ -27,7 +27,7 @@ int main() {
     sf::ContextSettings( 24, 8, 0, 3, 3 )
   );
 
-  mainWindow.setVerticalSyncEnabled( true );
+  mainWindow.setFramerateLimit( 30 );
 
   // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
   glewExperimental = GL_TRUE;
@@ -153,9 +153,11 @@ int main() {
             lotCamera.setOrthographic( false );
             mainWindow.setMouseCursorVisible( false );
             sf::Mouse::setPosition( center, mainWindow );
+            mainWindow.setFramerateLimit( 60 );
           } else {
             lotCamera.setOrthographic( true );
             mainWindow.setMouseCursorVisible( true );
+            mainWindow.setFramerateLimit( 30 );
           }
         }
 
