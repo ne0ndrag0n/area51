@@ -16,6 +16,10 @@ class GFXMaterial {
 
   public:
     class Texture {
+      private:
+        Texture( const Texture& );
+        Texture& operator=( const Texture& );
+
       public:
         Texture( GLuint id, aiString path ) :
           id( id ), path( path ) {}
