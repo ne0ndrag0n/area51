@@ -123,7 +123,7 @@ class GFXModel {
       for( int i = 0; i < texCount; i++ ) {
         aiString str;
         material->GetTexture( type, i, &str );
-        textures.push_back( GFXMaterial::Texture( textureFromFile( str.C_Str(), directory ), str ) );
+        textures.push_back( std::make_shared< GFXMaterial::Texture >( textureFromFile( str.C_Str(), directory ), str ) );
       }
 
       return textures;

@@ -15,14 +15,15 @@
 class GFXMaterial {
 
   public:
-    struct Texture {
-      Texture( GLuint id, aiString path ) :
-        id( id ), path( path ) {}
-      GLuint id;
-      aiString path;
+    class Texture {
+      public:
+        Texture( GLuint id, aiString path ) :
+          id( id ), path( path ) {}
+        GLuint id;
+        aiString path;
     };
 
-    using TextureList = std::vector< Texture >;
+    using TextureList = std::vector< std::shared_ptr< Texture > >;
 
     TextureList diffuseTextures;
     TextureList specularTextures;
@@ -39,7 +40,7 @@ class GFXMaterial {
           std::stringstream stream;
           stream << "diffuse" << i;
           std::string uniformName = stream.str();
-          glBindTexture( GL_TEXTURE_2D, diffuseTextures[ i ].id );
+          glBindTexture( GL_TEXTURE_2D, diffuseTextures[ i ]->id );
           glUniform1i( glGetUniformLocation( shaderProgram, uniformName.c_str() ), i );
       }
     }
