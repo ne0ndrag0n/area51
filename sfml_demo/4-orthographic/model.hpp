@@ -16,6 +16,7 @@
 #include <GL/glew.h>
 #include "mesh.hpp"
 #include "material.hpp"
+#include "gfxtexture.hpp"
 
 /**
  * split c/p'd from bluebear
@@ -123,33 +124,10 @@ class GFXModel {
       for( int i = 0; i < texCount; i++ ) {
         aiString str;
         material->GetTexture( type, i, &str );
-        textures.push_back( std::make_shared< GFXMaterial::Texture >( textureFromFile( str.C_Str(), directory ), str ) );
+        textures.push_back( std::make_shared< GFXTexture >( directory + "/" + str.C_Str() ) );
       }
 
       return textures;
-    }
-
-    GLuint textureFromFile( std::string path, std::string directory ) {
-      sf::Image texture;
-      if( !texture.loadFromFile( directory + "/" + path ) ) {
-        std::cout << "Couldn't load texture " << path << std::endl;
-        return -1;
-      }
-
-      GLuint textureID;
-      glGenTextures( 1, &textureID );
-      glBindTexture( GL_TEXTURE_2D, textureID );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-        auto size = texture.getSize();
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.getPixelsPtr() );
-        glGenerateMipmap( GL_TEXTURE_2D );
-      glBindTexture( GL_TEXTURE_2D, 0 );
-
-      return textureID;
     }
 };
 

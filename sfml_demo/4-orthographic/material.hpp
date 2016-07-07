@@ -11,23 +11,12 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "gfxtexture.hpp"
 
 class GFXMaterial {
 
   public:
-    class Texture {
-      private:
-        Texture( const Texture& );
-        Texture& operator=( const Texture& );
-
-      public:
-        Texture( GLuint id, aiString path ) :
-          id( id ), path( path ) {}
-        GLuint id;
-        aiString path;
-    };
-
-    using TextureList = std::vector< std::shared_ptr< Texture > >;
+    using TextureList = std::vector< std::shared_ptr< GFXTexture > >;
 
     TextureList diffuseTextures;
     TextureList specularTextures;
