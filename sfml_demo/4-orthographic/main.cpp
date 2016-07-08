@@ -103,7 +103,7 @@ int main() {
   std::vector< GFXInstance > wallStrip;
   for( int x = -4; x != 4; x++ ) {
     GFXInstance wallPanel( wall, shader.Program );
-    wallPanel.setPosition( glm::vec3( (GLfloat) x, 1.95f, -8.0f ) );
+    wallPanel.setPosition( glm::vec3( (GLfloat) x, 1.45f, -8.0f ) );
     wallStrip.push_back( wallPanel );
   }
 
