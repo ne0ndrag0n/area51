@@ -38,6 +38,7 @@ int main() {
 
   glViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
   glEnable( GL_DEPTH_TEST );
+  glEnable( GL_CULL_FACE );
 
   sf::Vector2i center( ( SCREEN_WIDTH / 2 ), ( SCREEN_HEIGHT / 2 ) );
 
@@ -103,7 +104,7 @@ int main() {
   std::vector< GFXInstance > wallStrip;
   for( int x = -4; x != 4; x++ ) {
     GFXInstance wallPanel( wall, shader.Program );
-    wallPanel.setPosition( glm::vec3( (GLfloat) x, 1.45f, -8.0f ) );
+    wallPanel.setPosition( glm::vec3( (GLfloat) x, 0.0f, -10.0f ) );
     wallStrip.push_back( wallPanel );
   }
 

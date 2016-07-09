@@ -5,18 +5,57 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.77.0 commit date:2016-04-05, commit time:18:12, hash:abf6f08</authoring_tool>
     </contributor>
-    <created>2016-07-02T21:56:30</created>
-    <modified>2016-07-02T21:56:30</modified>
+    <created>2016-07-09T18:09:34</created>
+    <modified>2016-07-09T18:09:34</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_images>
+    <image id="green_png_001" name="green_png_001">
+      <init_from>green.png.001.png</init_from>
+    </image>
     <image id="green_png" name="green_png">
       <init_from>green.png</init_from>
     </image>
   </library_images>
   <library_effects>
-    <effect id="greenbox-effect">
+    <effect id="Material_001-effect">
+      <profile_COMMON>
+        <newparam sid="green_png-surface">
+          <surface type="2D">
+            <init_from>green_png</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="green_png-sampler">
+          <sampler2D>
+            <source>green_png-surface</source>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color sid="emission">0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color sid="ambient">0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="green_png-sampler" texcoord="UVMap"/>
+            </diffuse>
+            <specular>
+              <color sid="specular">0.5 0.5 0.5 1</color>
+            </specular>
+            <shininess>
+              <float sid="shininess">50</float>
+            </shininess>
+            <index_of_refraction>
+              <float sid="index_of_refraction">1</float>
+            </index_of_refraction>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+    <effect id="Material-effect">
       <profile_COMMON>
         <newparam sid="green_png-surface">
           <surface type="2D">
@@ -54,15 +93,18 @@
     </effect>
   </library_effects>
   <library_materials>
-    <material id="greenbox-material" name="greenbox">
-      <instance_effect url="#greenbox-effect"/>
+    <material id="Material_001-material" name="Material_001">
+      <instance_effect url="#Material_001-effect"/>
+    </material>
+    <material id="Material-material" name="Material">
+      <instance_effect url="#Material-effect"/>
     </material>
   </library_materials>
   <library_geometries>
     <geometry id="TopCube-mesh" name="TopCube">
       <mesh>
         <source id="TopCube-mesh-positions">
-          <float_array id="TopCube-mesh-positions-array" count="24">-0.15 0.15 1 -0.15 -0.15 1 0.15 -0.15 1 0.15 0.15 1 -0.15 0.15 0.7 0.15 0.15 0.7 -0.15 -0.15 0.7 0.15 -0.15 0.7</float_array>
+          <float_array id="TopCube-mesh-positions-array" count="24">-0.15 -0.15 -0.15 -0.15 -0.15 0.15 -0.15 0.15 -0.15 -0.15 0.15 0.15 0.15 -0.15 -0.15 0.15 -0.15 0.15 0.15 0.15 -0.15 0.15 0.15 0.15</float_array>
           <technique_common>
             <accessor source="#TopCube-mesh-positions-array" count="8" stride="3">
               <param name="X" type="float"/>
@@ -72,7 +114,7 @@
           </technique_common>
         </source>
         <source id="TopCube-mesh-normals">
-          <float_array id="TopCube-mesh-normals-array" count="18">0 0 1 0 0 -1 0 1 0 0 -1 0 -1 0 0 1 0 0</float_array>
+          <float_array id="TopCube-mesh-normals-array" count="18">-1 0 0 0 1 0 1 0 0 0 -1 0 0 0 -1 0 0 1</float_array>
           <technique_common>
             <accessor source="#TopCube-mesh-normals-array" count="6" stride="3">
               <param name="X" type="float"/>
@@ -82,7 +124,7 @@
           </technique_common>
         </source>
         <source id="TopCube-mesh-map-0">
-          <float_array id="TopCube-mesh-map-0-array" count="72">0 1 0 0 1 0 0 1 1 1 1 0 0 1 0 0 1 0 0 1 1 1 1 0 0 1 0 0 1 0 0 1 1 1 1 0 0 1 0 0 1 0 0 1 1 1 1 0 0 1 0 0 1 0 0 1 1 1 1 0 0 1 0 0 1 0 0 1 1 1 1 0</float_array>
+          <float_array id="TopCube-mesh-map-0-array" count="72">1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1</float_array>
           <technique_common>
             <accessor source="#TopCube-mesh-map-0-array" count="36" stride="2">
               <param name="S" type="float"/>
@@ -93,19 +135,19 @@
         <vertices id="TopCube-mesh-vertices">
           <input semantic="POSITION" source="#TopCube-mesh-positions"/>
         </vertices>
-        <polylist material="greenbox-material" count="12">
+        <polylist material="Material_001-material" count="12">
           <input semantic="VERTEX" source="#TopCube-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#TopCube-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#TopCube-mesh-map-0" offset="2" set="0"/>
           <vcount>3 3 3 3 3 3 3 3 3 3 3 3 </vcount>
-          <p>0 0 0 1 0 1 2 0 2 0 1 3 3 1 4 2 1 5 4 2 6 0 2 7 3 2 8 4 3 9 5 3 10 3 3 11 6 1 12 4 1 13 5 1 14 6 0 15 7 0 16 5 0 17 6 4 18 1 4 19 0 4 20 6 5 21 4 5 22 0 5 23 5 5 24 3 5 25 2 5 26 5 4 27 7 4 28 2 4 29 7 3 30 2 3 31 1 3 32 7 2 33 6 2 34 1 2 35</p>
+          <p>3 0 0 0 0 1 1 0 2 7 1 3 2 1 4 3 1 5 5 2 6 6 2 7 7 2 8 1 3 9 4 3 10 5 3 11 2 4 12 4 4 13 0 4 14 7 5 15 1 5 16 5 5 17 3 0 18 2 0 19 0 0 20 7 1 21 6 1 22 2 1 23 5 2 24 4 2 25 6 2 26 1 3 27 0 3 28 4 3 29 2 4 30 6 4 31 4 4 32 7 5 33 3 5 34 1 5 35</p>
         </polylist>
       </mesh>
     </geometry>
     <geometry id="BaseCube-mesh" name="BaseCube">
       <mesh>
         <source id="BaseCube-mesh-positions">
-          <float_array id="BaseCube-mesh-positions-array" count="24">-0.15 0.15 0.15 -0.15 -0.15 0.15 0.15 -0.15 0.15 0.15 0.15 0.15 -0.15 0.15 -0.15 0.15 0.15 -0.15 -0.15 -0.15 -0.15 0.15 -0.15 -0.15</float_array>
+          <float_array id="BaseCube-mesh-positions-array" count="24">-0.15 -0.15 -0.15 -0.15 -0.15 0.15 -0.15 0.15 -0.15 -0.15 0.15 0.15 0.15 -0.15 -0.15 0.15 -0.15 0.15 0.15 0.15 -0.15 0.15 0.15 0.15</float_array>
           <technique_common>
             <accessor source="#BaseCube-mesh-positions-array" count="8" stride="3">
               <param name="X" type="float"/>
@@ -115,7 +157,7 @@
           </technique_common>
         </source>
         <source id="BaseCube-mesh-normals">
-          <float_array id="BaseCube-mesh-normals-array" count="18">0 0 1 0 0 -1 0 1 0 0 -1 0 -1 0 0 1 0 0</float_array>
+          <float_array id="BaseCube-mesh-normals-array" count="18">-1 0 0 0 1 0 1 0 0 0 -1 0 0 0 -1 0 0 1</float_array>
           <technique_common>
             <accessor source="#BaseCube-mesh-normals-array" count="6" stride="3">
               <param name="X" type="float"/>
@@ -125,7 +167,7 @@
           </technique_common>
         </source>
         <source id="BaseCube-mesh-map-0">
-          <float_array id="BaseCube-mesh-map-0-array" count="72">0 1 0 0 1 0 0 1 1 1 1 0 0 1 0 0 1 0 0 1 1 1 1 0 0 1 0 0 1 0 0 1 1 1 1 0 0 1 0 0 1 0 0 1 1 1 1 0 0 1 0 0 1 0 0 1 1 1 1 0 0 1 0 0 1 0 0 1 1 1 1 0</float_array>
+          <float_array id="BaseCube-mesh-map-0-array" count="72">1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1</float_array>
           <technique_common>
             <accessor source="#BaseCube-mesh-map-0-array" count="36" stride="2">
               <param name="S" type="float"/>
@@ -136,12 +178,12 @@
         <vertices id="BaseCube-mesh-vertices">
           <input semantic="POSITION" source="#BaseCube-mesh-positions"/>
         </vertices>
-        <polylist material="greenbox-material" count="12">
+        <polylist material="Material-material" count="12">
           <input semantic="VERTEX" source="#BaseCube-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#BaseCube-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#BaseCube-mesh-map-0" offset="2" set="0"/>
           <vcount>3 3 3 3 3 3 3 3 3 3 3 3 </vcount>
-          <p>0 0 0 1 0 1 2 0 2 0 1 3 3 1 4 2 1 5 4 2 6 0 2 7 3 2 8 4 3 9 5 3 10 3 3 11 6 1 12 4 1 13 5 1 14 6 0 15 7 0 16 5 0 17 6 4 18 1 4 19 0 4 20 6 5 21 4 5 22 0 5 23 5 5 24 3 5 25 2 5 26 5 4 27 7 4 28 2 4 29 7 3 30 2 3 31 1 3 32 7 2 33 6 2 34 1 2 35</p>
+          <p>3 0 0 0 0 1 1 0 2 7 1 3 2 1 4 3 1 5 5 2 6 6 2 7 7 2 8 1 3 9 4 3 10 5 3 11 2 4 12 4 4 13 0 4 14 7 5 15 1 5 16 5 5 17 3 0 18 2 0 19 0 0 20 7 1 21 6 1 22 2 1 23 5 2 24 4 2 25 6 2 26 1 3 27 0 3 28 4 3 29 2 4 30 6 4 31 4 4 32 7 5 33 3 5 34 1 5 35</p>
         </polylist>
       </mesh>
     </geometry>
@@ -154,18 +196,18 @@
         <instance_geometry url="#BaseCube-mesh" name="BaseCube">
           <bind_material>
             <technique_common>
-              <instance_material symbol="greenbox-material" target="#greenbox-material">
+              <instance_material symbol="Material-material" target="#Material-material">
                 <bind_vertex_input semantic="UVMap" input_semantic="TEXCOORD" input_set="0"/>
               </instance_material>
             </technique_common>
           </bind_material>
         </instance_geometry>
         <node id="TopCube" name="TopCube" type="NODE">
-          <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+          <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0.85 0 0 0 1</matrix>
           <instance_geometry url="#TopCube-mesh" name="TopCube">
             <bind_material>
               <technique_common>
-                <instance_material symbol="greenbox-material" target="#greenbox-material">
+                <instance_material symbol="Material_001-material" target="#Material_001-material">
                   <bind_vertex_input semantic="UVMap" input_semantic="TEXCOORD" input_set="0"/>
                 </instance_material>
               </technique_common>

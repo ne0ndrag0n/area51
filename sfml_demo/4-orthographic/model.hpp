@@ -49,6 +49,28 @@ class GFXModel {
   private:
     std::string directory;
 
+    glm::mat4 aiToGLMmat4( aiMatrix4x4& matrix ) {
+      glm::mat4 result;
+
+      result[ 0 ] = glm::vec4( matrix[ 0 ][ 0 ], matrix[ 1 ][ 0 ], matrix[ 2 ][ 0 ], matrix[ 3 ][ 0 ] );
+      result[ 1 ] = glm::vec4( matrix[ 0 ][ 1 ], matrix[ 1 ][ 1 ], matrix[ 2 ][ 1 ], matrix[ 3 ][ 1 ] );
+      result[ 2 ] = glm::vec4( matrix[ 0 ][ 2 ], matrix[ 1 ][ 2 ], matrix[ 2 ][ 2 ], matrix[ 3 ][ 2 ] );
+      result[ 3 ] = glm::vec4( matrix[ 0 ][ 3 ], matrix[ 1 ][ 3 ], matrix[ 2 ][ 3 ], matrix[ 3 ][ 3 ] );
+
+      return result;
+    }
+
+    glm::vec4 aiToGLMvec4( aiVector3D& vector ) {
+      glm::vec4 result;
+
+      result.x = vector.x;
+      result.y = vector.y;
+      result.z = vector.z;
+      result.w = 1.0f;
+
+      return result;
+    }
+
     void loadModel( std::string path ) {
       Assimp::Importer importer;
       const aiScene* scene = importer.ReadFile( path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals );
@@ -74,7 +96,7 @@ class GFXModel {
       for( int i = 0; i < node->mNumMeshes; i++ ) {
         aiMesh* mesh = scene->mMeshes[ node->mMeshes[ i ] ];
         std::cout << '\t' << "Loading mesh " << mesh->mName.C_Str() << std::endl;
-        this->processMesh( mesh, scene, node->mName.C_Str() );
+        this->processMesh( mesh, scene, node->mName.C_Str(), aiToGLMmat4( node->mTransformation ) );
       }
 
       for( int i = 0; i < node->mNumChildren; i++ ) {
@@ -84,14 +106,14 @@ class GFXModel {
       std::cout << "Done with " << node->mName.C_Str() << std::endl;
     }
 
-    void processMesh( aiMesh* mesh, const aiScene* scene, std::string nodeTitle ) {
+    void processMesh( aiMesh* mesh, const aiScene* scene, std::string nodeTitle, glm::mat4 transformation ) {
       std::vector< Vertex > vertices;
       std::vector< Index > indices;
       GFXMaterial meshMaterial;
 
       for( int i = 0; i < mesh->mNumVertices; i++ ) {
         Vertex vertex;
-        vertex.position = glm::vec3( mesh->mVertices[ i ].x, mesh->mVertices[ i ].y, mesh->mVertices[ i ].z );
+        vertex.position = glm::vec3( transformation * aiToGLMvec4( mesh->mVertices[ i ] ) );
         vertex.normal = glm::vec3( mesh->mNormals[ i ].x, mesh->mNormals[ i ].y, mesh->mNormals[ i ].z );
         if( mesh->mTextureCoords[ 0 ] ) {
           vertex.textureCoordinates = glm::vec2( mesh->mTextureCoords[ 0 ][ i ].x, mesh->mTextureCoords[ 0 ][ i ].y );
