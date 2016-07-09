@@ -19,21 +19,37 @@ class LotCamera {
     GLfloat cameraHeight = 3.0f;
     glm::vec3 lookingAt = glm::vec3( 0.0f, 0.0f, -9.0f );
     glm::vec3 camera = glm::vec3( -cameraHeight, -cameraHeight, lookingAt.z + cameraHeight );
-    const glm::vec3 originalDirection = glm::vec3( glm::normalize( lookingAt - camera ) );
+    glm::vec3 originalDirection = glm::vec3( glm::normalize( lookingAt - camera ) );
     glm::vec3 up = glm::vec3( 0.0f, 0.0f, 1.0f );
     GLfloat yaw = 0.0f;
     GLfloat pitch = 0.0f;
+    const glm::vec2 rotations[4] = {
+      glm::vec2( -1.0f, -1.0f ),
+      glm::vec2( -1.0f, 1.0f ),
+      glm::vec2( 1.0f, 1.0f ),
+      glm::vec2( 1.0f, -1.0f )
+    };
+    GLuint currentRotation = 0;
 
     float perspectiveAspectRatio;
     float widthHalf;
     float heightHalf;
     float zoom = 1.0f;
     const float zoomIncrement = 0.25f;
+    bool dirty = true;
+
+    void doRotate() {
+      glm::vec2 quadrant = rotations[ currentRotation ];
+
+      camera.x = cameraHeight * quadrant.x;
+      camera.y = cameraHeight * quadrant.y;
+      direction = originalDirection = glm::vec3( glm::normalize( lookingAt - camera ) );
+      dirty = true;
+    }
 
   public:
     glm::vec3 direction = originalDirection;
     bool ortho = true;
-    bool dirty = true;
 
     LotCamera( GLuint program, int screenWidth, int screenHeight ) : program( program ) {
       widthHalf = ( (float)screenWidth / 2 );
@@ -122,6 +138,22 @@ class LotCamera {
         );
         direction = glm::normalize( newDirection );
         dirty = true;
+      }
+    }
+
+    void rotateRight() {
+      if( ortho ) {
+        currentRotation = ( currentRotation - 1 ) % 4;
+
+        doRotate();
+      }
+    }
+
+    void rotateLeft() {
+      if( ortho ) {
+        currentRotation = ( currentRotation + 1 ) % 4;
+
+        doRotate();
       }
     }
 
