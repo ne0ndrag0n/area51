@@ -15,8 +15,8 @@
 #include "graphicentity.hpp"
 #include "gfxtransform.hpp"
 
-const int SCREEN_WIDTH = 1024;
-const int SCREEN_HEIGHT = 576;
+const int SCREEN_WIDTH = 1200;
+const int SCREEN_HEIGHT = 700;
 float zoom = 2.0f;
 
 int main() {
@@ -50,6 +50,7 @@ int main() {
   GFXModel box( "box/box.dae" );
   GFXModel smallBox( "twobox/twobox.dae" );
   GFXModel wall( "wall/wall.dae" );
+  GFXModel wallDiagonal( "wall/diagwall.dae" );
 
   sf::Font dosvga;
   if( !dosvga.loadFromFile( "font.ttf" ) ) {
@@ -106,6 +107,18 @@ int main() {
     GFXInstance wallPanel( wall, shader.Program );
     wallPanel.setPosition( glm::vec3( (GLfloat) x, 1.0f, -10.0f ) );
     wallStrip.push_back( wallPanel );
+  }
+
+  GFXInstance diagTestPiece( wallDiagonal, shader.Program );
+  diagTestPiece.setPosition( glm::vec3( 4.0f, 1.0f, -10.0f ) );
+  wallStrip.push_back( diagTestPiece );
+
+  for( GLfloat y = 0.0f; y != -8.0f; y -= 1.0f ) {
+    GFXInstance downPiece( wall, shader.Program );
+    // Rotate the wall 90 degrees to the right
+    downPiece.setRotationAngle( glm::radians( -90.0f ) );
+    downPiece.setPosition( glm::vec3( 4.0f, y, -10.0f ) );
+    wallStrip.push_back( downPiece );
   }
 
   sf::Clock clock;
