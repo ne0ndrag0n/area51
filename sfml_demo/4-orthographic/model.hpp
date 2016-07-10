@@ -93,7 +93,7 @@ class GFXModel {
     void processNode( aiNode* node, const aiScene* scene, aiMatrix4x4 parentTransform ) {
       std::cout << "Processing " << node->mName.C_Str() << std::endl;
 
-      aiMatrix4x4 resultantTransform = node->mTransformation * parentTransform;
+      aiMatrix4x4 resultantTransform = parentTransform * node->mTransformation;
 
       for( int i = 0; i < node->mNumMeshes; i++ ) {
         aiMesh* mesh = scene->mMeshes[ node->mMeshes[ i ] ];
