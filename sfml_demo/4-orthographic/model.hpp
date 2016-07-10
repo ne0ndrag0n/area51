@@ -42,8 +42,8 @@ class GFXModel {
       loadModel( path );
     }
     // Used internally to generate child nodes
-    GFXModel( aiNode* node, const aiScene* scene, std::string& directory ) : directory( directory ) {
-      processNode( node, scene );
+    GFXModel( aiNode* node, const aiScene* scene, std::string& directory, aiMatrix4x4 parentTransform ) : directory( directory ) {
+      processNode( node, scene, parentTransform );
     }
 
   private:
@@ -84,23 +84,25 @@ class GFXModel {
 
       // If the root node has no meshes and only one child, just skip to that child
       if( scene->mRootNode->mNumChildren == 1 && scene->mRootNode->mNumMeshes == 0 ) {
-        processNode( scene->mRootNode->mChildren[ 0 ], scene );
+        processNode( scene->mRootNode->mChildren[ 0 ], scene, aiMatrix4x4() );
       } else {
-        processNode( scene->mRootNode, scene );
+        processNode( scene->mRootNode, scene, aiMatrix4x4() );
       }
     }
 
-    void processNode( aiNode* node, const aiScene* scene ) {
+    void processNode( aiNode* node, const aiScene* scene, aiMatrix4x4 parentTransform ) {
       std::cout << "Processing " << node->mName.C_Str() << std::endl;
+
+      aiMatrix4x4 resultantTransform = parentTransform * node->mTransformation;
 
       for( int i = 0; i < node->mNumMeshes; i++ ) {
         aiMesh* mesh = scene->mMeshes[ node->mMeshes[ i ] ];
         std::cout << '\t' << "Loading mesh " << mesh->mName.C_Str() << std::endl;
-        this->processMesh( mesh, scene, node->mName.C_Str(), aiToGLMmat4( node->mTransformation ) );
+        this->processMesh( mesh, scene, node->mName.C_Str(), aiToGLMmat4( resultantTransform ) );
       }
 
       for( int i = 0; i < node->mNumChildren; i++ ) {
-        children.emplace( node->mChildren[ i ]->mName.C_Str(), std::make_unique< GFXModel >( node->mChildren[ i ], scene, directory ) );
+        children.emplace( node->mChildren[ i ]->mName.C_Str(), std::make_unique< GFXModel >( node->mChildren[ i ], scene, directory, resultantTransform ) );
       }
 
       std::cout << "Done with " << node->mName.C_Str() << std::endl;
