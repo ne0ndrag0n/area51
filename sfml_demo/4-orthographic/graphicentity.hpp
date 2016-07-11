@@ -18,6 +18,7 @@
 #include <GL/glew.h>
 #include "gfxtransform.hpp"
 #include "mesh.hpp"
+#include "drawable.hpp"
 
 /**
  * A GFXInstance is a specific instance of a graphic model placed on a lot. It contains
@@ -31,9 +32,8 @@ class GFXInstance {
     bool dirty = true;
 
     void prepareInstanceRecursive( const GFXModel& model ) {
-      // At this level, copy the list of meshes
-      // shared_ptrs will be copied, incrementing the count
-      meshes = model.meshes;
+      // Copy the list of drawables
+      drawables = model.drawables;
 
       for( auto& pair : model.children ) {
         auto& child = *( pair.second );
@@ -44,7 +44,7 @@ class GFXInstance {
     }
 
   public:
-    std::map< std::string, std::shared_ptr< Mesh > > meshes;
+    std::map< std::string, std::shared_ptr< Drawable > > drawables;
     std::map< std::string, std::shared_ptr< GFXInstance > > children;
 
     GFXInstance( const GFXModel& model, GLuint shaderProgram ) : shaderProgram( shaderProgram ) {
@@ -65,10 +65,10 @@ class GFXInstance {
     void drawEntity( glm::mat4& parent ) {
       glm::mat4 nextParent = transform.sendToShader( shaderProgram, parent, dirty );
 
-      for( auto& pair : meshes ) {
-        auto& mesh = *( pair.second );
+      for( auto& pair : drawables ) {
+        auto& drawable = *( pair.second );
 
-        mesh.draw( shaderProgram );
+        drawable.render( shaderProgram );
       }
 
       for( auto& pair : children ) {

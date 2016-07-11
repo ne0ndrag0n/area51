@@ -17,6 +17,7 @@
 #include "mesh.hpp"
 #include "material.hpp"
 #include "gfxtexture.hpp"
+#include "drawable.hpp"
 
 /**
  * split c/p'd from bluebear
@@ -35,7 +36,7 @@ std::vector<std::string> split(const std::string &text, char sep) {
 class GFXModel {
 
   public:
-    std::map< std::string, std::shared_ptr< Mesh > > meshes;
+    std::map< std::string, std::shared_ptr< Drawable > > drawables;
     std::map< std::string, std::unique_ptr< GFXModel > > children;
 
     GFXModel( std::string path ) {
@@ -111,7 +112,8 @@ class GFXModel {
     void processMesh( aiMesh* mesh, const aiScene* scene, std::string nodeTitle, glm::mat4 transformation ) {
       std::vector< Vertex > vertices;
       std::vector< Index > indices;
-      GFXMaterial meshMaterial;
+
+      std::shared_ptr< GFXMaterial > defaultMaterial;
 
       for( int i = 0; i < mesh->mNumVertices; i++ ) {
         Vertex vertex;
@@ -134,11 +136,15 @@ class GFXModel {
 
       if( mesh->mMaterialIndex >= 0 ) {
         aiMaterial* material = scene->mMaterials[ mesh->mMaterialIndex ];
-        // Just do diffuse maps for now
-        meshMaterial.diffuseTextures = loadMaterialTextures( material, aiTextureType_DIFFUSE );
+
+        defaultMaterial = std::make_shared< GFXMaterial >( loadMaterialTextures( material, aiTextureType_DIFFUSE ) );
       }
 
-      meshes.emplace( nodeTitle, std::make_shared< Mesh >( vertices, indices, meshMaterial ) );
+      drawables.emplace( nodeTitle,
+        std::make_shared< Drawable >(
+          std::make_shared< Mesh >( vertices, indices ), defaultMaterial
+        )
+      );
     }
 
     GFXMaterial::TextureList loadMaterialTextures( aiMaterial* material, aiTextureType type ) {

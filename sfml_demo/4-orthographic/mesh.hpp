@@ -29,19 +29,12 @@ class Mesh {
     // Meshes depend on OpenGL global states - You really shouldn't be copying 'em.
     Mesh( const Mesh& );
     Mesh& operator=( const Mesh& );
-    GFXMaterial defaultMaterial;
     std::vector< Vertex > vertices;
     std::vector< Index > indices;
 
-    void drawElements() {
-      glBindVertexArray( VAO );
-        glDrawElements( GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0 );
-      glBindVertexArray( 0 );
-    }
-
   public:
-    Mesh( std::vector< Vertex > vertices, std::vector< Index > indices, GFXMaterial material ) :
-      vertices( vertices ), indices( indices ), defaultMaterial( material ) {
+    Mesh( std::vector< Vertex > vertices, std::vector< Index > indices ) :
+      vertices( vertices ), indices( indices ) {
       setupMesh();
     }
 
@@ -74,16 +67,10 @@ class Mesh {
       glBindVertexArray( 0 );
     }
 
-    void drawWithMaterial( GLuint shaderProgram, GFXMaterial& customMaterial ) {
-      customMaterial.sendToShader( shaderProgram );
-
-      drawElements();
-    }
-
-    void draw( GLuint shaderProgram ) {
-      defaultMaterial.sendToShader( shaderProgram );
-
-      drawElements();
+    void drawElements() {
+      glBindVertexArray( VAO );
+        glDrawElements( GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0 );
+      glBindVertexArray( 0 );
     }
 
 };
