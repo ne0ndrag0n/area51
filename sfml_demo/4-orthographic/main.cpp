@@ -14,6 +14,7 @@
 #include "model.hpp"
 #include "graphicentity.hpp"
 #include "gfxtransform.hpp"
+#include "atlasbuilder.hpp"
 
 const int SCREEN_WIDTH = 1200;
 const int SCREEN_HEIGHT = 700;
