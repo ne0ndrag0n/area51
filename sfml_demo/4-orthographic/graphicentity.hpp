@@ -44,7 +44,7 @@ class GFXInstance {
     }
 
   public:
-    std::map< std::string, std::shared_ptr< Drawable > > drawables;
+    std::map< std::string, Drawable > drawables;
     std::map< std::string, std::shared_ptr< GFXInstance > > children;
 
     GFXInstance( const GFXModel& model, GLuint shaderProgram ) : shaderProgram( shaderProgram ) {
@@ -66,7 +66,7 @@ class GFXInstance {
       glm::mat4 nextParent = transform.sendToShader( shaderProgram, parent, dirty );
 
       for( auto& pair : drawables ) {
-        auto& drawable = *( pair.second );
+        auto& drawable = pair.second;
 
         drawable.render( shaderProgram );
       }

@@ -36,7 +36,7 @@ std::vector<std::string> split(const std::string &text, char sep) {
 class GFXModel {
 
   public:
-    std::map< std::string, std::shared_ptr< Drawable > > drawables;
+    std::map< std::string, Drawable > drawables;
     std::map< std::string, std::unique_ptr< GFXModel > > children;
 
     GFXModel( std::string path ) {
@@ -140,11 +140,7 @@ class GFXModel {
         defaultMaterial = std::make_shared< GFXMaterial >( loadMaterialTextures( material, aiTextureType_DIFFUSE ) );
       }
 
-      drawables.emplace( nodeTitle,
-        std::make_shared< Drawable >(
-          std::make_shared< Mesh >( vertices, indices ), defaultMaterial
-        )
-      );
+      drawables.emplace( nodeTitle, Drawable( std::make_shared< Mesh >( vertices, indices ), defaultMaterial ) );
     }
 
     GFXMaterial::TextureList loadMaterialTextures( aiMaterial* material, aiTextureType type ) {
