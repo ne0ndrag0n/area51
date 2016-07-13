@@ -32,11 +32,10 @@ class AtlasBuilder {
     std::map< std::string, AtlasMapping > mappings;
 
     AtlasBuilder( std::string& path ) {
-      std::ifstream schemaFile( path );
-
-      if( !schemaFile.good() ) {
-        throw CannotLoadFileException();
-      }
+      std::ifstream schemaFile;
+      // std::ifstream::failure
+      schemaFile.exceptions( std::ios::failbit | std::ios::badbit );
+      schemaFile.open( path );
 
       Json::Value schema;
       Json::Reader reader;
