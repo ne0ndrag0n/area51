@@ -27,12 +27,16 @@ class AtlasBuilder {
     sf::Image base;
 
   public:
-    struct CannotLoadImageException : public std::exception { const char* what () const throw () { return "C++ Exception"; } };
+    struct CannotLoadFileException : public std::exception { const char* what () const throw () { return "Could not load a required file!"; } };
 
     std::map< std::string, AtlasMapping > mappings;
 
     AtlasBuilder( std::string& path ) {
       std::ifstream schemaFile( path );
+
+      if( !schemaFile.good() ) {
+        throw CannotLoadFileException();
+      }
 
       Json::Value schema;
       Json::Reader reader;
@@ -70,7 +74,7 @@ class AtlasBuilder {
         AtlasMapping mapping = pair.second;
 
         if( !overlay.loadFromFile( mapping.imagePath ) ) {
-          throw CannotLoadImageException();
+          throw CannotLoadFileException();
         }
 
         atlasBase.copy( overlay, mapping.x, mapping.y );
