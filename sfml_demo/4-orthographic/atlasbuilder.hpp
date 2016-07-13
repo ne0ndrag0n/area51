@@ -31,11 +31,15 @@ class AtlasBuilder {
 
     std::map< std::string, AtlasMapping > mappings;
 
-    AtlasBuilder( std::string& path ) {
+    AtlasBuilder() {}
+
+    void createMappings( std::string& jsonPath ) {
+      mappings.clear();
+
       std::ifstream schemaFile;
       // std::ifstream::failure
       schemaFile.exceptions( std::ios::failbit | std::ios::badbit );
-      schemaFile.open( path );
+      schemaFile.open( jsonPath );
 
       Json::Value schema;
       Json::Reader reader;
