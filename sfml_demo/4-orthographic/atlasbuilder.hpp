@@ -5,6 +5,9 @@
 #include <string>
 #include <jsoncpp/json/json.h>
 #include <SFML/Graphics.hpp>
+#include <exception>
+#include <utility>
+#include <memory>
 #include "gfxtexture.hpp"
 
 /**
@@ -24,6 +27,8 @@ class AtlasBuilder {
     sf::Image base;
 
   public:
+    struct CannotLoadImageException : public std::exception { const char* what () const throw () { return "C++ Exception"; } };
+
     std::map< std::string, AtlasMapping > mappings;
 
     AtlasBuilder( std::string& path ) {
@@ -40,7 +45,9 @@ class AtlasBuilder {
       // Load base atlas into an sf::Image
       // This atlas will contain an image where we can overlay additional images
       // to create a new texture atlas in the shape of the old one
-      base.loadFromFile( baseImagePath );
+      if( !base.loadFromFile( baseImagePath ) ) {
+        throw CannotLoadImageException();
+      }
 
       // Load all components into mappings
       for( Json::Value::iterator jsonIterator = components.begin(); jsonIterator != components.end(); ++jsonIterator ) {
@@ -55,6 +62,25 @@ class AtlasBuilder {
           ""
         };
       }
+    }
+
+    std::shared_ptr< GFXTexture > getTextureAtlas() {
+      sf::Image atlasBase = base;
+
+      // Apply each overlay
+      for( auto& pair : mappings ) {
+        sf::Image overlay;
+        AtlasMapping mapping = pair.second;
+
+        if( !overlay.loadFromFile( mapping.imagePath ) ) {
+          throw CannotLoadImageException();
+        }
+
+        atlasBase.copy( overlay, mapping.x, mapping.y );
+      }
+
+      // Overlay this sf::Image into an OpenGL texture
+      return std::make_shared< GFXTexture >( atlasBase );
     }
 };
 

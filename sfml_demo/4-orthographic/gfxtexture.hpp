@@ -14,16 +14,7 @@ class GFXTexture {
     GFXTexture( const GFXTexture& );
     GFXTexture& operator=( const GFXTexture& );
 
-  public:
-    GFXTexture( GLuint id, aiString path ) :
-      id( id ), path( path ) {}
-    GFXTexture( std::string texFromFile ) {
-      sf::Image texture;
-      if( !texture.loadFromFile( texFromFile ) ) {
-        std::cout << "Couldn't load texture " << texFromFile << std::endl;
-        return;
-      }
-
+    void prepareTextureFromImage( sf::Image& texture ) {
       glGenTextures( 1, &id );
       glBindTexture( GL_TEXTURE_2D, id );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
@@ -35,6 +26,22 @@ class GFXTexture {
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.getPixelsPtr() );
         glGenerateMipmap( GL_TEXTURE_2D );
       glBindTexture( GL_TEXTURE_2D, 0 );
+    }
+
+  public:
+    GFXTexture( GLuint id, aiString path ) :
+      id( id ), path( path ) {}
+    GFXTexture( sf::Image& texture ) {
+      prepareTextureFromImage( texture );
+    }
+    GFXTexture( std::string texFromFile ) {
+      sf::Image texture;
+      if( !texture.loadFromFile( texFromFile ) ) {
+        std::cout << "Couldn't load texture " << texFromFile << std::endl;
+        return;
+      }
+
+      prepareTextureFromImage( texture );
     }
     ~GFXTexture() {
       glDeleteTextures( 1, &id );
