@@ -41,7 +41,9 @@ class AtlasBuilder {
       Json::Value schema;
       Json::Reader reader;
 
-      reader.parse( schemaFile, schema );
+      if( !reader.parse( schemaFile, schema ) ) {
+        throw CannotLoadFileException();
+      }
 
       // Create a base image on which to overlay existing images
       Json::Value baseProps = schema[ "base" ];
