@@ -39,15 +39,12 @@ class AtlasBuilder {
 
       reader.parse( schemaFile, schema );
 
-      std::string baseImagePath = schema[ "base" ].asString();
+      // Create a base image on which to overlay existing images
+      Json::Value baseProps = schema[ "base" ];
       Json::Value components = schema[ "mappings" ];
 
-      // Load base atlas into an sf::Image
-      // This atlas will contain an image where we can overlay additional images
-      // to create a new texture atlas in the shape of the old one
-      if( !base.loadFromFile( baseImagePath ) ) {
-        throw CannotLoadImageException();
-      }
+      // Create base atlas
+      base.create( baseProps[ "width" ].asInt(), baseProps[ "height" ].asInt() );
 
       // Load all components into mappings
       for( Json::Value::iterator jsonIterator = components.begin(); jsonIterator != components.end(); ++jsonIterator ) {
