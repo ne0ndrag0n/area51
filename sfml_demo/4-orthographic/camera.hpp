@@ -113,6 +113,16 @@ class LotCamera {
       glUniformMatrix4fv( glGetUniformLocation( program, "projection" ), 1, GL_FALSE, glm::value_ptr( projection ) );
     }
 
+    void walkForward() {
+      camera += glm::vec3( direction.x * 0.1f, direction.y * 0.1f, 0.0f );
+      dirty = true;
+    }
+
+    void walkBackward() {
+      camera -= glm::vec3( direction.x * 0.1f, direction.y * 0.1f, 0.0f );
+      dirty = true;
+    }
+
     void updateFirstPersonView( int deltaX, int deltaY ) {
       if( !( deltaX == 0 && deltaY == 0 ) ) {
         // These are the correct settings for an up normal of Y, not Z

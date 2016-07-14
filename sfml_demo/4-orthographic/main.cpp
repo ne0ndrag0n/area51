@@ -187,6 +187,14 @@ int main() {
           }
         }
 
+        if( event.key.code == sf::Keyboard::W ) {
+          lotCamera.walkForward();
+        }
+
+        if( event.key.code == sf::Keyboard::S ) {
+          lotCamera.walkBackward();
+        }
+
         if( event.key.code == sf::Keyboard::Q ) {
           lotCamera.rotateLeft();
         }
