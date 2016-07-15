@@ -24,11 +24,11 @@ class AtlasBuilder {
       std::string imagePath;
     };
 
+    sf::Image base;
+
   public:
     struct CannotLoadFileException : public std::exception { const char* what () const throw () { return "Could not load a required file!"; } };
 
-    unsigned int baseWidth;
-    unsigned int baseHeight;
     std::map< std::string, AtlasMapping > mappings;
 
     AtlasBuilder() {}
@@ -52,9 +52,15 @@ class AtlasBuilder {
       Json::Value baseProps = schema[ "base" ];
       Json::Value components = schema[ "mappings" ];
 
-      // Create base atlas
-      baseWidth = baseProps[ "width" ].asInt();
-      baseHeight = baseProps[ "height" ].asInt();
+      // Dispose of any old image
+      base = sf::Image();
+      if( baseProps[ "image" ].isString() ) {
+        if( !base.loadFromFile( baseProps[ "image" ].asString() ) ) {
+          throw CannotLoadFileException();
+        }
+      } else {
+        base.create( baseProps[ "width" ].asInt(), baseProps[ "height" ].asInt() );
+      }
 
       // Load all components into mappings
       for( Json::Value::iterator jsonIterator = components.begin(); jsonIterator != components.end(); ++jsonIterator ) {
@@ -72,8 +78,7 @@ class AtlasBuilder {
     }
 
     std::shared_ptr< GFXTexture > getTextureAtlas() {
-      sf::Image atlasBase;
-      atlasBase.create( baseWidth, baseHeight );
+      sf::Image atlasBase = base;
 
       // Apply each overlay
       for( auto& pair : mappings ) {
