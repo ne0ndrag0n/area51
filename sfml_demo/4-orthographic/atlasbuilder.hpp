@@ -25,13 +25,18 @@ class AtlasBuilder {
     };
 
     sf::Image base;
+    std::map< std::string, AtlasMapping > mappings;
 
   public:
     struct CannotLoadFileException : public std::exception { const char* what () const throw () { return "Could not load a required file!"; } };
 
-    std::map< std::string, AtlasMapping > mappings;
-
     AtlasBuilder() {}
+
+    void setAtlasMapping( std::string& key, std::string& path ) {
+      AtlasMapping& mapping = mappings.at( key );
+
+      mapping.imagePath = path;
+    }
 
     void configure( std::string& jsonPath ) {
       mappings.clear();
