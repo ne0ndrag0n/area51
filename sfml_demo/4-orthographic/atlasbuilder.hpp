@@ -32,13 +32,13 @@ class AtlasBuilder {
 
     AtlasBuilder() {}
 
-    void setAtlasMapping( std::string& key, std::string& path ) {
+    void setAtlasMapping( const std::string& key, const std::string& path ) {
       AtlasMapping& mapping = mappings.at( key );
 
       mapping.imagePath = path;
     }
 
-    void configure( std::string& jsonPath ) {
+    void configure( const std::string& jsonPath ) {
       mappings.clear();
 
       std::ifstream schemaFile;

@@ -13,6 +13,7 @@
 #include "mesh.hpp"
 #include "model.hpp"
 #include "graphicentity.hpp"
+#include "material.hpp"
 #include "gfxtransform.hpp"
 #include "atlasbuilder.hpp"
 
@@ -123,6 +124,18 @@ int main() {
   }
 
   sf::Clock clock;
+
+  // Trying a few shits
+  AtlasBuilder wallAtlasBuilder;
+  wallAtlasBuilder.configure( "wall/wallatlas.json" );
+  wallAtlasBuilder.setAtlasMapping( "FrontWall", "wall/greywallpaper.png" );
+  wallAtlasBuilder.setAtlasMapping( "BackWall", "wall/greywallpaper.png" );
+  std::shared_ptr< GFXMaterial > replacementMaterial = std::make_shared< GFXMaterial >( GFXMaterial::TextureList{ wallAtlasBuilder.getTextureAtlas() } );
+
+  for( GFXInstance& wall : wallStrip ) {
+    Drawable& wallDrawable = wall.drawables.at( "Wall" );
+    wallDrawable.material = replacementMaterial;
+  }
 
   while( mainWindow.isOpen() ) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
