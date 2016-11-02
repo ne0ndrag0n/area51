@@ -47,13 +47,6 @@ int main() {
   LotCamera lotCamera( shader.Program, SCREEN_WIDTH, SCREEN_HEIGHT );
   mainWindow.setMouseCursorVisible( lotCamera.ortho );
 
-  // GFXModels may contain multiple Mesh objects
-  GFXModel m( "floor/floor.dae" );
-  GFXModel box( "box/box.dae" );
-  GFXModel smallBox( "twobox/twobox.dae" );
-  GFXModel wall( "wall/wall.dae" );
-  GFXModel wallDiagonal( "wall/diagwall.dae" );
-
   sf::Font dosvga;
   if( !dosvga.loadFromFile( "font.ttf" ) ) {
     std::cout << "Couldn't load font.ttf" << std::endl;
@@ -77,66 +70,6 @@ int main() {
   cameraCoords.setColor( sf::Color::Cyan );
   cameraCoords.setPosition( 0, 32 );
 
-  GFXInstance b1( box, shader.Program );
-  b1.setPosition( glm::vec3( 0.0f, 0.0f, -10.0f ) );
-
-  GFXInstance b2( box, shader.Program );
-  b2.setPosition( glm::vec3( 0.0f, 0.0f, -9.0f ) );
-
-  GFXInstance b3( box, shader.Program );
-  b3.setPosition( glm::vec3( 0.0f, 0.0f, -8.0f ) );
-
-  std::vector< GFXInstance > tinyCubes;
-  for( int y = -4; y != 0; y++ ) {
-    for( int x = -4; x != 0; x++ ) {
-      GFXInstance smallPair( smallBox, shader.Program );
-      smallPair.setPosition( glm::vec3( (GLfloat)x, (GLfloat)y, -10.0f ) );
-      tinyCubes.push_back( smallPair );
-    }
-  }
-
-  std::vector< GFXInstance > floorTiles;
-  for( int x = -16; x != 16; x++ ) {
-    for( int y = -16; y != 16; y++ ) {
-      GFXInstance floorTile( m, shader.Program );
-      floorTile.setPosition( glm::vec3( ( GLfloat ) x, ( GLfloat ) y, -10.0f ) );
-      floorTiles.push_back( floorTile );
-    }
-  }
-
-  std::vector< GFXInstance > wallStrip;
-  for( int x = -4; x != 4; x++ ) {
-    GFXInstance wallPanel( wall, shader.Program );
-    wallPanel.setPosition( glm::vec3( (GLfloat) x, 1.0f, -10.0f ) );
-    wallStrip.push_back( wallPanel );
-  }
-
-  GFXInstance diagTestPiece( wallDiagonal, shader.Program );
-  diagTestPiece.setPosition( glm::vec3( 4.0f, 1.0f, -10.0f ) );
-  wallStrip.push_back( diagTestPiece );
-
-  for( GLfloat y = 0.0f; y != -8.0f; y -= 1.0f ) {
-    GFXInstance downPiece( wall, shader.Program );
-    // Rotate the wall 90 degrees to the right
-    downPiece.setRotationAngle( glm::radians( -90.0f ) );
-    downPiece.setPosition( glm::vec3( 4.0f, y, -10.0f ) );
-    wallStrip.push_back( downPiece );
-  }
-
-  sf::Clock clock;
-
-  // Trying a few shits
-  AtlasBuilder wallAtlasBuilder;
-  wallAtlasBuilder.configure( "wall/wallatlas.json" );
-  wallAtlasBuilder.setAtlasMapping( "FrontWall", "wall/greywallpaper.png" );
-  wallAtlasBuilder.setAtlasMapping( "BackWall", "wall/greywallpaper.png" );
-  std::shared_ptr< GFXMaterial > replacementMaterial = std::make_shared< GFXMaterial >( GFXMaterial::TextureList{ wallAtlasBuilder.getTextureAtlas() } );
-
-  for( GFXInstance& wall : wallStrip ) {
-    Drawable& wallDrawable = wall.drawables.at( "Wall" );
-    wallDrawable.material = replacementMaterial;
-  }
-
   while( mainWindow.isOpen() ) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -144,23 +77,7 @@ int main() {
     shader.use();
     lotCamera.position();
 
-    // Draw the world
-    for( auto& floorTile : floorTiles ) {
-      floorTile.drawEntity();
-    }
-
-    b1.drawEntity();
-    b2.drawEntity();
-    b3.drawEntity();
-    auto rotationAngle = glm::radians( ( GLfloat ) clock.getElapsedTime().asSeconds() * 2.0f * 90.0f );
-    for( auto& tiny : tinyCubes ) {
-      auto top = tiny.findChildByName( "TopCube" );
-      top->setRotationAngle( rotationAngle );
-      tiny.drawEntity();
-    }
-    for( auto& wall : wallStrip ) {
-      wall.drawEntity();
-    }
+    // shit goes here
 
     mainWindow.pushGLStates();
       text.setString( lotCamera.ortho ? "Isometric" : "First-person" );
@@ -174,73 +91,13 @@ int main() {
 
     mainWindow.display();
 
-    if( !lotCamera.ortho ) {
-      sf::Vector2i mouseDelta = sf::Mouse::getPosition( mainWindow ) - center;
-      lotCamera.updateFirstPersonView( mouseDelta.x, mouseDelta.y );
-      sf::Mouse::setPosition( center, mainWindow );
-    }
-
     sf::Event event;
     while( mainWindow.pollEvent( event ) ) {
       if( event.type == sf::Event::Closed ) {
         mainWindow.close();
       }
-
-      if( event.type == sf::Event::KeyPressed ) {
-        if( event.key.code == sf::Keyboard::P ) {
-          if( lotCamera.ortho ) {
-            lotCamera.setOrthographic( false );
-            mainWindow.setMouseCursorVisible( false );
-            sf::Mouse::setPosition( center, mainWindow );
-            mainWindow.setFramerateLimit( 60 );
-          } else {
-            lotCamera.setOrthographic( true );
-            mainWindow.setMouseCursorVisible( true );
-            mainWindow.setFramerateLimit( 30 );
-          }
-        }
-
-        if( event.key.code == sf::Keyboard::W ) {
-          lotCamera.walkForward();
-        }
-
-        if( event.key.code == sf::Keyboard::S ) {
-          lotCamera.walkBackward();
-        }
-
-        if( event.key.code == sf::Keyboard::Q ) {
-          lotCamera.rotateLeft();
-        }
-
-        if( event.key.code == sf::Keyboard::E ) {
-          lotCamera.rotateRight();
-        }
-
-        if( event.key.code == sf::Keyboard::Up ) {
-          lotCamera.move( 0.0f, 0.1f, 0.0f );
-        }
-
-        if( event.key.code == sf::Keyboard::Down ) {
-          lotCamera.move( 0.0f, -0.1f, 0.0f );
-        }
-
-        if( event.key.code == sf::Keyboard::Right ) {
-          lotCamera.move( 0.1f, 0.0f, 0.0f );
-        }
-
-        if( event.key.code == sf::Keyboard::Left ) {
-          lotCamera.move( -0.1f, 0.0f, 0.0f );
-        }
-
-        if( event.key.code == sf::Keyboard::Add && zoom != 1.0f ) {
-          lotCamera.zoomIn();
-        }
-
-        if( event.key.code == sf::Keyboard::Subtract && zoom != 3.0f ) {
-          lotCamera.zoomOut();
-        }
-      }
     }
+
   }
   return 0;
 }
