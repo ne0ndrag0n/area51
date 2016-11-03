@@ -98,12 +98,9 @@ class LotCamera {
 
     void position() {
       if( dirty ) {
-        GLfloat scaledWidthHalf = ( widthHalf * zoom ) / 100.0f;
-        GLfloat scaledHeightHalf = ( heightHalf * zoom ) / 100.0f;
-
-        view = glm::lookAt( camera, camera + direction, up );
+        view = getViewMatrix();
         projection = ortho ?
-           glm::ortho( -scaledWidthHalf, scaledWidthHalf, -scaledHeightHalf, scaledHeightHalf, -20.0f, 50.0f ) :
+           getOrthoProjectionMatrix() :
            glm::perspective( 45.0f, perspectiveAspectRatio, 0.1f, 50.0f );
 
         dirty = false;
@@ -111,6 +108,17 @@ class LotCamera {
       // Set uniforms
       glUniformMatrix4fv( glGetUniformLocation( program, "view" ), 1, GL_FALSE, glm::value_ptr( view ) );
       glUniformMatrix4fv( glGetUniformLocation( program, "projection" ), 1, GL_FALSE, glm::value_ptr( projection ) );
+    }
+
+    glm::mat4 getViewMatrix() {
+      return glm::lookAt( camera, camera + direction, up );
+    }
+
+    glm::mat4 getOrthoProjectionMatrix() {
+      GLfloat scaledWidthHalf = ( widthHalf * zoom ) / 100.0f;
+      GLfloat scaledHeightHalf = ( heightHalf * zoom ) / 100.0f;
+
+      return glm::ortho( -scaledWidthHalf, scaledWidthHalf, -scaledHeightHalf, scaledHeightHalf, -20.0f, 50.0f );
     }
 
     void walkForward() {
