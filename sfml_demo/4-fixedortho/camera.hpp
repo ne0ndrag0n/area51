@@ -18,7 +18,7 @@ class LotCamera {
 
     GLfloat cameraHeight = 3.0f;
     glm::vec3 lookingAt = glm::vec3( 0.0f, 0.0f, -10.0f );
-    glm::vec3 camera = glm::vec3( -cameraHeight, -cameraHeight, lookingAt.z + cameraHeight );
+    glm::vec3 camera = glm::vec3( 0, 0, -10.0f );
     glm::vec3 originalDirection = glm::vec3( glm::normalize( lookingAt - camera ) );
     glm::vec3 up = glm::vec3( 0.0f, 0.0f, 1.0f );
     GLfloat yaw = 0.0f;
@@ -66,7 +66,9 @@ class LotCamera {
       ortho = flag;
 
       if( ortho ) {
-        direction = originalDirection;
+        camera = glm::vec3( 0.0f, 0.0f, -10.0f );
+      } else {
+        camera = glm::vec3( -cameraHeight, -cameraHeight, lookingAt.z + cameraHeight );
       }
 
       dirty = true;
@@ -114,9 +116,9 @@ class LotCamera {
     glm::mat4 getOrthoView() {
       glm::mat4 view;
 
-      view = glm::translate( view, glm::vec3( 0.0f, 0.0f, 0.0f ) );
+      view = glm::translate( view, camera );
 
-      view = glm::rotate( view, glm::radians( 60.0f ), glm::vec3( 1.0f, 0.0f, 0.0f ) );
+      view = glm::rotate( view, glm::radians( -60.0f ), glm::vec3( 1.0f, 0.0f, 0.0f ) );
       view = glm::rotate( view, glm::radians( 45.0f ), glm::vec3( 0.0f, 0.0f, 1.0f ) );
 
       return view;

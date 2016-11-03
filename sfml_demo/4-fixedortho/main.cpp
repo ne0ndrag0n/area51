@@ -49,6 +49,7 @@ int main() {
 
   // GFXModels may contain multiple Mesh objects
   GFXModel m( "floor/floor.dae" );
+  GFXModel box( "box/box.dae" );
 
   sf::Font dosvga;
   if( !dosvga.loadFromFile( "font.ttf" ) ) {
@@ -75,17 +76,19 @@ int main() {
 
   std::vector< GFXInstance > floorTiles;
 
-  GFXInstance floorTile( m, shader.Program );
-  floorTile.setPosition( glm::vec3( 0, 0, 0 ) );
-  floorTiles.push_back( floorTile );
+  for( int i = 0; i != 10; i++ ) {
+    GFXInstance floorTile( m, shader.Program );
+    floorTile.setPosition( glm::vec3( 0, 0, ( i * 2 ) ) );
+    floorTiles.push_back( floorTile );
 
-  GFXInstance floorTile2( m, shader.Program );
-  floorTile2.setPosition( glm::vec3( 0, 0, -2.0f ) );
-  floorTiles.push_back( floorTile2 );
+    GFXInstance floorTile2( m, shader.Program );
+    floorTile2.setPosition( glm::vec3( 1.0f, 0.0f, ( i * 2 ) ) );
+    floorTiles.push_back( floorTile2 );
 
-  GFXInstance floorTile3( m, shader.Program );
-  floorTile3.setPosition( glm::vec3( 0, 0, -3.0f ) );
-  floorTiles.push_back( floorTile3 );
+    GFXInstance boxTile1( box, shader.Program );
+    boxTile1.setPosition( glm::vec3( 2.0f, 0.0f, ( i * 2 ) ) );
+    floorTiles.push_back( boxTile1 );
+  }
 
   sf::Clock clock;
 
@@ -103,8 +106,10 @@ int main() {
 
     mainWindow.pushGLStates();
       text.setString( "Concordia Engine Test" );
+      coords.setString( lotCamera.positionToString() );
 
       mainWindow.draw( text );
+      mainWindow.draw( coords );
     mainWindow.popGLStates();
 
     mainWindow.display();
@@ -116,28 +121,8 @@ int main() {
       }
 
       if( event.type == sf::Event::KeyPressed ) {
+
         /*
-        if( event.key.code == sf::Keyboard::P ) {
-          if( lotCamera.ortho ) {
-            lotCamera.setOrthographic( false );
-            mainWindow.setMouseCursorVisible( false );
-            sf::Mouse::setPosition( center, mainWindow );
-            mainWindow.setFramerateLimit( 60 );
-          } else {
-            lotCamera.setOrthographic( true );
-            mainWindow.setMouseCursorVisible( true );
-            mainWindow.setFramerateLimit( 30 );
-          }
-        }
-
-        if( event.key.code == sf::Keyboard::W ) {
-          lotCamera.walkForward();
-        }
-
-        if( event.key.code == sf::Keyboard::S ) {
-          lotCamera.walkBackward();
-        }
-
         if( event.key.code == sf::Keyboard::Q ) {
           lotCamera.rotateLeft();
         }
@@ -145,23 +130,25 @@ int main() {
         if( event.key.code == sf::Keyboard::E ) {
           lotCamera.rotateRight();
         }
+        */
 
         if( event.key.code == sf::Keyboard::Up ) {
-          lotCamera.move( 0.0f, 0.1f, 0.0f );
-        }
-
-        if( event.key.code == sf::Keyboard::Down ) {
           lotCamera.move( 0.0f, -0.1f, 0.0f );
         }
 
-        if( event.key.code == sf::Keyboard::Right ) {
-          lotCamera.move( 0.1f, 0.0f, 0.0f );
+        if( event.key.code == sf::Keyboard::Down ) {
+          lotCamera.move( 0.0f, 0.1f, 0.0f );
         }
 
-        if( event.key.code == sf::Keyboard::Left ) {
+        if( event.key.code == sf::Keyboard::Right ) {
           lotCamera.move( -0.1f, 0.0f, 0.0f );
         }
 
+        if( event.key.code == sf::Keyboard::Left ) {
+          lotCamera.move( 0.1f, 0.0f, 0.0f );
+        }
+
+        /*
         if( event.key.code == sf::Keyboard::Add && zoom != 1.0f ) {
           lotCamera.zoomIn();
         }
