@@ -31,8 +31,12 @@
 #include <osgViewer/ViewerEventHandlers>
 #include <osgDB/ReadFile>
 #include <osgAnimation/AnimationManagerBase>
+#include <osgAnimation/BasicAnimationManager>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include "graphics/rendering/model.hpp"
+
+using namespace BlueBear::Graphics::Rendering;
 
 osgViewer::Viewer viewer;
 
