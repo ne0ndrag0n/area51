@@ -2,6 +2,7 @@
 #define RENDERING_MODEL
 
 #include "graphics/rendering/types.hpp"
+#include "graphics/rendering/group.hpp"
 #include <osg/Node>
 #include <osg/ref_ptr>
 #include <osg/PositionAttitudeTransform>
@@ -39,6 +40,9 @@ namespace BlueBear {
 
         void setScale( const Vec3& scale );
         Vec3 getScale();
+
+        friend void Group::addChild( const Model& model );
+        friend void Group::removeChild( const Model& model );
 
         struct InvalidModelException : public std::exception {
           const char* what() const throw() {

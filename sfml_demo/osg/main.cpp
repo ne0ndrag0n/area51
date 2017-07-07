@@ -26,6 +26,7 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/Light>
 #include <osg/LightSource>
+#include <osg/Observer>
 #include <osg/NodeVisitor>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
@@ -37,8 +38,6 @@
 #include "graphics/rendering/model.hpp"
 
 using namespace BlueBear::Graphics::Rendering;
-
-osgViewer::Viewer viewer;
 
 template<typename G,typename W> bool convertEvent( sf::Event& event, G gw, W window ) {
 	auto eventQueue = gw->getEventQueue();
@@ -193,6 +192,7 @@ osg::ref_ptr< osg::Group > getRootNode() {
 */
 
 int main( int argc, char** argv ) {
+	osgViewer::Viewer viewer;
 
 	int width = 800; int height = 600;
 	double widthHalf = ( ( double ) width / 2 ); double heightHalf = ( ( double ) height / 2 );
