@@ -2,8 +2,10 @@
 #define RENDERING_MODEL
 
 #include "graphics/rendering/types.hpp"
-#include "graphics/rendering/group.hpp"
+#include "graphics/rendering/object.hpp"
 #include <osg/Node>
+#include <osg/Geode>
+#include <osg/Drawable>
 #include <osg/ref_ptr>
 #include <osg/PositionAttitudeTransform>
 #include <osg/NodeVisitor>
@@ -15,10 +17,9 @@ namespace BlueBear {
   namespace Graphics {
     namespace Rendering {
 
-      class Model {
-        osg::ref_ptr< osg::Node > model;
-        osg::ref_ptr< osg::PositionAttitudeTransform > root;
+      class Model : public Object {
         osgAnimation::AnimationMap animationMap;
+        osg::ref_ptr< osgAnimation::BasicAnimationManager > animationManager;
 
         struct AnimFinder : public osg::NodeVisitor {
           osg::ref_ptr< osgAnimation::BasicAnimationManager > animationManager;
@@ -27,22 +28,19 @@ namespace BlueBear {
           void apply( osg::Node& node );
         };
 
+        struct RigTransformImplSetter : public osg::NodeVisitor {
+          RigTransformImplSetter();
+
+          void apply( osg::Geode& geode );
+          void apply( osg::Drawable* drawable );
+        };
+
         void buildAnimationMap();
 
       public:
         Model( const std::string& path );
 
-        void setPosition( const Vec3& position );
-        Vec3 getPosition();
-
-        void setAttitude( const Quat& attitude );
-        Quat getAttitude();
-
-        void setScale( const Vec3& scale );
-        Vec3 getScale();
-
-        friend void Group::addChild( const Model& model );
-        friend void Group::removeChild( const Model& model );
+        void playAnimation( const std::string& animationID );
 
         struct InvalidModelException : public std::exception {
           const char* what() const throw() {

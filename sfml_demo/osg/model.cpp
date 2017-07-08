@@ -1,6 +1,9 @@
 #include "graphics/rendering/model.hpp"
 #include <osgAnimation/AnimationManagerBase>
 #include <osgDB/ReadFile>
+#include <osgAnimation/RigTransformHardware>
+#include <osgAnimation/RigGeometry>
+#include <iostream>
 
 namespace BlueBear {
   namespace Graphics {
@@ -21,18 +24,42 @@ namespace BlueBear {
         traverse( node );
       }
 
-      Model::Model( const std::string& path ) {
-        model = osgDB::readRefNodeFile( path );
+      Model::RigTransformImplSetter::RigTransformImplSetter() : osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ALL_CHILDREN ) {}
 
-        if( !model ) {
+      void Model::RigTransformImplSetter::apply( osg::Geode& geode ) {
+        for( unsigned int i = 0; i < geode.getNumDrawables(); i++ ) {
+          apply( geode.getDrawable( i ) );
+        }
+      }
+
+      void Model::RigTransformImplSetter::apply( osg::Drawable* drawable ) {
+        if( osgAnimation::RigGeometry* rig = dynamic_cast< osgAnimation::RigGeometry* >( drawable ) ) {
+          rig->setRigTransformImplementation( new osgAnimation::RigTransformHardware() );
+        }
+      }
+
+      Model::Model( const std::string& path ) : Object::Object() {
+        node = osgDB::readRefNodeFile( path );
+
+        if( !node ) {
           throw InvalidModelException();
         }
 
         buildAnimationMap();
+        root->addChild( node );
+      }
 
-        // All models are children of transforms
-        root = new osg::PositionAttitudeTransform();
-        root->addChild( model );
+      void Model::playAnimation( const std::string& animationID ) {
+        if( animationManager ) {
+          auto it = animationMap.find( animationID );
+          if( it != animationMap.end() ) {
+            animationManager->playAnimation( it->second );
+          } else {
+            // TODO: Log message warning this animationID isn't present.
+          }
+        } else {
+          // TODO: Log message warning that there's no animations
+        }
       }
 
       /**
@@ -41,40 +68,19 @@ namespace BlueBear {
        */
       void Model::buildAnimationMap() {
         AnimFinder finder;
-        model->accept( finder );
+        node->accept( finder );
 
         if( finder.animationManager.valid() ) {
-          model->setUpdateCallback( finder.animationManager.get() );
+          node->setUpdateCallback( finder.animationManager.get() );
 
           const osgAnimation::AnimationList& modelAnims = finder.animationManager->getAnimationList();
           for( osg::ref_ptr< osgAnimation::Animation > animation : modelAnims ) {
+            animation->setPlayMode( osgAnimation::Animation::ONCE );
             animationMap[ animation->getName() ] = animation;
           }
+
+          animationManager = finder.animationManager;
         }
-      }
-
-      void Model::setPosition( const Vec3& position ) {
-        root->setPosition( position );
-      }
-
-      Vec3 Model::getPosition() {
-        return root->getPosition();
-      }
-
-      void Model::setAttitude( const Quat& attitude ) {
-        root->setAttitude( attitude );
-      }
-
-      Quat Model::getAttitude() {
-        return root->getAttitude();
-      }
-
-      void Model::setScale( const Vec3& scale ) {
-        root->setScale( scale );
-      }
-
-      Vec3 Model::getScale() {
-        return root->getScale();
       }
 
     }
