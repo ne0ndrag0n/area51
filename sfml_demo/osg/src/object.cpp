@@ -1,4 +1,6 @@
 #include "graphics/rendering/object.hpp"
+#include <osg/Program>
+#include <osg/Shader>
 
 namespace BlueBear {
   namespace Graphics {
@@ -40,6 +42,20 @@ namespace BlueBear {
         // Empty, abstract, not always needed
       }
 
+      void Object::setShader( const std::string& vertPath, const std::string& fragPath ) {
+        osg::ref_ptr< osg::Program > program = new osg::Program();
+
+        osg::ref_ptr< osg::Shader > vertex = new osg::Shader( osg::Shader::VERTEX );
+        vertex->loadShaderSourceFromFile( vertPath );
+
+        osg::ref_ptr< osg::Shader > fragment = new osg::Shader( osg::Shader::FRAGMENT );
+        fragment->loadShaderSourceFromFile( fragPath );
+
+        program->addShader( fragment );
+        program->addShader( vertex );
+
+        node->getOrCreateStateSet()->setAttributeAndModes( program, osg::StateAttribute::ON );
+      }
     }
   }
 }

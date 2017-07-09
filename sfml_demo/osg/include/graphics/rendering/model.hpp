@@ -9,6 +9,7 @@
 #include <osg/ref_ptr>
 #include <osg/PositionAttitudeTransform>
 #include <osg/NodeVisitor>
+#include <osg/Texture2D>
 #include <osgAnimation/BasicAnimationManager>
 #include <string>
 #include <exception>
@@ -38,9 +39,31 @@ namespace BlueBear {
         void buildAnimationMap();
 
       public:
+        class Texture {
+          osg::ref_ptr< osg::Image > image;
+
+        public:
+          Texture( const std::string& filePath );
+          Texture( osg::ref_ptr< osg::Image > image );
+
+          void applyTo( Model& model, const std::string& nodeID, unsigned int unit = 0 ) const;
+
+          struct InvalidTextureException : public std::exception {
+            const char* what() const throw() {
+              return "Could not load file for texture!";
+            }
+          };
+        };
+
         Model( const std::string& path );
 
         void playAnimation( const std::string& animationID );
+
+        struct TextureNotFoundException : public std::exception {
+          const char* what() const throw() {
+            return "Could not find single node or texture!";
+          }
+        };
 
         struct InvalidModelException : public std::exception {
           const char* what() const throw() {

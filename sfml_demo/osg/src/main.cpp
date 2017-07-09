@@ -27,13 +27,14 @@
 #include "graphics/rendering/model.hpp"
 #include "graphics/rendering/sceneview.hpp"
 #include "graphics/rendering/group.hpp"
-#include "graphics/rendering/light.hpp"
+#include "graphics/rendering/types.hpp"
 
 using namespace BlueBear::Graphics::Rendering;
 
 std::vector< Model > models;
+int modelIndex = -1;
 
-template<typename W> bool convertEvent( sf::Event& event, W window ) {
+template<typename W, typename S> bool convertEvent( sf::Event& event, W window, S& sceneView ) {
 	switch ( event.type ) {
 		case sf::Event::KeyPressed:
 			if ( event.key.code == sf::Keyboard::Escape ) {
@@ -41,7 +42,23 @@ template<typename W> bool convertEvent( sf::Event& event, W window ) {
 			}
 
 			if( event.key.code == sf::Keyboard::P ) {
-				models[ 3 ].playAnimation( "Armature|ArmatureAction.002" );
+				models[ modelIndex ].playAnimation( "Armature|ArmatureAction.002" );
+			}
+
+			if( event.key.code == sf::Keyboard::Num1 ) {
+				sceneView.setRotation( 0 );
+			}
+
+			if( event.key.code == sf::Keyboard::Num2 ) {
+				sceneView.setRotation( 1 );
+			}
+
+			if( event.key.code == sf::Keyboard::Num3 ) {
+				sceneView.setRotation( 2 );
+			}
+
+			if( event.key.code == sf::Keyboard::Num4 ) {
+				sceneView.setRotation( 3 );
 			}
 			return true;
 
@@ -58,25 +75,32 @@ template<typename W> bool convertEvent( sf::Event& event, W window ) {
 
 int main( int argc, char** argv ) {
 	std::shared_ptr< sf::RenderWindow > window = std::make_shared< sf::RenderWindow >(
-		sf::VideoMode( 800, 600 ),
+		sf::VideoMode( 1200, 700 ),
 		"ne0ndrag0n area51 SFML-OSG evaluation",
 		sf::Style::Default,
-		sf::ContextSettings( 24 )
+		sf::ContextSettings( 24, 8, 0, 3, 3 )
 	);
-	window->setVerticalSyncEnabled( true );
+	window->setFramerateLimit( 60 );
 
-	SceneView sceneView( 800, 600 );
+	// needed?
+	// osg::DisplaySettings::instance()->setVertexBufferHint(osg::DisplaySettings::VertexBufferHint::VERTEX_ARRAY_OBJECT);
+
+	SceneView sceneView( 1200, 700 );
 
 	Group myGroup;
 
-	for( int i = 0; i != 3; i++ ) {
-		models.emplace_back( "mydata/floorpanel.fbx" );
+	Model::Texture polishedHardwood( "mydata/hardwood1.png" );
+	for( double y = -10.5; y != 11.5; y++ ) {
+		for( double x = -10.5; x != 11.5; x++ ) {
+			models.emplace_back( "mydata/floorpanel.fbx" );
+			models[ ++modelIndex ].setPosition( Vec3( x, y, 0.0 ) );
+
+			polishedHardwood.applyTo( models[ modelIndex ], "Plane" );
+		}
 	}
 
-	models[ 1 ].setPosition( osg::Vec3( 1.0, 0.0, 0.0 ) );
-	models[ 2 ].setPosition( osg::Vec3( 0.0, 1.0, 0.0 ) );
-
 	models.emplace_back( "mydata/cylinder.fbx" );
+	++modelIndex;
 
 	for( Model& model : models ) {
 		myGroup.add( model );
@@ -84,12 +108,14 @@ int main( int argc, char** argv ) {
 
 	sceneView.addGroup( myGroup );
 
+	// Suppress all OSG log messages, since at this point it's just spam
+	osg::setNotifyLevel( osg::NotifySeverity::ALWAYS );
 	while( window->isOpen() ) {
 		sf::Event event;
 
 		while ( window->pollEvent( event ) ) {
 			// pass the SFML event into the viewers event queue
-			convertEvent( event, window );
+			convertEvent( event, window, sceneView );
 		}
 
 		sceneView.update();

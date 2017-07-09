@@ -1,8 +1,12 @@
 #include "graphics/rendering/model.hpp"
+#include <osg/Object>
+#include <osg/Image>
+#include <osg/Geometry>
 #include <osgAnimation/AnimationManagerBase>
 #include <osgDB/ReadFile>
 #include <osgAnimation/RigTransformHardware>
 #include <osgAnimation/RigGeometry>
+#include <algorithm>
 #include <iostream>
 
 namespace BlueBear {
@@ -38,6 +42,32 @@ namespace BlueBear {
         }
       }
 
+      Model::Texture::Texture( const std::string& path ) {
+        image = osgDB::readImageFile( path );
+
+        if( !image ) {
+          throw InvalidTextureException();
+        }
+      }
+
+      Model::Texture::Texture( osg::ref_ptr< osg::Image > image ) : image( image ) {}
+
+      void Model::Texture::applyTo( Model& model, const std::string& nodeID, unsigned int unit ) const {
+        auto nodes = model.findNodesByID< osg::Geometry >( nodeID );
+
+        if( nodes.size() == 1 ) {
+          osg::ref_ptr< osg::StateSet > stateSet = nodes[ 0 ]->getOrCreateStateSet();
+
+          if( osg::ref_ptr< osg::Texture2D > texture = dynamic_cast< osg::Texture2D* >( stateSet->getTextureAttribute( unit, osg::StateAttribute::TEXTURE ) ) ) {
+            texture->setImage( image );
+          } else {
+            // TODO: Warning
+          }
+        } else {
+          // TODO: Warning
+        }
+      }
+
       Model::Model( const std::string& path ) : Object::Object() {
         node = osgDB::readRefNodeFile( path );
 
@@ -46,6 +76,16 @@ namespace BlueBear {
         }
 
         buildAnimationMap();
+        setShader();
+
+        auto geometries = findNodesByType< osg::Geometry >();
+        std::for_each( geometries.begin(), geometries.end(), []( osg::ref_ptr< osg::Geometry > geometry ) {
+          if( osg::ref_ptr< osg::Texture2D > texture = dynamic_cast< osg::Texture2D* >( geometry->getOrCreateStateSet()->getTextureAttribute( 0, osg::StateAttribute::TEXTURE ) ) ) {
+            texture->setFilter( osg::Texture::MIN_FILTER, osg::Texture::NEAREST );
+            texture->setFilter( osg::Texture::MAG_FILTER, osg::Texture::NEAREST );
+          }
+        } );
+
         root->addChild( node );
       }
 

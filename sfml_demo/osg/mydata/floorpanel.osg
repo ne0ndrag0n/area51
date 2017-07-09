@@ -1,0 +1,180 @@
+Group {
+  name "floorpanel.fbx"
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  StateSet {
+    DataVariance STATIC
+    rendering_hint DEFAULT_BIN
+    renderBinMode INHERIT
+    GL_NORMALIZE ON
+    GL_RESCALE_NORMAL ON
+  }
+  UpdateCallbacks {
+    osgAnimation::BasicAnimationManager {
+      num_animations 1
+      osgAnimation::Animation {
+        name "Default Take"
+        playmode LOOP
+        weight 0
+        duration 0
+        starttime 0
+        num_channels 5
+        Vec3LinearChannel {
+          name "translate"
+          target "Plane"
+          Keyframes 1 {
+            key 0.0416667 0 0 0
+          }
+        }
+        FloatLinearChannel {
+          name "rotateX"
+          target "Plane"
+          Keyframes 1 {
+            key 0.0416667 0
+          }
+        }
+        FloatLinearChannel {
+          name "rotateY"
+          target "Plane"
+          Keyframes 1 {
+            key 0.0416667 -0
+          }
+        }
+        FloatLinearChannel {
+          name "rotateZ"
+          target "Plane"
+          Keyframes 1 {
+            key 0.0416667 0
+          }
+        }
+        Vec3LinearChannel {
+          name "scale"
+          target "Plane"
+          Keyframes 1 {
+            key 0.0416667 1 1 1
+          }
+        }
+      }
+    }
+  }
+  num_children 1
+  MatrixTransform {
+    name "Plane"
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    UpdateCallbacks {
+      osgAnimation::UpdateMatrixTransform {
+        name "Plane"
+        osgAnimation::StackedTranslateElement {
+          name "translate"
+          translate 0 0 0
+        }
+        osgAnimation::StackedRotateAxisElement {
+          name "rotateZ"
+          axis 0 0 1
+          angle 0
+        }
+        osgAnimation::StackedRotateAxisElement {
+          name "rotateY"
+          axis 0 1 0
+          angle 0
+        }
+        osgAnimation::StackedRotateAxisElement {
+          name "rotateX"
+          axis 1 0 0
+          angle 0
+        }
+        osgAnimation::StackedScaleElement {
+          name "scale"
+          scale 1 1 1
+        }
+      }
+    }
+    referenceFrame RELATIVE
+    Matrix {
+      1 0 0 0
+      0 1 0 0
+      0 0 1 0
+      0 0 0 1
+    }
+    num_children 1
+    Geode {
+      name "Plane"
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        name "Plane"
+        StateSet {
+          DataVariance STATIC
+          rendering_hint DEFAULT_BIN
+          renderBinMode INHERIT
+          Material {
+            name "default__floor_png"
+            ColorMode OFF
+            ambientColor 1 1 1 1
+            diffuseColor 0.64 0.64 0.64 1
+            specularColor 0 0 0 1
+            emissionColor 0 0 0 1
+            shininess 0
+          }
+          textureUnit 0 {
+            Texture2D {
+              file "floor.png"
+              wrap_s REPEAT
+              wrap_t REPEAT
+              wrap_r CLAMP
+              min_filter LINEAR_MIPMAP_LINEAR
+              mag_filter LINEAR
+              maxAnisotropy 1
+              borderColor 0 0 0 0
+              borderWidth 0
+              useHardwareMipMapGeneration TRUE
+              unRefImageDataAfterApply TRUE
+              internalFormatMode USE_IMAGE_DATA_FORMAT
+              resizeNonPowerOfTwo TRUE
+              shadowComparison FALSE
+              shadowCompareFunc GL_LEQUAL
+              shadowTextureMode GL_LUMINANCE
+            }
+          }
+        }
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays TRIANGLES 0 6
+        }
+        VertexArray Vec3Array 6
+        {
+          -0.5 -0.5 0
+          0.5 -0.5 0
+          0.5 0.5 0
+          -0.5 -0.5 0
+          0.5 0.5 0
+          -0.5 0.5 0
+        }
+        NormalBinding PER_VERTEX
+        NormalArray Vec3Array 6
+        {
+          0 0 1
+          0 0 1
+          0 0 1
+          0 0 1
+          0 0 1
+          0 0 1
+        }
+        TexCoordArray 0 Vec2Array 6
+        {
+          0.0001 0.0001
+          0.9999 0.0001
+          0.9999 0.9999
+          0.0001 0.0001
+          0.9999 0.9999
+          0.0001 0.9999
+        }
+      }
+    }
+  }
+}
