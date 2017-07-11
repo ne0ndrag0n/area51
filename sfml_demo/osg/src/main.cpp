@@ -26,6 +26,7 @@
 #include <SFML/Window.hpp>
 #include "graphics/rendering/model.hpp"
 #include "graphics/rendering/sceneview.hpp"
+#include "graphics/rendering/sceneview_camera.hpp"
 #include "graphics/rendering/group.hpp"
 #include "graphics/rendering/types.hpp"
 
@@ -46,19 +47,43 @@ template<typename W, typename S> bool convertEvent( sf::Event& event, W window, 
 			}
 
 			if( event.key.code == sf::Keyboard::Num1 ) {
-				sceneView.setRotation( 0 );
+				sceneView.camera->setRotation( 0 );
 			}
 
 			if( event.key.code == sf::Keyboard::Num2 ) {
-				sceneView.setRotation( 1 );
+				sceneView.camera->setRotation( 1 );
 			}
 
 			if( event.key.code == sf::Keyboard::Num3 ) {
-				sceneView.setRotation( 2 );
+				sceneView.camera->setRotation( 2 );
 			}
 
 			if( event.key.code == sf::Keyboard::Num4 ) {
-				sceneView.setRotation( 3 );
+				sceneView.camera->setRotation( 3 );
+			}
+
+			if( event.key.code == sf::Keyboard::Left ) {
+				sceneView.camera->moveLeft();
+			}
+
+			if( event.key.code == sf::Keyboard::Right ) {
+				sceneView.camera->moveRight();
+			}
+
+			if( event.key.code == sf::Keyboard::Up ) {
+				sceneView.camera->moveUp();
+			}
+
+			if( event.key.code == sf::Keyboard::Down ) {
+				sceneView.camera->moveDown();
+			}
+
+			if( event.key.code == sf::Keyboard::Add ) {
+				sceneView.camera->zoomIn();
+			}
+
+			if( event.key.code == sf::Keyboard::Dash ) {
+				sceneView.camera->zoomOut();
 			}
 			return true;
 
@@ -90,8 +115,8 @@ int main( int argc, char** argv ) {
 	Group myGroup;
 
 	Model::Texture polishedHardwood( "mydata/hardwood1.png" );
-	for( double y = -10.5; y != 11.5; y++ ) {
-		for( double x = -10.5; x != 11.5; x++ ) {
+	for( double y = -3.5; y != 4.5; y++ ) {
+		for( double x = -3.5; x != 4.5; x++ ) {
 			models.emplace_back( "mydata/floorpanel.fbx" );
 			models[ ++modelIndex ].setPosition( Vec3( x, y, 0.0 ) );
 
