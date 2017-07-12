@@ -72,10 +72,10 @@ namespace BlueBear {
           return locator.foundNodes;
         }
 
-      public:
         Object();
         Object( const Object& object );
-        Object& operator=( const Object& rhs );
+
+      public:
         virtual ~Object();
 
         void setPosition( const Vec3& position );

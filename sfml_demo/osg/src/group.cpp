@@ -21,14 +21,22 @@ namespace BlueBear {
         group->removeChildren( 0, group->getNumChildren() );
       }
 
+      std::shared_ptr< Group > Group::create() {
+        return std::shared_ptr< Group >( new Group() );
+      }
+
+      std::shared_ptr< Group > Group::clone( std::shared_ptr< Group > other ) {
+        return std::shared_ptr< Group >( new Group( *other ) );
+      }
+
       /**
        * @friend Object
        */
-      void Group::add( Object& object ) {
-        if( object.root->getNumParents() < 1 ) {
-          node->asGroup()->addChild( object.root );
+      void Group::add( std::shared_ptr< Object > object ) {
+        if( object->root->getNumParents() < 1 ) {
+          node->asGroup()->addChild( object->root );
 
-          object.onAddedToContainer( node->asGroup() );
+          object->onAddedToContainer( node->asGroup() );
         } else {
           // TODO: Single-parent warning
         }
@@ -37,10 +45,10 @@ namespace BlueBear {
       /**
        * @friend Object
        */
-      void Group::remove( Object& object ) {
-        node->asGroup()->removeChild( object.root );
+      void Group::remove( std::shared_ptr< Object > object ) {
+        node->asGroup()->removeChild( object->root );
 
-        object.onRemovedFromContainer();
+        object->onRemovedFromContainer();
       }
 
     }

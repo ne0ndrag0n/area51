@@ -13,6 +13,7 @@
 #include <osgAnimation/BasicAnimationManager>
 #include <string>
 #include <exception>
+#include <memory>
 
 namespace BlueBear {
   namespace Graphics {
@@ -38,6 +39,10 @@ namespace BlueBear {
 
         void buildAnimationMap();
 
+      protected:
+        Model( const std::string& path );
+        Model( const Model& model );
+
       public:
         class Texture {
           osg::ref_ptr< osg::Image > image;
@@ -46,7 +51,7 @@ namespace BlueBear {
           Texture( const std::string& filePath );
           Texture( osg::ref_ptr< osg::Image > image );
 
-          void applyTo( Model& model, const std::string& nodeID, unsigned int unit = 0 ) const;
+          void applyTo( std::shared_ptr< Model > model, const std::string& nodeID, unsigned int unit = 0 ) const;
 
           struct InvalidTextureException : public std::exception {
             const char* what() const throw() {
@@ -55,8 +60,8 @@ namespace BlueBear {
           };
         };
 
-        Model( const std::string& path );
-        Model( const Model& model );
+        static std::shared_ptr< Model > create( const std::string& filePath );
+        static std::shared_ptr< Model > clone( std::shared_ptr< Model > other );
 
         void playAnimation( const std::string& animationID );
 

@@ -22,16 +22,16 @@ namespace BlueBear {
         viewer.frame();
       }
 
-      void SceneView::addGroup( const Group& group ) {
-        if( group.root->getNumParents() < 1 ) {
-          rootGroup->addChild( group.root );
+      void SceneView::addGroup( std::shared_ptr< Group > group ) {
+        if( group->root->getNumParents() < 1 ) {
+          rootGroup->addChild( group->root );
         } else {
           // TODO: Single-parent warning
         }
       }
 
-      void SceneView::removeGroup( const Group& group ) {
-        rootGroup->removeChild( group.root );
+      void SceneView::removeGroup( std::shared_ptr< Group > group ) {
+        rootGroup->removeChild( group->root );
       }
 
     }

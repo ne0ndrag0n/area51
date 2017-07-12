@@ -24,8 +24,8 @@ namespace BlueBear {
 
         void update();
 
-        void addGroup( const Group& group );
-        void removeGroup( const Group& group );
+        void addGroup( std::shared_ptr< Group > group );
+        void removeGroup( std::shared_ptr< Group > group );
       };
 
     }

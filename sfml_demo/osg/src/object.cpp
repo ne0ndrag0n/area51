@@ -15,11 +15,6 @@ namespace BlueBear {
         deepCopyToThis( object );
       }
 
-      Object& Object::operator=( const Object& rhs ) {
-        deepCopyToThis( rhs );
-        return *this;
-      }
-
       Object::~Object() {
         // When object is destroyed, remove the object from the parent (it's no longer relevant)
         if( root->getNumParents() == 1 ) {

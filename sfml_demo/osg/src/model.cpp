@@ -52,8 +52,8 @@ namespace BlueBear {
 
       Model::Texture::Texture( osg::ref_ptr< osg::Image > image ) : image( image ) {}
 
-      void Model::Texture::applyTo( Model& model, const std::string& nodeID, unsigned int unit ) const {
-        auto nodes = model.findNodesByID< osg::Geometry >( nodeID );
+      void Model::Texture::applyTo( std::shared_ptr< Model > model, const std::string& nodeID, unsigned int unit ) const {
+        auto nodes = model->findNodesByID< osg::Geometry >( nodeID );
 
         if( nodes.size() == 1 ) {
           osg::ref_ptr< osg::StateSet > stateSet = nodes[ 0 ]->getOrCreateStateSet();
@@ -89,6 +89,14 @@ namespace BlueBear {
 
       Model::Model( const Model& model ) : Object::Object( model ) {
         buildAnimationMap();
+      }
+
+      std::shared_ptr< Model > Model::create( const std::string& filePath ) {
+        return std::shared_ptr< Model >( new Model( filePath ) );
+      }
+
+      std::shared_ptr< Model > Model::clone( std::shared_ptr< Model > other ) {
+        return std::shared_ptr< Model >( new Model( *other ) );
       }
 
       void Model::playAnimation( const std::string& animationID ) {
