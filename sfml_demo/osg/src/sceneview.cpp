@@ -23,7 +23,11 @@ namespace BlueBear {
       }
 
       void SceneView::addGroup( const Group& group ) {
-        rootGroup->addChild( group.root );
+        if( group.root->getNumParents() < 1 ) {
+          rootGroup->addChild( group.root );
+        } else {
+          // TODO: Single-parent warning
+        }
       }
 
       void SceneView::removeGroup( const Group& group ) {

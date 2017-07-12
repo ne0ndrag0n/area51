@@ -1,6 +1,7 @@
 #include "graphics/rendering/object.hpp"
 #include <osg/Program>
 #include <osg/Shader>
+#include <iostream>
 
 namespace BlueBear {
   namespace Graphics {
@@ -8,6 +9,32 @@ namespace BlueBear {
 
       Object::Object() {
         root = new osg::PositionAttitudeTransform();
+      }
+
+      Object::Object( const Object& object ) {
+        deepCopyToThis( object );
+      }
+
+      Object& Object::operator=( const Object& rhs ) {
+        deepCopyToThis( rhs );
+        return *this;
+      }
+
+      Object::~Object() {
+        // When object is destroyed, remove the object from the parent (it's no longer relevant)
+        if( root->getNumParents() == 1 ) {
+          root->getParent( 0 )->asGroup()->removeChild( root );
+        }
+      }
+
+      void Object::deepCopyToThis( const Object& object ) {
+        root = dynamic_cast< osg::PositionAttitudeTransform* >( object.root->clone( osg::CopyOp::DEEP_COPY_ALL ) );
+        node = root->getChild( 0 );
+
+        // Disconnect from a parent
+        if( root->getNumParents() == 1 ) {
+          root->getParent( 0 )->asGroup()->removeChild( root );
+        }
       }
 
       void Object::setPosition( const Vec3& position ) {

@@ -56,6 +56,7 @@ namespace BlueBear {
         };
 
         Model( const std::string& path );
+        Model( const Model& model );
 
         void playAnimation( const std::string& animationID );
 

@@ -13,6 +13,7 @@ namespace BlueBear {
 
       public:
         Group();
+        virtual ~Group();
 
         void add( Object& object );
         void remove( Object& object );

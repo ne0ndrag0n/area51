@@ -76,8 +76,6 @@ namespace BlueBear {
         }
 
         buildAnimationMap();
-        setShader();
-
         auto geometries = findNodesByType< osg::Geometry >();
         std::for_each( geometries.begin(), geometries.end(), []( osg::ref_ptr< osg::Geometry > geometry ) {
           if( osg::ref_ptr< osg::Texture2D > texture = dynamic_cast< osg::Texture2D* >( geometry->getOrCreateStateSet()->getTextureAttribute( 0, osg::StateAttribute::TEXTURE ) ) ) {
@@ -87,6 +85,10 @@ namespace BlueBear {
         } );
 
         root->addChild( node );
+      }
+
+      Model::Model( const Model& model ) : Object::Object( model ) {
+        buildAnimationMap();
       }
 
       void Model::playAnimation( const std::string& animationID ) {
@@ -121,8 +123,8 @@ namespace BlueBear {
 
           animationManager = finder.animationManager;
         }
-      }
 
+      }
     }
   }
 }

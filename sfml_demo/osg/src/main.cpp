@@ -22,6 +22,8 @@
 
 #include <memory>
 #include <iostream>
+#include <osg/PositionAttitudeTransform>
+#include <osg/Node>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include "graphics/rendering/model.hpp"
@@ -32,8 +34,9 @@
 
 using namespace BlueBear::Graphics::Rendering;
 
-std::vector< Model > models;
-int modelIndex = -1;
+std::vector< std::shared_ptr< Model > > models;
+std::shared_ptr< Model > cyl;
+Group myGroup;
 
 template<typename W, typename S> bool convertEvent( sf::Event& event, W window, S& sceneView ) {
 	switch ( event.type ) {
@@ -43,7 +46,7 @@ template<typename W, typename S> bool convertEvent( sf::Event& event, W window, 
 			}
 
 			if( event.key.code == sf::Keyboard::P ) {
-				models[ modelIndex ].playAnimation( "Armature|ArmatureAction.002" );
+				cyl->playAnimation( "Armature|ArmatureAction.002" );
 			}
 
 			if( event.key.code == sf::Keyboard::Num1 ) {
@@ -112,23 +115,27 @@ int main( int argc, char** argv ) {
 
 	SceneView sceneView( 1200, 700 );
 
-	Group myGroup;
+	Model cylinder( "mydata/cylinder.fbx" );
+	Model floorPanel( "mydata/floorpanel.fbx" );
 
 	Model::Texture polishedHardwood( "mydata/hardwood1.png" );
+	polishedHardwood.applyTo( floorPanel, "Plane" );
+
 	for( double y = -3.5; y != 4.5; y++ ) {
 		for( double x = -3.5; x != 4.5; x++ ) {
-			models.emplace_back( "mydata/floorpanel.fbx" );
-			models[ ++modelIndex ].setPosition( Vec3( x, y, 0.0 ) );
+			std::shared_ptr< Model > m = std::make_shared< Model >( floorPanel );
 
-			polishedHardwood.applyTo( models[ modelIndex ], "Plane" );
+			models.emplace_back( m );
+			m->setPosition( Vec3( x, y, 0.0 ) );
 		}
 	}
 
-	models.emplace_back( "mydata/cylinder.fbx" );
-	++modelIndex;
+	cyl = std::make_shared< Model >( cylinder );
+	models.emplace_back( cyl );
+	cyl->setPosition( Vec3( 0.5, 0.5, 0.0 ) );
 
-	for( Model& model : models ) {
-		myGroup.add( model );
+	for( std::shared_ptr< Model > model : models ) {
+		myGroup.add( *model );
 	}
 
 	sceneView.addGroup( myGroup );

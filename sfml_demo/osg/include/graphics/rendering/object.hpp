@@ -25,7 +25,7 @@ namespace BlueBear {
             : osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ALL_CHILDREN ),
               target( target ) {}
 
-          void apply( T& node ) {
+          void apply( T& node ) override {
             if( node.getName() == target ) {
               foundNodes.emplace_back( &node );
             }
@@ -40,12 +40,14 @@ namespace BlueBear {
 
           TypedNodeLocator() : osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ALL_CHILDREN ) {}
 
-          void apply( T& node ) {
+          void apply( T& node ) override {
             foundNodes.emplace_back( &node );
 
             traverse( node );
           }
         };
+
+        void deepCopyToThis( const Object& object );
 
       protected:
         osg::ref_ptr< osg::PositionAttitudeTransform > root;
@@ -72,6 +74,9 @@ namespace BlueBear {
 
       public:
         Object();
+        Object( const Object& object );
+        Object& operator=( const Object& rhs );
+        virtual ~Object();
 
         void setPosition( const Vec3& position );
         Vec3 getPosition();
