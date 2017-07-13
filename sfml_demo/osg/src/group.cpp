@@ -37,6 +37,8 @@ namespace BlueBear {
           node->asGroup()->addChild( object->root );
 
           object->onAddedToContainer( node->asGroup() );
+
+          tracked.insert( object );
         } else {
           // TODO: Single-parent warning
         }
@@ -46,9 +48,15 @@ namespace BlueBear {
        * @friend Object
        */
       void Group::remove( std::shared_ptr< Object > object ) {
-        node->asGroup()->removeChild( object->root );
+        if( tracked.find( object ) != tracked.end() ) {
+          node->asGroup()->removeChild( object->root );
 
-        object->onRemovedFromContainer();
+          object->onRemovedFromContainer();
+
+          tracked.erase( object );
+        } else {
+          // TODO: Not added warning
+        }
       }
 
     }

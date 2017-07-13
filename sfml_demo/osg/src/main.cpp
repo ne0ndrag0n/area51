@@ -34,7 +34,6 @@
 
 using namespace BlueBear::Graphics::Rendering;
 
-std::vector< std::shared_ptr< Model > > models;
 std::shared_ptr< Model > cyl;
 std::shared_ptr< Group > myGroup = Group::create();
 
@@ -120,21 +119,24 @@ int main( int argc, char** argv ) {
 	Model::Texture polishedHardwood( "mydata/hardwood1.png" );
 	polishedHardwood.applyTo( floorPanel, "Plane" );
 
-	for( double y = -3.5; y != 4.5; y++ ) {
-		for( double x = -3.5; x != 4.5; x++ ) {
-			std::shared_ptr< Model > m = Model::clone( floorPanel );
+	{
+		std::vector< std::shared_ptr< Model > > models;
+		for( double y = -3.5; y != 4.5; y++ ) {
+			for( double x = -3.5; x != 4.5; x++ ) {
+				std::shared_ptr< Model > m = Model::clone( floorPanel );
 
-			models.emplace_back( m );
-			m->setPosition( Vec3( x, y, 0.0 ) );
+				models.emplace_back( m );
+				m->setPosition( Vec3( x, y, 0.0 ) );
+			}
 		}
-	}
 
-	cyl = Model::clone( cylinder );
-	models.emplace_back( cyl );
-	cyl->setPosition( Vec3( 0.5, 0.5, 0.0 ) );
+		cyl = Model::clone( cylinder );
+		models.emplace_back( cyl );
+		cyl->setPosition( Vec3( 0.5, 0.5, 0.0 ) );
 
-	for( std::shared_ptr< Model > model : models ) {
-		myGroup->add( model );
+		for( std::shared_ptr< Model > model : models ) {
+			myGroup->add( model );
+		}
 	}
 
 	sceneView.addGroup( myGroup );

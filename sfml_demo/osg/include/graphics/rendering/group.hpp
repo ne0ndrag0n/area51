@@ -3,6 +3,7 @@
 
 #include "graphics/rendering/object.hpp"
 #include <memory>
+#include <unordered_set>
 
 namespace BlueBear {
   namespace Graphics {
@@ -11,6 +12,8 @@ namespace BlueBear {
 
       class Group : public Object {
         friend class SceneView;
+
+        std::unordered_set< std::shared_ptr< Object > > tracked;
 
       protected:
         Group();

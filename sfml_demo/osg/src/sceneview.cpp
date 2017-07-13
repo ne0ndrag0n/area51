@@ -25,13 +25,20 @@ namespace BlueBear {
       void SceneView::addGroup( std::shared_ptr< Group > group ) {
         if( group->root->getNumParents() < 1 ) {
           rootGroup->addChild( group->root );
+
+          tracked.insert( group );
         } else {
           // TODO: Single-parent warning
         }
       }
 
       void SceneView::removeGroup( std::shared_ptr< Group > group ) {
-        rootGroup->removeChild( group->root );
+        if( tracked.find( group ) != tracked.end() ) {
+          rootGroup->removeChild( group->root );
+          tracked.erase( group );
+        } else {
+          // TODO: Not added warning
+        }
       }
 
     }

@@ -6,6 +6,7 @@
 #include <osg/Group>
 #include <osgViewer/Viewer>
 #include <memory>
+#include <unordered_set>
 
 namespace BlueBear {
   namespace Graphics {
@@ -15,6 +16,7 @@ namespace BlueBear {
       class SceneView {
         osgViewer::Viewer viewer;
         osg::ref_ptr< osg::Group > rootGroup;
+        std::unordered_set< std::shared_ptr< Group > > tracked;
 
       public:
         class Camera;
