@@ -20,6 +20,7 @@
 // Simple example using GLUT to create an OpenGL window and OSG for rendering.
 // Derived from osgGLUTsimple.cpp and osgkeyboardmouse.cpp
 
+#include <GL/glew.h>
 #include <memory>
 #include <iostream>
 #include <osg/PositionAttitudeTransform>
@@ -107,6 +108,8 @@ int main( int argc, char** argv ) {
 		sf::Style::Default,
 		sf::ContextSettings( 24, 8, 0, 3, 3 )
 	);
+	glewInit();
+
 	window->setFramerateLimit( 60 );
 
 	// needed?
