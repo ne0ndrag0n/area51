@@ -12,6 +12,8 @@
 #include <osgViewer/Viewer>
 #include <osg/io_utils>
 
+#include <iostream>
+
 class NanoVGDrawable : public osg::Drawable {
 public:
     NanoVGDrawable()
@@ -36,7 +38,7 @@ public:
         {
             NanoVGDrawable* constMe = const_cast<NanoVGDrawable*>(this);
             glewInit();
-            constMe->_vg = nvgCreateGL3( NVG_ANTIALIAS|NVG_STENCIL_STROKES|NVG_DEBUG );
+            constMe->_vg = nvgCreateGL3( NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG );
             if ( !constMe->_vg )
             {
                 OSG_NOTICE << "[NanoVGDrawable] Failed to create VG context" << std::endl;
@@ -82,6 +84,11 @@ public:
         std::string file = osgDB::findDataFile( "Images/osg256.png" );
         int img = nvgCreateImage( _vg, file.c_str(), 0 );
         if ( img!=0 ) _loadedImages.push_back( img );
+
+        exampleFont = nvgCreateFont( _vg, "sans", "roboto.ttf" );
+        if( exampleFont == -1 ) {
+          std::cout << "Failed to load font" << std::endl;
+        }
     }
 
     virtual void deinitializeGL( osg::State* state )
@@ -95,7 +102,7 @@ public:
         // Some test drawings...
         nvgBeginPath( _vg );
         nvgRect( _vg, 300, 300, 300, 30 );
-        nvgFillColor( _vg, nvgRGBA(255, 192, 0, 255) );
+        nvgFillColor( _vg, nvgRGBA(128, 96, 0, 255) );
         nvgFill( _vg );
         nvgClosePath( _vg );
 
@@ -107,13 +114,22 @@ public:
 
         if ( _loadedImages.size()>0 )
         {
-            NVGpaint imgPaint = nvgImagePattern( _vg, 600, 150, 300, 400, 0.0f,
+            NVGpaint imgPaint = nvgImagePattern( _vg, 600, 150, 256, 256, 0.0f,
                                                  _loadedImages[0], 1.0f );
             nvgBeginPath( _vg );
-            nvgRoundedRect( _vg, 600, 150, 300, 400, 5 );
+            nvgRoundedRect( _vg, 600, 150, 256, 256, 5 );
             nvgFillPaint( _vg, imgPaint );
             nvgFill( _vg );
             nvgClosePath( _vg );
+        }
+
+        if( exampleFont != -1 ) {
+          nvgFontSize( _vg, 18.0f );
+          nvgFontFace( _vg, "sans" );
+          nvgFillColor( _vg, nvgRGBA( 255, 255, 255, 255 ) );
+
+          nvgTextAlign( _vg, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE );
+          nvgText( _vg, 305, 310, "Booga Booga Booga", NULL );
         }
     }
 
@@ -123,6 +139,7 @@ public:
 protected:
     NVGcontext* _vg;
     std::vector<int> _loadedImages;
+    int exampleFont;
     unsigned int _activeContextID;
     int _width, _height;
     bool _initialized;
@@ -139,6 +156,7 @@ public:
         case osgGA::GUIEventAdapter::RESIZE:
             if ( _camera.valid() )
             {
+                std::cout << "Resize" << std::endl;
                 _camera->setViewport( 0.0, 0.0, width, height );
                 _vg->setWindowSize( width, height );
             }
@@ -154,8 +172,47 @@ protected:
     NanoVGDrawable* _vg;
 };
 
+class NanoVGHandler2 : public osgGA::GUIEventHandler {
+public:
+    virtual bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+    {
+        int width = ea.getWindowWidth(), height = ea.getWindowHeight();
+        switch ( ea.getEventType() )
+        {
+        case osgGA::GUIEventAdapter::PUSH:
+          std::cout << "Click" << std::endl;
+          break;
+        case osgGA::GUIEventAdapter::RELEASE:
+          std::cout << "Release" << std::endl;
+          break;
+        case osgGA::GUIEventAdapter::KEYDOWN:
+          std::cout << ea.getKey() << std::endl;
+          break;
+        case osgGA::GUIEventAdapter::KEYUP:
+          std::cout << ea.getKey() << std::endl;
+          break;
+        default:
+            break;
+        }
+        return false;
+    }
+};
+
 int main( int argc, char** argv )
 {
+    osg::ref_ptr< osg::GraphicsContext::Traits > traits = new osg::GraphicsContext::Traits();
+    traits->x = 20; traits->y = 30;
+    traits->width = 1200; traits->height = 700;
+    traits->windowDecoration = true;
+    traits->doubleBuffer = true;
+    traits->glContextVersion = "3.3";
+    osg::ref_ptr< osg::GraphicsContext > gc = osg::GraphicsContext::createGraphicsContext( traits.get() );
+    if( !gc.valid() )
+    {
+        osg::notify( osg::FATAL ) << "Unable to create OpenGL context." << std::endl;
+        return( 1 );
+    }
+
     osg::ref_ptr<NanoVGDrawable> vgDrawable = new NanoVGDrawable;
 
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
@@ -181,17 +238,15 @@ int main( int argc, char** argv )
     viewer.addEventHandler( new osgViewer::StatsHandler );
     viewer.addEventHandler( new osgViewer::WindowSizeHandler );
     viewer.addEventHandler( new NanoVGHandler(camera.get(), vgDrawable.get()) );
+    viewer.addEventHandler( new NanoVGHandler2 );
     viewer.setSceneData( root.get() );
-    viewer.setUpViewOnSingleScreen( 0 );
 
-    osgViewer::GraphicsWindow* gw =
-        dynamic_cast<osgViewer::GraphicsWindow*>( viewer.getCamera()->getGraphicsContext() );
-    if ( gw )
-    {
-        // Send window size event for NanoVG to handle
-        int x, y, w, h;
-        gw->getWindowRectangle( x, y, w, h );
-        vgDrawable->setWindowSize( w, h );
-    }
+    osg::ref_ptr< osg::Camera > mainCamera = viewer.getCamera();
+    mainCamera->setGraphicsContext( gc );
+    mainCamera->setViewport( 0, 0, 1200, 700 );
+
+    vgDrawable->setWindowSize( 1200, 700 );
+
+    osg::setNotifyLevel( osg::NotifySeverity::ALWAYS );
     return viewer.run();
 }
