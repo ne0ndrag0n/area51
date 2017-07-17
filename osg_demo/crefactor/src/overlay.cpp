@@ -1,5 +1,6 @@
 #include "graphics/gui/overlay.hpp"
 #include "device/display.hpp"
+#include <osg/GLDefines>
 #include <nanovg/nanovg_gl.h>
 #include <osg/StateAttribute>
 #include <osg/StateSet>
@@ -24,9 +25,6 @@ namespace BlueBear {
           // No Overlay::InternalAdapter should ever be created as a const object.
           // And OpenSceneGraph shouldn't have made drawImplementation() a const method.
           Overlay::InternalAdapter* self = const_cast< Overlay::InternalAdapter* >( this );
-
-          // FIXME: Including this library is becoming a humongous pain in the ass
-          //glewInit();
           self->nvgContext = nvgCreateGL3( NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG );
           if( !self->nvgContext ) {
             std::cout << "NanoVG context could not be created." << std::endl;

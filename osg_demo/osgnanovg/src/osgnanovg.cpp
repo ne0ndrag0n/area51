@@ -1,5 +1,5 @@
-#include <GL/glew.h>
 #include "nanovg/nanovg.h"
+#include <osg/GLDefines>
 #include "nanovg/nanovg_gl.h"
 
 #include <osg/Drawable>
@@ -28,7 +28,6 @@ public:
         if ( !_initialized )
         {
             NanoVGDrawable* constMe = const_cast<NanoVGDrawable*>(this);
-            glewInit();
             constMe->_vg = nvgCreateGL3( NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG );
             if ( !constMe->_vg )
             {

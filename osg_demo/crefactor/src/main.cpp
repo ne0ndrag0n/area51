@@ -1,4 +1,3 @@
-#include <GL/glew.h>
 #include <memory>
 #include <iostream>
 #include <osg/PositionAttitudeTransform>
