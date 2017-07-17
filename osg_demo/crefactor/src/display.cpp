@@ -1,4 +1,5 @@
 #include "device/display.hpp"
+#include "graphics/gui/overlay.hpp"
 
 namespace BlueBear {
   namespace Device {
@@ -24,6 +25,8 @@ namespace BlueBear {
         // needed? for os x?
         // osg::DisplaySettings::instance()->setVertexBufferHint(osg::DisplaySettings::VertexBufferHint::VERTEX_ARRAY_OBJECT);
     }
+
+    Display::~Display() {}
 
     ContextHelper Display::getContextHelper() const {
       return contextHelper;

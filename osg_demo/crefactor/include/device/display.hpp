@@ -6,8 +6,15 @@
 #include <osg/GraphicsContext>
 #include <string>
 #include <exception>
+#include <memory>
 
 namespace BlueBear {
+  namespace Graphics {
+    namespace GUI {
+      class Overlay;
+    }
+  }
+
   namespace Device {
 
     class Display {
@@ -19,7 +26,12 @@ namespace BlueBear {
 
     public:
       Display( unsigned int width, unsigned int height );
+      ~Display();
 
+    private:
+      std::unique_ptr< Graphics::GUI::Overlay > overlay;
+
+    public:
       ContextHelper getContextHelper() const;
       unsigned int getWidth() const;
       unsigned int getHeight() const;

@@ -1,13 +1,13 @@
 CC = g++
 DFLAGS = -DGLEW_STATIC -DNANOVG_GLEW -DNANOVG_GL3_IMPLEMENTATION
 CFLAGS = -pthread -std=c++14 -g -rdynamic -pipe $(DFLAGS) #-fsanitize=address
-INCLUDES = -Iinclude
+INCLUDES = -Iinclude -Ilib -Ilib/nanovg
 LIBS = -lpthread -lassimp -lGLEW -lGL -lsfml-graphics -lsfml-window -lsfml-system -lsfgui -ljsoncpp `pkg-config --libs openscenegraph`
 
 SRCS = $(wildcard src/*.cpp)
-SRCS += $(wildcard src/lib/*.cpp)
 
 OBJS = $(SRCS:.cpp=.o)
+OBJS += lib/nanovg/nanovg.o
 
 MAIN = osgnanovg
 

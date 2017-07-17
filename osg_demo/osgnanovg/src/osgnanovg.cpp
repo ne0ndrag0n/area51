@@ -1,6 +1,6 @@
 #include <GL/glew.h>
-#include "nanovg.h"
-#include "nanovg_gl.h"
+#include "nanovg/nanovg.h"
+#include "nanovg/nanovg_gl.h"
 
 #include <osg/Drawable>
 #include <osg/MatrixTransform>
@@ -21,15 +21,6 @@ public:
     {
         setSupportsDisplayList( false );
     }
-
-    NanoVGDrawable( const NanoVGDrawable& copy, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY )
-    :   osg::Drawable(copy, copyop), _vg(copy._vg),
-        _loadedImages(copy._loadedImages), _activeContextID(copy._activeContextID),
-        _width(copy._width), _height(copy._height), _initialized(copy._initialized)
-    {
-    }
-
-    META_Object( osg, NanoVGDrawable );
 
     virtual void drawImplementation( osg::RenderInfo& renderInfo ) const
     {
@@ -217,9 +208,9 @@ int main( int argc, char** argv )
 
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
     geode->setCullingActive( false );
-    geode->addDrawable( vgDrawable.get() );
     geode->getOrCreateStateSet()->setMode( GL_BLEND, osg::StateAttribute::ON );
     geode->getOrCreateStateSet()->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
+    geode->addDrawable( vgDrawable.get() );
 
     osg::ref_ptr<osg::Camera> camera = new osg::Camera;
     camera->setClearMask( GL_DEPTH_BUFFER_BIT );

@@ -10,7 +10,9 @@
 #include "graphics/rendering/sceneview_camera.hpp"
 #include "graphics/rendering/group.hpp"
 #include "graphics/rendering/types.hpp"
+#include "graphics/gui/overlay.hpp"
 
+using namespace BlueBear;
 using namespace BlueBear::Graphics::Rendering;
 using namespace BlueBear::Device;
 
@@ -19,6 +21,7 @@ std::shared_ptr< Group > myGroup = Group::create();
 
 int main( int argc, char** argv ) {
 	Display displayDevice( 1200, 700 );
+	Graphics::GUI::Overlay overlay( displayDevice );
 	Input inputDevice;
 
 	SceneView sceneView(
