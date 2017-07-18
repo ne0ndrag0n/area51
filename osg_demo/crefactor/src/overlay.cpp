@@ -38,7 +38,7 @@ namespace BlueBear {
           state->disableTexCoordPointer( 0 );
 
           nvgBeginFrame( nvgContext, parent.parent.getWidth(), parent.parent.getHeight(), 1.0f );
-          updateGL( state );
+          parent.drawUnits( nvgContext );
           nvgEndFrame( nvgContext );
         }
       }
@@ -60,10 +60,6 @@ namespace BlueBear {
         }
       }
 
-      void Overlay::InternalAdapter::updateGL( osg::State* state ) const {
-        parent.drawUnits();
-      }
-
       Overlay::Overlay( const Device::Display& displayDevice ) : parent( displayDevice ) {
         osg::ref_ptr< InternalAdapter > adapter = new InternalAdapter( *this );
 
@@ -82,33 +78,29 @@ namespace BlueBear {
         overlay->addChild( geode );
       }
 
-      OverlayAdapter Overlay::getOverlayAdapter() {
+      OverlayHelper Overlay::getOverlayHelper() const {
         return overlay;
       }
 
-      void Overlay::drawUnits() {
+      void Overlay::drawUnits( NVGcontext* context ) {
         // Sort units by zOrder
-        std::stable_sort( drawableUnits.begin(), drawableUnits.end() );
+        std::stable_sort( drawableUnits.begin(), drawableUnits.end(), []( const std::shared_ptr< Drawable > lhs, const std::shared_ptr< Drawable > rhs ) {
+          return lhs->zOrder < rhs->zOrder;
+        } );
 
-        for( std::unique_ptr< Drawable >& drawable : drawableUnits ) {
-          drawable->draw();
-        }
-      }
-
-      unsigned int Overlay::addDrawable( std::unique_ptr< Drawable > drawable ) {
-        for( unsigned int i = 0; i != drawableUnits.size(); i++ ) {
-          if( !drawableUnits[ i ] ) {
-            drawableUnits[ i ] = std::move( drawable );
-            return i;
+        for( std::shared_ptr< Drawable > drawable : drawableUnits ) {
+          if( drawable ) {
+            drawable->draw( context );
           }
         }
-
-        drawableUnits.emplace_back( std::move( drawable ) );
-        return drawableUnits.size() - 1;
       }
 
-      void Overlay::removeDrawable( unsigned int i ) {
-        drawableUnits[ i ].reset();
+      void Overlay::addDrawable( std::shared_ptr< Drawable > drawable ) {
+        drawableUnits.emplace_back( drawable );
+      }
+
+      void Overlay::removeDrawable( std::shared_ptr< Drawable > drawable ) {
+        drawableUnits.erase( std::remove( drawableUnits.begin(), drawableUnits.end(), drawable ), drawableUnits.end() );
       }
 
       void Overlay::clear() {

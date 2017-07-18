@@ -10,6 +10,7 @@
 #include "graphics/rendering/group.hpp"
 #include "graphics/rendering/types.hpp"
 #include "graphics/gui/overlay.hpp"
+#include "graphics/gui/drawables/rectangle.hpp"
 
 using namespace BlueBear;
 using namespace BlueBear::Graphics::Rendering;
@@ -20,13 +21,9 @@ std::shared_ptr< Group > myGroup = Group::create();
 
 int main( int argc, char** argv ) {
 	Display displayDevice( 1200, 700 );
-	Graphics::GUI::Overlay overlay( displayDevice );
 	Input inputDevice;
-
-	SceneView sceneView(
-		displayDevice,
-		inputDevice
-	);
+	Graphics::GUI::Overlay overlay( displayDevice );
+	SceneView sceneView( displayDevice, inputDevice, &overlay );
 
 	std::shared_ptr< Model > cylinder = Model::create( "mydata/cylinder.fbx" );
 	std::shared_ptr< Model > floorPanel = Model::create( "mydata/floorpanel.fbx" );

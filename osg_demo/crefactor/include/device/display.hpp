@@ -28,9 +28,6 @@ namespace BlueBear {
       Display( unsigned int width, unsigned int height );
       ~Display();
 
-    private:
-      std::unique_ptr< Graphics::GUI::Overlay > overlay;
-
     public:
       ContextHelper getContextHelper() const;
       unsigned int getWidth() const;

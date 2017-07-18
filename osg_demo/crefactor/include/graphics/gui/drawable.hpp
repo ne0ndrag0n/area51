@@ -1,6 +1,9 @@
 #ifndef BLUEBEAR_DRAWABLE
 #define BLUEBEAR_DRAWABLE
 
+#include "graphics/gui/types.hpp"
+#include <nanovg/nanovg.h>
+
 namespace BlueBear {
   namespace Graphics {
     namespace GUI {
@@ -14,8 +17,7 @@ namespace BlueBear {
 
         unsigned int zOrder = 0;
 
-        bool operator<( const Drawable& other );
-        virtual void draw() = 0;
+        virtual void draw( DrawableContext* context ) = 0;
       };
 
     }

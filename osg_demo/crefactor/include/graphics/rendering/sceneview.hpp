@@ -15,6 +15,10 @@ namespace BlueBear {
   }
 
   namespace Graphics {
+    namespace GUI {
+      class Overlay;
+    }
+
     namespace Rendering {
       class Group;
 
@@ -29,7 +33,8 @@ namespace BlueBear {
 
         SceneView(
           const Device::Display& display,
-          const Device::Input& input
+          const Device::Input& input,
+          const GUI::Overlay* overlay = nullptr
         );
 
         bool update();

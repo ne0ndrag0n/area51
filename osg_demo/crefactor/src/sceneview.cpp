@@ -1,6 +1,7 @@
 #include "graphics/rendering/sceneview.hpp"
 #include "graphics/rendering/sceneview_camera.hpp"
 #include "graphics/rendering/group.hpp"
+#include "graphics/gui/overlay.hpp"
 #include "device/display.hpp"
 #include "device/input.hpp"
 #include <osg/GraphicsContext>
@@ -10,12 +11,16 @@ namespace BlueBear {
   namespace Graphics {
     namespace Rendering {
 
-      SceneView::SceneView( const Device::Display& display, const Device::Input& input ) :
+      SceneView::SceneView( const Device::Display& display, const Device::Input& input, const GUI::Overlay* overlay ) :
         rootGroup( new osg::Group() ) {
         unsigned int width = display.getWidth();
         unsigned int height = display.getHeight();
 
         viewer.addEventHandler( input.getAdapter() );
+
+        if( overlay ) {
+          rootGroup->addChild( overlay->getOverlayHelper() );
+        }
 
         viewer.setSceneData( rootGroup );
 
