@@ -6,13 +6,7 @@ namespace BlueBear {
     namespace GUI {
       namespace Drawables {
 
-        void Rectangle::draw( DrawableContext* context ) {
-          nvgBeginPath( context );
-          nvgRect( context, 300, 300, 300, 30 );
-          nvgFillColor( context, nvgRGBA(128, 96, 0, 255) );
-          nvgFill( context );
-          nvgClosePath( context );
-        }
+        Rectangle::Rectangle( Containers::Rect< unsigned int > dimensions ) : dimensions( dimensions ) {}
 
       }
     }

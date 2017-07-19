@@ -1,6 +1,7 @@
 #include "graphics/gui/overlay.hpp"
 #include "device/display.hpp"
 #include <osg/GLDefines>
+#define NANOVG_GL3_IMPLEMENTATION
 #include <nanovg/nanovg_gl.h>
 #include <osg/StateAttribute>
 #include <osg/StateSet>
@@ -31,6 +32,7 @@ namespace BlueBear {
             exit( 1 );
           }
 
+          parent.loadFonts( self->nvgContext );
           self->activeContextID = contextID;
         } else if ( nvgContext && contextID == activeContextID ) {
           osg::ref_ptr< osg::State > state = renderInfo.getState();
@@ -82,6 +84,17 @@ namespace BlueBear {
         return overlay;
       }
 
+      void Overlay::loadFonts( NVGcontext* context ) {
+        // TODO: Load fonts from a registry when object is integrated into Concordia
+        if( nvgCreateFont( context, "default", "roboto.ttf" ) == -1 ) {
+          std::cout << "Error loading roboto.ttf" << std::endl;
+        }
+
+        if( nvgCreateFont( context, "icon", "fontawesome.ttf" ) == -1 ) {
+          std::cout << "Error loading fontawesome.ttf" << std::endl;
+        }
+      }
+
       void Overlay::drawUnits( NVGcontext* context ) {
         // Sort units by zOrder
         std::stable_sort( drawableUnits.begin(), drawableUnits.end(), []( const std::shared_ptr< Drawable > lhs, const std::shared_ptr< Drawable > rhs ) {
@@ -89,9 +102,7 @@ namespace BlueBear {
         } );
 
         for( std::shared_ptr< Drawable > drawable : drawableUnits ) {
-          if( drawable ) {
-            drawable->draw( context );
-          }
+          drawable->draw( context );
         }
       }
 

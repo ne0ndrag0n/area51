@@ -1,10 +1,10 @@
 CC = g++
-DFLAGS = -DNANOVG_GL3_IMPLEMENTATION
+DFLAGS =
 CFLAGS = -pthread -std=c++14 -g -rdynamic -pipe $(DFLAGS) #-fsanitize=address
 INCLUDES = -Iinclude -Ilib -Ilib/nanovg
 LIBPATHS = -Llib/nanovg
 LIBS = -lpthread -lassimp -lGLEW -lGL -lsfml-graphics -lsfml-window -lsfml-system -lsfgui -ljsoncpp `pkg-config --libs openscenegraph` -lnanovg
-LFLAGS = -z muldefs
+LFLAGS = 
 
 SRCS = $(wildcard src/*.cpp)
 

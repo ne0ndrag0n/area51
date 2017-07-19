@@ -37,6 +37,7 @@ namespace BlueBear {
         OverlayHelper overlay;
         std::vector< std::shared_ptr< Drawable > > drawableUnits;
 
+        void loadFonts( NVGcontext* context );
         void drawUnits( NVGcontext* context );
 
       public:

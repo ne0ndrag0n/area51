@@ -10,7 +10,7 @@
 #include "graphics/rendering/group.hpp"
 #include "graphics/rendering/types.hpp"
 #include "graphics/gui/overlay.hpp"
-#include "graphics/gui/drawables/rectangle.hpp"
+#include "graphics/gui/drawables/window.hpp"
 
 using namespace BlueBear;
 using namespace BlueBear::Graphics::Rendering;
@@ -27,6 +27,14 @@ int main( int argc, char** argv ) {
 
 	std::shared_ptr< Model > cylinder = Model::create( "mydata/cylinder.fbx" );
 	std::shared_ptr< Model > floorPanel = Model::create( "mydata/floorpanel.fbx" );
+	std::shared_ptr< Graphics::GUI::Drawable > window = std::make_shared< Graphics::GUI::Drawables::Window >(
+		"Debug Options",
+		Containers::Rect< unsigned int >{ 10, 10, 400, 300 },
+		Containers::Color< unsigned int >{ 0x3F, 0x51, 0xB5, 0xFF },
+		Containers::Color< unsigned int >{ 0xDC, 0xDC, 0xDC, 0xFF }
+	);
+
+	overlay.addDrawable( window );
 
 	Model::Texture polishedHardwood( "mydata/hardwood1.png" );
 	polishedHardwood.applyTo( floorPanel, "Plane" );

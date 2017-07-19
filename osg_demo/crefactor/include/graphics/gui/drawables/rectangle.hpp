@@ -2,6 +2,7 @@
 #define DRAWABLE_RECTANGLE
 
 #include "graphics/gui/drawable.hpp"
+#include "containers/rect.hpp"
 
 namespace BlueBear {
   namespace Graphics {
@@ -9,7 +10,10 @@ namespace BlueBear {
       namespace Drawables {
 
         class Rectangle : public Drawable {
-          virtual void draw( DrawableContext* context ) override;
+        protected:
+          Containers::Rect< unsigned int > dimensions;
+        public:
+          Rectangle( Containers::Rect< unsigned int > dimensions );
         };
 
       }
