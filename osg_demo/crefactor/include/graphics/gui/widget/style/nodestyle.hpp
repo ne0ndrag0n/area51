@@ -5,7 +5,6 @@
 #include <string>
 #include <any>
 #include <vector>
-#include <exception>
 
 namespace BlueBear {
   namespace Graphics {
@@ -16,7 +15,6 @@ namespace BlueBear {
         namespace Style {
 
           class NodeStyle {
-            friend class WidgetEngine;
             std::vector< RuleMap* > matchingQueries;
             RuleMap localRules;
 
@@ -24,9 +22,8 @@ namespace BlueBear {
             stx::any getValue( const std::string& key ) const;
             void setValue( const std::string& key, stx::any value );
 
-            struct InvalidRuleException : public std::exception {
-              const char* what() const throw() { return "Invalid rule specified!"; }
-            };
+            void clearMatchingQueries();
+            void pushMatchingQuery( RuleMap* ruleMap );
           };
 
         }

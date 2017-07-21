@@ -11,6 +11,7 @@
 #include "graphics/rendering/types.hpp"
 #include "graphics/gui/overlay.hpp"
 #include "graphics/gui/drawables/window.hpp"
+#include "graphics/gui/widget/widgetengine.hpp"
 
 using namespace BlueBear;
 using namespace BlueBear::Graphics::Rendering;
@@ -24,6 +25,7 @@ int main( int argc, char** argv ) {
 	Input inputDevice;
 	Graphics::GUI::Overlay overlay( displayDevice );
 	SceneView sceneView( displayDevice, inputDevice, &overlay );
+	Graphics::GUI::Widget::WidgetEngine engine;
 
 	std::shared_ptr< Model > cylinder = Model::create( "mydata/cylinder.fbx" );
 	std::shared_ptr< Model > floorPanel = Model::create( "mydata/floorpanel.fbx" );

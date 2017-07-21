@@ -37,6 +37,8 @@ namespace BlueBear {
 
           std::shared_ptr< Node > getParent() const;
           void setParent( std::shared_ptr< Node > parent );
+
+          virtual std::string getName() const = 0;
         };
 
       }

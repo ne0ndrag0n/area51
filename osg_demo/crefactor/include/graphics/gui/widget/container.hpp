@@ -27,11 +27,14 @@ namespace BlueBear {
           std::shared_ptr< Node > getByIndex( unsigned int index ) const;
           std::shared_ptr< Node > getByID( const std::string& id ) const;
           std::vector< std::shared_ptr< Node > > getByClass( const std::string& classId ) const;
+          std::vector< std::shared_ptr< Node > > getByName( const std::string& name ) const;
 
           void prepend( std::shared_ptr< Node > node );
           void append( std::shared_ptr< Node > node );
           void remove( std::shared_ptr< Node > node );
           void clear();
+
+          std::string getName() const;
         };
 
       }
