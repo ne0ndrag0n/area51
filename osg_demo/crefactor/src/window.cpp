@@ -9,8 +9,8 @@ namespace BlueBear {
         Window::Window(
           const std::string titlebarTitle,
           Containers::Rect< unsigned int > dimensions,
-          Containers::Color< unsigned int > titlebarColor,
-          Containers::Color< unsigned int > windowFillColor
+          Containers::Color< unsigned char > titlebarColor,
+          Containers::Color< unsigned char > windowFillColor
         ) :
           Rectangle::Rectangle( dimensions ),
           titlebarTitle( titlebarTitle ), titlebarColor( titlebarColor ), windowFillColor( windowFillColor )  {}
@@ -41,7 +41,7 @@ namespace BlueBear {
           nvgText( context, dimensions.x + 5, dimensions.y + 45, titlebarTitle.c_str(), NULL );
         }
 
-        NVGcolor Window::toColor( const Containers::Color< unsigned int >& color ) {
+        NVGcolor Window::toColor( const Containers::Color< unsigned char >& color ) {
           return nvgRGBA( color.r, color.g, color.b, color.a );
         }
 

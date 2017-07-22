@@ -19,6 +19,8 @@ namespace BlueBear {
          */
         class Node {
         protected:
+          std::string id;
+          std::unordered_set< std::string > classes;
           std::shared_ptr< Drawable > drawable;
           std::weak_ptr< Node > parent;
 
@@ -27,8 +29,6 @@ namespace BlueBear {
           virtual void createDrawable() = 0;
 
         public:
-          std::string id;
-          std::unordered_set< std::string > classes;
           Style::NodeStyle style;
 
           virtual ~Node() = default;
@@ -37,6 +37,14 @@ namespace BlueBear {
 
           std::shared_ptr< Node > getParent() const;
           void setParent( std::shared_ptr< Node > parent );
+
+          std::string getID() const;
+          void setID( const std::string& newID );
+
+          bool hasClass( const std::string& classID ) const;
+          void addClass( const std::string& classID );
+          void removeClass( const std::string& classID );
+          void clearClasses();
 
           virtual std::string getName() const = 0;
         };

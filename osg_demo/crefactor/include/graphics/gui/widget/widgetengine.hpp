@@ -3,8 +3,8 @@
 
 #include "graphics/gui/widget/style/types.hpp"
 #include <vector>
+#include <set>
 #include <string>
-#include <utility>
 #include <memory>
 #include <tuple>
 
@@ -20,15 +20,31 @@ namespace BlueBear {
          * the re-draw of Overlay.
          */
         class WidgetEngine {
-          std::vector< std::pair< std::string, Style::RuleMap > > styleSheet;
+          struct Selector {
+            std::string tag;
+            std::string id;
+            std::vector< std::string > classes;
+          };
+
+          struct StylesheetQuery {
+            std::string query;
+            Style::RuleMap rules;
+          };
+
+          std::vector< StylesheetQuery > styleSheet;
           std::shared_ptr< Container > root;
 
+          void buildDefaultStylesheet();
           void refreshStylesheet();
-          std::tuple< std::string, std::string, std::string > tokenToTuple( const std::string& token );
+          Selector toSelector( const std::string& token );
+          std::set< std::shared_ptr< Node > > selectItems(
+             const Selector& selector,
+             const std::set< std::shared_ptr< Node > > from
+          );
 
         public:
           WidgetEngine();
-
+          ~WidgetEngine();
         };
 
       }

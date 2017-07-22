@@ -32,8 +32,8 @@ int main( int argc, char** argv ) {
 	std::shared_ptr< Graphics::GUI::Drawable > window = std::make_shared< Graphics::GUI::Drawables::Window >(
 		"Debug Options",
 		Containers::Rect< unsigned int >{ 10, 10, 400, 300 },
-		Containers::Color< unsigned int >{ 0x3F, 0x51, 0xB5, 0xFF },
-		Containers::Color< unsigned int >{ 0xDC, 0xDC, 0xDC, 0xFF }
+		Containers::Color< unsigned char >( "#3F51B5FF" ),
+		Containers::Color< unsigned char >( "#DCDCDCFF" )
 	);
 
 	overlay.addDrawable( window );

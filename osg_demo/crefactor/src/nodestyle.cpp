@@ -17,7 +17,7 @@ namespace BlueBear {
             // Find the LATEST result for the queried value that applies to this node
             // Position 0 should always be the "*" rule
             stx::any result;
-            for( RuleMap* rules : matchingQueries ) {
+            for( const RuleMap* rules : matchingQueries ) {
               auto it = rules->find( key );
 
               if( it != rules->end() ) {
@@ -36,7 +36,7 @@ namespace BlueBear {
             matchingQueries.clear();
           }
 
-          void NodeStyle::pushMatchingQuery( RuleMap* ruleMap ) {
+          void NodeStyle::pushMatchingQuery( const RuleMap* ruleMap ) {
             matchingQueries.emplace_back( ruleMap );
           }
 

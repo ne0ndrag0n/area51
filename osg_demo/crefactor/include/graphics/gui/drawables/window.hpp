@@ -13,17 +13,17 @@ namespace BlueBear {
 
         class Window : public Rectangle {
           std::string titlebarTitle;
-          Containers::Color< unsigned int > titlebarColor;
-          Containers::Color< unsigned int > windowFillColor;
+          Containers::Color< unsigned char > titlebarColor;
+          Containers::Color< unsigned char > windowFillColor;
 
-          NVGcolor toColor( const Containers::Color< unsigned int >& color );
+          NVGcolor toColor( const Containers::Color< unsigned char >& color );
 
         public:
           Window(
             const std::string titlebarTitle,
             Containers::Rect< unsigned int > dimensions,
-            Containers::Color< unsigned int > titlebarColor,
-            Containers::Color< unsigned int > windowFillColor
+            Containers::Color< unsigned char > titlebarColor,
+            Containers::Color< unsigned char > windowFillColor
           );
           virtual void draw( DrawableContext* context ) override;
         };

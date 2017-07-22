@@ -1,4 +1,6 @@
 #include "graphics/gui/widget/container.hpp"
+#include "eventmanager.hpp"
+#include <algorithm>
 
 namespace BlueBear {
   namespace Graphics {
@@ -23,7 +25,7 @@ namespace BlueBear {
         std::shared_ptr< Node > Container::getByID( const std::string& id ) const {
 
           for( std::shared_ptr< Node > child : children ) {
-            if( child->id == id ) {
+            if( child->getID() == id ) {
               return child;
             }
 
@@ -37,16 +39,21 @@ namespace BlueBear {
           return nullptr;
         }
 
-        std::vector< std::shared_ptr< Node > > Container::getByClass( const std::string& classId ) const {
+        std::vector< std::shared_ptr< Node > > Container::getByClass( const std::vector< std::string >& classes ) const {
           std::vector< std::shared_ptr< Node > > items;
 
           for( std::shared_ptr< Node > child : children ) {
-            if( child->classes.find( classId ) != child->classes.end() ) {
-              items.emplace_back( child );
+
+            for( const std::string& classId : classes ) {
+              if( child->hasClass( classId ) ) {
+                items.emplace_back( child );
+                break;
+              }
             }
 
+
             if( std::shared_ptr< Container > container = std::dynamic_pointer_cast< Container >( child ) ) {
-              std::vector< std::shared_ptr< Node > > childItems = container->getByClass( classId );
+              std::vector< std::shared_ptr< Node > > childItems = container->getByClass( classes );
               items.insert( items.end(), childItems.begin(), childItems.end() );
             }
           }
@@ -58,7 +65,7 @@ namespace BlueBear {
           std::vector< std::shared_ptr< Node > > items;
 
           for( std::shared_ptr< Node > child : children ) {
-            if( child->getName() == name ) {
+            if( name == "*" || child->getName() == name ) {
               items.emplace_back( child );
             }
 
@@ -70,6 +77,34 @@ namespace BlueBear {
 
           return items;
         }
+
+        void Container::prepend( std::shared_ptr< Node > node ) {
+          children.insert( children.begin(), node );
+
+          eventManager.REFLOW_REQUIRED.trigger();
+        }
+
+        void Container::append( std::shared_ptr< Node > node ) {
+          children.emplace_back( node );
+
+          eventManager.REFLOW_REQUIRED.trigger();
+        }
+
+        void Container::detach( std::shared_ptr< Node > node ) {
+          children.erase(
+            std::remove( children.begin(), children.end(), node ),
+            children.end()
+          );
+
+          eventManager.REFLOW_REQUIRED.trigger();
+        }
+
+        void Container::clear() {
+          children.clear();
+
+          eventManager.REFLOW_REQUIRED.trigger();
+        }
+
 
       }
     }

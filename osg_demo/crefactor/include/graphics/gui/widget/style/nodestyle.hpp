@@ -15,7 +15,7 @@ namespace BlueBear {
         namespace Style {
 
           class NodeStyle {
-            std::vector< RuleMap* > matchingQueries;
+            std::vector< const RuleMap* > matchingQueries;
             RuleMap localRules;
 
           public:
@@ -23,7 +23,7 @@ namespace BlueBear {
             void setValue( const std::string& key, stx::any value );
 
             void clearMatchingQueries();
-            void pushMatchingQuery( RuleMap* ruleMap );
+            void pushMatchingQuery( const RuleMap* ruleMap );
           };
 
         }
