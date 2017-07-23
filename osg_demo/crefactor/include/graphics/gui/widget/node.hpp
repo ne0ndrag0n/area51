@@ -26,7 +26,7 @@ namespace BlueBear {
 
           Node();
 
-          virtual void createDrawable() = 0;
+          virtual std::shared_ptr< Drawable > getOrCreateDrawable() = 0;
 
         public:
           Style::NodeStyle style;

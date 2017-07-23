@@ -10,8 +10,10 @@ namespace BlueBear {
         /**
          * A container alone does not have any drawable (don't add this drawable)
          */
-        void Container::createDrawable() {
+        std::shared_ptr< Drawable > Container::getOrCreateDrawable() {
           drawable = nullptr;
+
+          return drawable;
         }
 
         std::string Container::getName() const {

@@ -17,7 +17,7 @@ namespace BlueBear {
         protected:
           std::deque< std::shared_ptr< Node > > children;
 
-          virtual void createDrawable() override;
+          virtual std::shared_ptr< Drawable > getOrCreateDrawable() override;
 
         public:
           void forEach( std::function< void( std::shared_ptr< Node > ) > predicate ) const;
