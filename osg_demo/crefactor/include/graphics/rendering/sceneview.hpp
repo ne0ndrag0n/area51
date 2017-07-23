@@ -33,8 +33,7 @@ namespace BlueBear {
 
         SceneView(
           const Device::Display& display,
-          const Device::Input& input,
-          const GUI::Overlay* overlay = nullptr
+          const Device::Input& input
         );
 
         bool update();

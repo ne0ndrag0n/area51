@@ -23,8 +23,8 @@ std::shared_ptr< Group > myGroup = Group::create();
 int main( int argc, char** argv ) {
 	Display displayDevice( 1200, 700 );
 	Input inputDevice;
-	Graphics::GUI::Overlay overlay( displayDevice );
-	SceneView sceneView( displayDevice, inputDevice, &overlay );
+	Graphics::GUI::Overlay overlay;
+	//SceneView sceneView( displayDevice, inputDevice );
 	Graphics::GUI::Widget::WidgetEngine engine;
 
 	std::shared_ptr< Model > cylinder = Model::create( "mydata/cylinder.fbx" );
@@ -38,6 +38,7 @@ int main( int argc, char** argv ) {
 
 	overlay.addDrawable( window );
 
+	/*
 	Model::Texture polishedHardwood( "mydata/hardwood1.png" );
 	polishedHardwood.applyTo( floorPanel, "Plane" );
 
@@ -62,10 +63,15 @@ int main( int argc, char** argv ) {
 	}
 
 	sceneView.addGroup( myGroup );
+	*/
 
 	// Suppress all OSG log messages, since at this point it's just spam
 	osg::setNotifyLevel( osg::NotifySeverity::ALWAYS );
-	while( sceneView.update() );
+	while( displayDevice.getContextHelper()->isOpen() ) {
+		overlay.update();
+		//sceneView.update();
+		displayDevice.getContextHelper()->display();
+	}
 
 	return EXIT_SUCCESS;
 }

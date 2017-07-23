@@ -21,29 +21,17 @@ namespace BlueBear {
     namespace GUI {
 
       class Overlay {
-        class InternalAdapter : public osg::Drawable {
-          Overlay& parent;
-          NVGcontext* nvgContext = nullptr;
-          unsigned int activeContextID;
-
-        public:
-          InternalAdapter( Overlay& parent );
-
-          virtual void drawImplementation( osg::RenderInfo& renderInfo ) const override;
-          virtual void releaseGLObjects( osg::State* state = 0 ) const override;
-        };
-
-        const Device::Display& parent;
-        OverlayHelper overlay;
+        NVGcontext* nvgContext = nullptr;
         std::vector< std::shared_ptr< Drawable > > drawableUnits;
 
         void loadFonts( NVGcontext* context );
         void drawUnits( NVGcontext* context );
 
       public:
-        Overlay( const Device::Display& displayDevice );
+        Overlay();
+        ~Overlay();
 
-        OverlayHelper getOverlayHelper() const;
+        void update();
         void addDrawable( std::shared_ptr< Drawable > drawable );
         void removeDrawable( std::shared_ptr< Drawable > drawable );
         void clear();

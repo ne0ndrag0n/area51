@@ -1,13 +1,14 @@
 #ifndef DEVICE_TYPES
 #define DEVICE_TYPES
 
-#include <osg/ref_ptr>
-#include <osg/GraphicsContext>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <memory>
 
 namespace BlueBear {
   namespace Device {
 
-    using ContextHelper = osg::ref_ptr< osg::GraphicsContext >;
+    using ContextHelper = std::shared_ptr< sf::RenderWindow >;
 
   }
 }
