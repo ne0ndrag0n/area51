@@ -5,6 +5,8 @@
 #include "graphics/gui/widget/style/nodestyle.hpp"
 #include <memory>
 #include <string>
+#include <map>
+#include <any>
 #include <unordered_set>
 
 namespace BlueBear {
@@ -17,23 +19,39 @@ namespace BlueBear {
         /**
          * Base class for all GUI widgets
          */
-        class Node {
+        class Node : public std::enable_shared_from_this< Node > {
         protected:
           std::string id;
           std::unordered_set< std::string > classes;
+
           std::shared_ptr< Drawable > drawable;
+
           std::weak_ptr< Node > parent;
+
+          Style::NodeStyle style;
+          std::map< std::string, stx::any > attributes;
 
           Node();
 
-          virtual std::shared_ptr< Drawable > getOrCreateDrawable() = 0;
-
         public:
-          Style::NodeStyle style;
 
           virtual ~Node() = default;
+          virtual std::shared_ptr< Drawable > getOrCreateDrawable() = 0;
 
-          std::shared_ptr< Drawable > getDrawable() const;
+          template< typename T >
+          T getStyleValue( const std::string& key ) const {
+            return stx::any_cast< T >( style.getValue( key ) );
+          };
+          virtual void setStyleValue( const std::string& key, stx::any value );
+
+          template< typename T >
+          T getAttributeValue( const std::string& key ) const {
+            return stx::any_cast< T >( attributes.at( key ) );
+          };
+          void setAttributeValue( const std::string& key, stx::any value );
+
+          void clearStyleQueries();
+          void pushMatchingQuery( const Style::RuleMap* ruleMap );
 
           std::shared_ptr< Node > getParent() const;
           void setParent( std::shared_ptr< Node > parent );

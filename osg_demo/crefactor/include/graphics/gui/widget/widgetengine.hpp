@@ -9,8 +9,15 @@
 #include <tuple>
 
 namespace BlueBear {
+  namespace Device {
+    class Display;
+  }
+
   namespace Graphics {
     namespace GUI {
+      class Drawable;
+      class Overlay;
+
       namespace Widget {
         class Node;
         class Container;
@@ -31,6 +38,8 @@ namespace BlueBear {
             Style::RuleMap rules;
           };
 
+          const Device::Display& display;
+          Overlay& overlay;
           std::vector< StylesheetQuery > styleSheet;
           std::shared_ptr< Container > root;
 
@@ -42,9 +51,17 @@ namespace BlueBear {
              const std::set< std::shared_ptr< Node > > from
           );
 
+          void zTraverse( std::shared_ptr< Node > node, int& globalMaximum, std::vector< std::shared_ptr< Drawable > >& drawables );
+
         public:
-          WidgetEngine();
+          WidgetEngine( const Device::Display& display, Overlay& overlay );
           ~WidgetEngine();
+
+          void update();
+
+          void append( std::shared_ptr< Node > node );
+          void prepend( std::shared_ptr< Node > node );
+          void remove( std::shared_ptr< Node > node );
         };
 
       }

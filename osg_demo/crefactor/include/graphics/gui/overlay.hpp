@@ -46,6 +46,7 @@ namespace BlueBear {
         OverlayHelper getOverlayHelper() const;
         void addDrawable( std::shared_ptr< Drawable > drawable );
         void removeDrawable( std::shared_ptr< Drawable > drawable );
+        void setDrawables( std::vector< std::shared_ptr< Drawable > > drawables );
         void clear();
       };
 

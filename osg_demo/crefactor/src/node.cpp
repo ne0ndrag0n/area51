@@ -9,10 +9,6 @@ namespace BlueBear {
 
         Node::Node() {}
 
-        std::shared_ptr< Drawable > Node::getDrawable() const {
-          return drawable;
-        }
-
         std::shared_ptr< Node > Node::getParent() const {
           return parent.lock();
         }
@@ -53,6 +49,21 @@ namespace BlueBear {
           eventManager.REFLOW_REQUIRED.trigger();
         }
 
+        void Node::setStyleValue( const std::string& key, stx::any value ) {
+          style.setValue( key, value );
+        }
+
+        void Node::clearStyleQueries() {
+          style.clearMatchingQueries();
+        }
+
+        void Node::pushMatchingQuery( const Style::RuleMap* ruleMap ) {
+          style.pushMatchingQuery( ruleMap );
+        }
+
+        void Node::setAttributeValue( const std::string& key, stx::any value ) {
+          attributes[ key ] = value;
+        }
 
       }
     }

@@ -9,10 +9,9 @@ namespace BlueBear {
     namespace GUI {
       namespace Drawables {
 
-        class Rectangle : public Drawable {
-        protected:
+        struct Rectangle : public Drawable {
           Containers::Rect< unsigned int > dimensions;
-        public:
+
           Rectangle( Containers::Rect< unsigned int > dimensions );
         };
 

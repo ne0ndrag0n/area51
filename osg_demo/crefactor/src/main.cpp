@@ -12,6 +12,7 @@
 #include "graphics/gui/overlay.hpp"
 #include "graphics/gui/drawables/window.hpp"
 #include "graphics/gui/widget/widgetengine.hpp"
+#include "graphics/gui/widget/window.hpp"
 
 using namespace BlueBear;
 using namespace BlueBear::Graphics::Rendering;
@@ -25,18 +26,17 @@ int main( int argc, char** argv ) {
 	Input inputDevice;
 	Graphics::GUI::Overlay overlay( displayDevice );
 	SceneView sceneView( displayDevice, inputDevice, &overlay );
-	Graphics::GUI::Widget::WidgetEngine engine;
+	Graphics::GUI::Widget::WidgetEngine widgetEngine( displayDevice, overlay );
+
+	std::shared_ptr< Graphics::GUI::Widget::Window > windowWidget = Graphics::GUI::Widget::Window::create( "Debug Options" );
+	windowWidget->setStyleValue( "left", 10 );
+	windowWidget->setStyleValue( "top", 10 );
+	windowWidget->setStyleValue( "width", 400.0 );
+	windowWidget->setStyleValue( "height", 300.0 );
+	widgetEngine.append( windowWidget );
 
 	std::shared_ptr< Model > cylinder = Model::create( "mydata/cylinder.fbx" );
 	std::shared_ptr< Model > floorPanel = Model::create( "mydata/floorpanel.fbx" );
-	std::shared_ptr< Graphics::GUI::Drawable > window = std::make_shared< Graphics::GUI::Drawables::Window >(
-		"Debug Options",
-		Containers::Rect< unsigned int >{ 10, 10, 400, 300 },
-		Containers::Color< unsigned char >( "#3F51B5FF" ),
-		Containers::Color< unsigned char >( "#DCDCDCFF" )
-	);
-
-	overlay.addDrawable( window );
 
 	Model::Texture polishedHardwood( "mydata/hardwood1.png" );
 	polishedHardwood.applyTo( floorPanel, "Plane" );
@@ -65,7 +65,9 @@ int main( int argc, char** argv ) {
 
 	// Suppress all OSG log messages, since at this point it's just spam
 	osg::setNotifyLevel( osg::NotifySeverity::ALWAYS );
-	while( sceneView.update() );
+	while( sceneView.update() ) {
+		widgetEngine.update();
+	}
 
 	return EXIT_SUCCESS;
 }

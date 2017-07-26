@@ -1,30 +1,29 @@
 #ifndef WINDOW_DRAWABLE
 #define WINDOW_DRAWABLE
 
-#include "graphics/gui/drawables/rectangle.hpp"
-#include "containers/rect.hpp"
+#include "graphics/gui/drawable.hpp"
 #include "containers/color.hpp"
 #include <nanovg/nanovg.h>
+#include <memory>
 
 namespace BlueBear {
   namespace Graphics {
     namespace GUI {
+      namespace Widget {
+        class Node;
+      }
+
       namespace Drawables {
 
-        class Window : public Rectangle {
-          std::string titlebarTitle;
-          Containers::Color< unsigned char > titlebarColor;
-          Containers::Color< unsigned char > windowFillColor;
+        struct Window : public Drawable {
+        protected:
+          std::weak_ptr< Widget::Node > parent;
 
           NVGcolor toColor( const Containers::Color< unsigned char >& color );
 
         public:
-          Window(
-            const std::string titlebarTitle,
-            Containers::Rect< unsigned int > dimensions,
-            Containers::Color< unsigned char > titlebarColor,
-            Containers::Color< unsigned char > windowFillColor
-          );
+          Window( std::weak_ptr< Widget::Node > parent );
+
           virtual void draw( DrawableContext* context ) override;
         };
 

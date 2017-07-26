@@ -1,12 +1,16 @@
 #include "graphics/gui/widget/widgetengine.hpp"
 #include "graphics/gui/widget/node.hpp"
 #include "graphics/gui/widget/container.hpp"
+#include "graphics/gui/overlay.hpp"
+#include "device/display.hpp"
 #include "containers/color.hpp"
 #include "eventmanager.hpp"
 #include <functional>
 #include <vector>
+#include <any>
 #include <regex>
 #include <algorithm>
+#include <deque>
 #include <string.h>
 #include <cstring>
 #include <iostream>
@@ -16,8 +20,8 @@ namespace BlueBear {
     namespace GUI {
       namespace Widget {
 
-        WidgetEngine::WidgetEngine() {
-          root = std::make_shared< Container >();
+        WidgetEngine::WidgetEngine( const Device::Display& display, Overlay& overlay ) : display( display ), overlay( overlay ) {
+          root = Container::create();
 
           buildDefaultStylesheet();
 
@@ -38,14 +42,16 @@ namespace BlueBear {
               Style::RuleMap{
                 { "z-order", 0 },
                 { "visibility", "visible" },
-                { "dark-primary-color", Containers::Color< unsigned char >( "#0097A7FF" ) },
-                { "primary-color", Containers::Color< unsigned char >( "#00BCD4FF" ) },
-                { "light-primary-color", Containers::Color< unsigned char >( "#B2EBF2FF" ) },
-                { "accent-color", Containers::Color< unsigned char >( "#9E9E9EFF" ) },
+                { "dark-primary-color", Containers::Color< unsigned char >( "#00796BFF" ) },
+                { "primary-color", Containers::Color< unsigned char >( "#009688FF" ) },
+                { "light-primary-color", Containers::Color< unsigned char >( "#B2DFDBFF" ) },
+                { "accent-color", Containers::Color< unsigned char >( "#8BC34AFF" ) },
                 { "primary-text-color", Containers::Color< unsigned char >( "#212121FF" ) },
                 { "secondary-text-color", Containers::Color< unsigned char >( "#757575FF" ) },
+                { "default-text-color", Containers::Color< unsigned char >( "#FFFFFFFF" ) },
                 { "icon-color", Containers::Color< unsigned char >( "#FFFFFFFF" ) },
                 { "divider-color", Containers::Color< unsigned char >( "#BDBDBDFF" ) },
+                { "fill-color", Containers::Color< unsigned char >( "#FAFAFAFF" ) },
                 { "font", "default" },
                 { "flow", "ltr" },
                 { "left", 0 },
@@ -62,7 +68,9 @@ namespace BlueBear {
 
           // root element has a flow of "none", allowing window elements to float around (and for GUI elements to be placed arbitrarily)
           // root element is intended to be inaccessible from Lua, etc
-          root->style.setValue( "flow", "none" );
+          root->setStyleValue( "flow", "none" );
+          root->setStyleValue( "width", ( double ) display.getWidth() );
+          root->setStyleValue( "height", ( double ) display.getHeight() );
         }
 
         /**
@@ -73,7 +81,7 @@ namespace BlueBear {
           std::vector< std::shared_ptr< Node > > allNodes = root->getByName( "*" );
           // Clear ALL matching queries
           for( std::shared_ptr< Node > node : allNodes ) {
-            node->style.clearMatchingQueries();
+            node->clearStyleQueries();
           }
 
           // Match each stylesheet query's rules to the nodes its query matches
@@ -99,7 +107,7 @@ namespace BlueBear {
 
             // In the list of all matches for this selector, spray sQuery.rules across them
             for( std::shared_ptr< Node > match : matches ) {
-              match->style.pushMatchingQuery( &sQuery.rules );
+              match->pushMatchingQuery( &sQuery.rules );
             }
           }
         }
@@ -202,6 +210,60 @@ namespace BlueBear {
           }
 
           return WidgetEngine::Selector{ tag, id, classes };
+        }
+
+        /**
+         * Remanage the order of all the drawables
+         */
+        void WidgetEngine::update() {
+          int maximum = -1;
+
+          std::vector< std::shared_ptr< Drawable > > drawables;
+          zTraverse( root, maximum, drawables );
+
+          // Add drawables to overlay
+          overlay.setDrawables( drawables );
+        }
+
+        void WidgetEngine::zTraverse( std::shared_ptr< Node > node, int& globalMaximum, std::vector< std::shared_ptr< Drawable > >& drawables ) {
+          int lastChildZ = 0;
+
+          if( std::shared_ptr< Container > container = std::dynamic_pointer_cast< Container >( node ) ) {
+            std::deque< std::shared_ptr< Node > >& children = container->getChildren();
+
+            if( !children.empty() ) {
+              int localMaximum = ++globalMaximum;
+
+              for( std::shared_ptr< Node > child : children ) {
+                int childZ = child->getStyleValue< int >( "z-order" );
+
+                if( childZ > lastChildZ ) {
+                  lastChildZ = childZ;
+                  localMaximum = ++globalMaximum;
+                }
+
+                if( std::shared_ptr< Drawable > drawable = child->getOrCreateDrawable() ) {
+                  drawables.emplace_back( drawable );
+                  drawable->zOrder = localMaximum;
+                }
+
+                zTraverse( child, globalMaximum, drawables );
+              }
+            }
+
+          }
+        }
+
+        void WidgetEngine::append( std::shared_ptr< Node > node ) {
+          root->append( node );
+        }
+
+        void WidgetEngine::prepend( std::shared_ptr< Node > node ) {
+          root->prepend( node );
+        }
+
+        void WidgetEngine::remove( std::shared_ptr< Node > node ) {
+          root->detach( node );
         }
 
       }

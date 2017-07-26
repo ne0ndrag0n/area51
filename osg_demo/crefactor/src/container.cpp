@@ -1,5 +1,6 @@
 #include "graphics/gui/widget/container.hpp"
 #include "eventmanager.hpp"
+#include <any>
 #include <algorithm>
 
 namespace BlueBear {
@@ -80,14 +81,22 @@ namespace BlueBear {
           return items;
         }
 
+        std::deque< std::shared_ptr< Node > >& Container::getChildren() {
+          return children;
+        }
+
         void Container::prepend( std::shared_ptr< Node > node ) {
           children.insert( children.begin(), node );
+
+          sort();
 
           eventManager.REFLOW_REQUIRED.trigger();
         }
 
         void Container::append( std::shared_ptr< Node > node ) {
           children.emplace_back( node );
+
+          sort();
 
           eventManager.REFLOW_REQUIRED.trigger();
         }
@@ -98,7 +107,15 @@ namespace BlueBear {
             children.end()
           );
 
+          sort();
+
           eventManager.REFLOW_REQUIRED.trigger();
+        }
+
+        void Container::sort() {
+          std::stable_sort( children.begin(), children.end(), []( const std::shared_ptr< Node > lhs, const std::shared_ptr< Node > rhs ) {
+            return lhs->getStyleValue< unsigned int >( "z-order" ) < rhs->getStyleValue< unsigned int >( "z-order" );
+          } );
         }
 
         void Container::clear() {
@@ -107,6 +124,17 @@ namespace BlueBear {
           eventManager.REFLOW_REQUIRED.trigger();
         }
 
+        void Container::setStyleValue( const std::string& key, stx::any value ) {
+          Node::setStyleValue( key, value );
+
+          if( key == "z-order" ) {
+            sort();
+          }
+        }
+
+        std::shared_ptr< Container > Container::create() {
+          return std::shared_ptr< Container >( new Container() );
+        }
 
       }
     }

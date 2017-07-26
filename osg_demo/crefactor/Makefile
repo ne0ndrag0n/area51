@@ -4,7 +4,10 @@ CFLAGS = -pthread -std=c++14 -g -rdynamic -pipe $(DFLAGS) #-fsanitize=address
 INCLUDES = -Iinclude -Ilib -Ilib/nanovg
 LIBPATHS = -Llib/nanovg
 LIBS = -lpthread -lassimp -lGLEW -lGL -lsfml-graphics -lsfml-window -lsfml-system -lsfgui -ljsoncpp `pkg-config --libs openscenegraph` -lnanovg
-LFLAGS = 
+LFLAGS =
+
+export LD_LIBRARY_PATH := /usr/local/lib64:/usr/lib/gcc4/x64/release/
+export PKG_CONFIG_PATH := /usr/local/lib64/pkgconfig
 
 SRCS = $(wildcard src/*.cpp)
 

@@ -106,6 +106,10 @@ namespace BlueBear {
         }
       }
 
+      void Overlay::setDrawables( std::vector< std::shared_ptr< Drawable > > drawables ) {
+        drawableUnits = drawables;
+      }
+
       void Overlay::addDrawable( std::shared_ptr< Drawable > drawable ) {
         drawableUnits.emplace_back( drawable );
       }
