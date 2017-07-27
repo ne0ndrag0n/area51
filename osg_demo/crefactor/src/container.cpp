@@ -114,7 +114,7 @@ namespace BlueBear {
 
         void Container::sort() {
           std::stable_sort( children.begin(), children.end(), []( const std::shared_ptr< Node > lhs, const std::shared_ptr< Node > rhs ) {
-            return lhs->getStyleValue< unsigned int >( "z-order" ) < rhs->getStyleValue< unsigned int >( "z-order" );
+            return lhs->getStyleValue< int >( "z-order" ) < rhs->getStyleValue< int >( "z-order" );
           } );
         }
 

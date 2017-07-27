@@ -255,6 +255,12 @@ namespace BlueBear {
         }
 
         void WidgetEngine::append( std::shared_ptr< Node > node ) {
+          auto& children = root->getChildren();
+
+          if( !children.empty() ) {
+            node->setStyleValue( "z-order", ( int ) children.back()->getStyleValue< int >( "z-order" ) + 1 );
+          }
+
           root->append( node );
         }
 
