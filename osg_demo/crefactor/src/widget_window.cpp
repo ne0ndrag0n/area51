@@ -1,5 +1,6 @@
 #include "graphics/gui/widget/window.hpp"
 #include "graphics/gui/drawables/window.hpp"
+#include "graphics/gui/widget/container.hpp"
 #include "containers/rect.hpp"
 #include <utility>
 
@@ -8,7 +9,7 @@ namespace BlueBear {
     namespace GUI {
       namespace Widget {
 
-        Window::Window( const std::string& title ) {
+        Window::Window( const std::string& title ) : Container::Container() {
           setAttributeValue( "title", title );
         }
 

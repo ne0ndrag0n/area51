@@ -136,6 +136,14 @@ namespace BlueBear {
           return std::shared_ptr< Container >( new Container() );
         }
 
+        bool Container::fireSignal( const std::string& signalId, stx::any data ) {
+          Node::fireSignal( signalId, data );
+
+          for( std::shared_ptr< Node > child : children ) {
+            child->fireSignal( signalId, data );
+          }
+        }
+
       }
     }
   }

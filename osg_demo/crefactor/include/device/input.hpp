@@ -1,12 +1,14 @@
 #ifndef INPUT_DEVICE
 #define INPUT_DEVICE
 
+#include "device/eventtype/mouse.hpp"
 #include "containers/rect.hpp"
 #include <osgGA/GUIEventHandler>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/GUIActionAdapter>
 #include <map>
 #include <vector>
+#include <memory>
 #include <functional>
 
 namespace BlueBear {
@@ -27,15 +29,6 @@ namespace BlueBear {
         ) override;
       };
       using Adapter = osg::ref_ptr< InternalAdapter >;
-      enum class MouseButton {
-        LEFT = 1 << 0,
-        MIDDLE = 1 << 1,
-        RIGHT = 1 << 2
-      };
-      struct MouseEvent {
-        Containers::Rect< unsigned int > hotspot;
-        std::function< void( MouseButton ) > callback;
-      };
       enum class Key : int {
         ANY = -1,
 
@@ -145,55 +138,14 @@ namespace BlueBear {
 
     private:
       Adapter inputAdapter;
-      struct {
-        std::map< Key, std::vector< std::function< void( Key ) > > > keyDown;
-        std::map< Key, std::vector< std::function< void( Key ) > > > keyUp;
-      } keyEventTypes;
-      struct {
-        std::vector< MouseEvent > mouseDown;
-        std::vector< MouseEvent > mouseUp;
-        std::vector< MouseEvent > mouseEnter;
-        std::vector< MouseEvent > mouseLeave;
-      } mouseEventTypes;
-
-      template < typename T >
-      unsigned int addItem( T item, std::vector< T >& array ) {
-        for( unsigned int i = 0; i != array.size(); i++ ) {
-          if( !array[ i ] ) {
-            array[ i ] = item;
-            return i;
-          }
-        }
-
-        array.push_back( item );
-        return array.size() - 1;
-      }
-
-      void triggerKeyboardEvents(
-        Key key,
-        std::vector< std::function< void( Key ) > >& list
-      );
-      unsigned int registerKeyEvent(
-        Key key,
-        std::function< void( Key ) > callback,
-        std::map< Key, std::vector< std::function< void( Key ) > > >& eventType
-      );
-      void unregisterKeyEvent(
-        Key key,
-        unsigned int handle,
-        std::map< Key, std::vector< std::function< void( Key ) > > >& eventType
-      );
 
     public:
+      std::unique_ptr< EventType::BasicEvent > frameMouseDown;
+      std::unique_ptr< EventType::BasicEvent > frameMouseUp;
+
       Input();
 
       Adapter getAdapter() const;
-
-      unsigned int registerKeyDownEvent( Key key, std::function< void( Key ) > callback );
-      unsigned int registerKeyUpEvent( Key key, std::function< void( Key ) > callback );
-
-      void unregisterKeyDownEvent( Key key, unsigned int handle );
-      void unregisterKeyUpEvent( Key key, unsigned int handle );
     };
 
   }

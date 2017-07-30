@@ -3,6 +3,8 @@
 #include "graphics/gui/widget/container.hpp"
 #include "graphics/gui/overlay.hpp"
 #include "device/display.hpp"
+#include "device/input.hpp"
+#include "device/eventtype/mouse.hpp"
 #include "containers/color.hpp"
 #include "eventmanager.hpp"
 #include <functional>
@@ -20,7 +22,7 @@ namespace BlueBear {
     namespace GUI {
       namespace Widget {
 
-        WidgetEngine::WidgetEngine( const Device::Display& display, Overlay& overlay ) : display( display ), overlay( overlay ) {
+        WidgetEngine::WidgetEngine( const Device::Display& display, Device::Input& input, Overlay& overlay ) : display( display ), input( input ), overlay( overlay ) {
           root = Container::create();
 
           buildDefaultStylesheet();
@@ -216,6 +218,9 @@ namespace BlueBear {
          * Remanage the order of all the drawables
          */
         void WidgetEngine::update() {
+
+          checkInputDevice();
+
           int maximum = -1;
 
           std::vector< std::shared_ptr< Drawable > > drawables;
@@ -223,6 +228,15 @@ namespace BlueBear {
 
           // Add drawables to overlay
           overlay.setDrawables( drawables );
+        }
+
+        /**
+         * Process events here
+         */
+        void WidgetEngine::checkInputDevice() {
+          if( input.frameMouseDown ) {
+
+          }
         }
 
         void WidgetEngine::zTraverse( std::shared_ptr< Node > node, int& globalMaximum, std::vector< std::shared_ptr< Drawable > >& drawables ) {

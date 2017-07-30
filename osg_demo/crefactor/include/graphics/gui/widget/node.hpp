@@ -3,6 +3,8 @@
 
 #include "graphics/gui/widget/style/types.hpp"
 #include "graphics/gui/widget/style/nodestyle.hpp"
+// dangerous
+#include "graphics/gui/widget/signal/signalbank.hpp"
 #include <memory>
 #include <string>
 #include <map>
@@ -30,6 +32,8 @@ namespace BlueBear {
 
           Style::NodeStyle style;
           std::map< std::string, stx::any > attributes;
+
+          Signal::SignalBank signalBank;
 
           Node();
 
@@ -63,6 +67,8 @@ namespace BlueBear {
           void addClass( const std::string& classID );
           void removeClass( const std::string& classID );
           void clearClasses();
+
+          virtual bool fireSignal( const std::string& signalId, stx::any data );
 
           virtual std::string getName() const = 0;
         };

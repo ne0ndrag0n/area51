@@ -1,4 +1,5 @@
 #include "graphics/gui/widget/node.hpp"
+#include "device/eventtype/basicevent.hpp"
 #include "eventmanager.hpp"
 #include <algorithm>
 
@@ -7,7 +8,7 @@ namespace BlueBear {
     namespace GUI {
       namespace Widget {
 
-        Node::Node() {}
+        Node::Node() : signalBank( Signal::SignalBank( this ) ) {}
 
         std::shared_ptr< Node > Node::getParent() const {
           return parent.lock();
@@ -63,6 +64,11 @@ namespace BlueBear {
 
         void Node::setAttributeValue( const std::string& key, stx::any value ) {
           attributes[ key ] = value;
+        }
+
+        bool Node::fireSignal( const std::string& signalId, stx::any data ) {
+          // Pass-through to SignalBank that can also call node children in override methods
+          signalBank.fireSignal( signalId, data );
         }
 
       }

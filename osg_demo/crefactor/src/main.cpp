@@ -26,7 +26,7 @@ int main( int argc, char** argv ) {
 	Input inputDevice;
 	Graphics::GUI::Overlay overlay( displayDevice );
 	SceneView sceneView( displayDevice, inputDevice, &overlay );
-	Graphics::GUI::Widget::WidgetEngine widgetEngine( displayDevice, overlay );
+	Graphics::GUI::Widget::WidgetEngine widgetEngine( displayDevice, inputDevice, overlay );
 
 	std::shared_ptr< Graphics::GUI::Widget::Window > windowWidget = Graphics::GUI::Widget::Window::create( "Debug Options" );
 	windowWidget->setStyleValue( "left", 10 );

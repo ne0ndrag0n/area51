@@ -21,7 +21,7 @@ namespace BlueBear {
           virtual std::shared_ptr< Drawable > getOrCreateDrawable() override;
           void sort();
 
-          Container() = default;
+          using Node::Node;
 
         public:
           static std::shared_ptr< Container > create();
@@ -43,6 +43,8 @@ namespace BlueBear {
           void append( std::shared_ptr< Node > node );
           void detach( std::shared_ptr< Node > node );
           void clear();
+
+          bool fireSignal( const std::string& signalId, stx::any data ) override;
 
           std::string getName() const;
         };

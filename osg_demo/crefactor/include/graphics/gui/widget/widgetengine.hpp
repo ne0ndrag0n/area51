@@ -11,6 +11,7 @@
 namespace BlueBear {
   namespace Device {
     class Display;
+    class Input;
   }
 
   namespace Graphics {
@@ -39,6 +40,7 @@ namespace BlueBear {
           };
 
           const Device::Display& display;
+          Device::Input& input;
           Overlay& overlay;
           std::vector< StylesheetQuery > styleSheet;
           std::shared_ptr< Container > root;
@@ -52,9 +54,10 @@ namespace BlueBear {
           );
 
           void zTraverse( std::shared_ptr< Node > node, int& globalMaximum, std::vector< std::shared_ptr< Drawable > >& drawables );
+          void checkInputDevice();
 
         public:
-          WidgetEngine( const Device::Display& display, Overlay& overlay );
+          WidgetEngine( const Device::Display& display, Device::Input& input, Overlay& overlay );
           ~WidgetEngine();
 
           void update();
