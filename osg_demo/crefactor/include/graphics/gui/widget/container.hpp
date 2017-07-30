@@ -44,7 +44,7 @@ namespace BlueBear {
           void detach( std::shared_ptr< Node > node );
           void clear();
 
-          bool fireSignal( const std::string& signalId, stx::any data ) override;
+          bool fireSignal( const std::string& signalId, const stx::any& data ) override;
 
           std::string getName() const;
         };

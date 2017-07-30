@@ -38,7 +38,7 @@ namespace BlueBear {
               callbacks[ index ] = std::function< void( CallbackArg& ) >();
             }
 
-            virtual bool fire( CallbackArg& param ) {
+            virtual bool fire( CallbackArg param ) {
               for( std::function< void( CallbackArg& ) > callback : callbacks ) {
                 callback( param );
               }

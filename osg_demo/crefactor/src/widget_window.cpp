@@ -25,6 +25,10 @@ namespace BlueBear {
           }
         }
 
+        std::string Window::getName() const {
+          return "Window";
+        }
+
       }
     }
   }

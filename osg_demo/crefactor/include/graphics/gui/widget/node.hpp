@@ -11,6 +11,11 @@
 #include <any>
 #include <unordered_set>
 
+// XXX: Remove. debug stuff
+//#include <typeinfo>
+//#include <cxxabi.h>
+// use abi::__cxa_demangle to demangle names
+
 namespace BlueBear {
   namespace Graphics {
     namespace GUI {
@@ -68,7 +73,7 @@ namespace BlueBear {
           void removeClass( const std::string& classID );
           void clearClasses();
 
-          virtual bool fireSignal( const std::string& signalId, stx::any data );
+          virtual bool fireSignal( const std::string& signalId, const stx::any& data );
 
           virtual std::string getName() const = 0;
         };

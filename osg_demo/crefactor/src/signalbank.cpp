@@ -1,6 +1,7 @@
 #include "graphics/gui/widget/signal/signalbank.hpp"
 #include "graphics/gui/widget/signal/mousesignal.hpp"
 #include "device/eventtype/mouse.hpp"
+#include <iostream>
 
 namespace BlueBear {
   namespace Graphics {
@@ -19,12 +20,12 @@ namespace BlueBear {
             return mouseSignals.at( signalId );
           }
 
-          bool SignalBank::fireSignal( const std::string& signalId, stx::any& data ) {
+          bool SignalBank::fireSignal( const std::string& signalId, const stx::any& data ) {
             {
               auto it = mouseSignals.find( signalId );
 
               if( it != mouseSignals.end() ) {
-                return it->second.fire( stx::any_cast< Device::EventType::Mouse& >( data ) );
+                return it->second.fire( stx::any_cast< Device::EventType::Mouse >( data ) );
               }
             }
 

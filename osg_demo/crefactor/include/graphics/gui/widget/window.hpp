@@ -22,6 +22,7 @@ namespace BlueBear {
 
           virtual std::shared_ptr< Drawable > getOrCreateDrawable();
 
+          std::string getName() const;
         };
 
       }

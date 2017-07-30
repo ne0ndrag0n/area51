@@ -22,6 +22,7 @@ namespace BlueBear {
       namespace Widget {
         class Node;
         class Container;
+        class RootContainer;
 
         /**
          * The WidgetEngine sits next to the Overlay and submits drawables to it, ordering each drawable's z-order prior to
@@ -43,7 +44,7 @@ namespace BlueBear {
           Device::Input& input;
           Overlay& overlay;
           std::vector< StylesheetQuery > styleSheet;
-          std::shared_ptr< Container > root;
+          std::shared_ptr< RootContainer > root;
 
           void buildDefaultStylesheet();
           void refreshStylesheet();

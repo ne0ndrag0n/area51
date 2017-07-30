@@ -1,6 +1,7 @@
 #include "graphics/gui/widget/widgetengine.hpp"
 #include "graphics/gui/widget/node.hpp"
 #include "graphics/gui/widget/container.hpp"
+#include "graphics/gui/widget/rootcontainer.hpp"
 #include "graphics/gui/overlay.hpp"
 #include "device/display.hpp"
 #include "device/input.hpp"
@@ -23,7 +24,7 @@ namespace BlueBear {
       namespace Widget {
 
         WidgetEngine::WidgetEngine( const Device::Display& display, Device::Input& input, Overlay& overlay ) : display( display ), input( input ), overlay( overlay ) {
-          root = Container::create();
+          root = RootContainer::create();
 
           buildDefaultStylesheet();
 
@@ -67,6 +68,9 @@ namespace BlueBear {
               }
             }
           );
+
+          // Root element should still have all the same style shit
+          root->pushMatchingQuery( &styleSheet[ 0 ].rules );
 
           // root element has a flow of "none", allowing window elements to float around (and for GUI elements to be placed arbitrarily)
           // root element is intended to be inaccessible from Lua, etc
@@ -235,7 +239,12 @@ namespace BlueBear {
          */
         void WidgetEngine::checkInputDevice() {
           if( input.frameMouseDown ) {
+            bool eat = root->fireSignal( "mousedown", *input.frameMouseDown );
 
+            if( eat ) {
+              std::cout << "Eating the event" << std::endl;
+              input.frameMouseDown = nullptr;
+            }
           }
         }
 

@@ -1,4 +1,5 @@
 #include "graphics/gui/widget/style/nodestyle.hpp"
+#include <iostream>
 
 namespace BlueBear {
   namespace Graphics {

@@ -16,6 +16,7 @@ namespace BlueBear {
         unsigned int width = display.getWidth();
         unsigned int height = display.getHeight();
 
+        viewer.setThreadingModel( osgViewer::ViewerBase::ThreadingModel::SingleThreaded );
         viewer.addEventHandler( input.getAdapter() );
 
         if( overlay ) {

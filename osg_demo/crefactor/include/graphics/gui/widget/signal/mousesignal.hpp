@@ -15,7 +15,7 @@ namespace BlueBear {
           public:
             using CallbackVectorSignal< Device::EventType::Mouse >::CallbackVectorSignal;
 
-            bool fire( Device::EventType::Mouse& mouse ) override;
+            bool fire( Device::EventType::Mouse mouse ) override;
 
           };
 

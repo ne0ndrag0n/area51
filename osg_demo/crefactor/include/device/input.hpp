@@ -140,8 +140,8 @@ namespace BlueBear {
       Adapter inputAdapter;
 
     public:
-      std::unique_ptr< EventType::BasicEvent > frameMouseDown;
-      std::unique_ptr< EventType::BasicEvent > frameMouseUp;
+      std::unique_ptr< EventType::Mouse > frameMouseDown;
+      std::unique_ptr< EventType::Mouse > frameMouseUp;
 
       Input();
 

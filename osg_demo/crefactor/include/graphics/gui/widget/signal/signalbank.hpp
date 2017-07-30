@@ -27,7 +27,7 @@ namespace BlueBear {
             SignalBank( Node* parent );
 
             MouseSignal& getMouseSignal( const std::string& signalId );
-            bool fireSignal( const std::string& signalId, stx::any& data );
+            bool fireSignal( const std::string& signalId, const stx::any& data );
           };
 
         }

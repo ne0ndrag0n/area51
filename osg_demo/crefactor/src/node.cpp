@@ -1,5 +1,4 @@
 #include "graphics/gui/widget/node.hpp"
-#include "device/eventtype/basicevent.hpp"
 #include "eventmanager.hpp"
 #include <algorithm>
 
@@ -66,9 +65,9 @@ namespace BlueBear {
           attributes[ key ] = value;
         }
 
-        bool Node::fireSignal( const std::string& signalId, stx::any data ) {
+        bool Node::fireSignal( const std::string& signalId, const stx::any& data ) {
           // Pass-through to SignalBank that can also call node children in override methods
-          signalBank.fireSignal( signalId, data );
+          return signalBank.fireSignal( signalId, data );
         }
 
       }
