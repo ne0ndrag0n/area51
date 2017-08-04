@@ -83,6 +83,25 @@ namespace BlueBear {
           return items;
         }
 
+        std::vector< std::shared_ptr< Node > > Container::getByPredicate( std::function< bool( std::shared_ptr< Node > ) > predicate ) const {
+          std::vector< std::shared_ptr< Node > > items;
+
+          for( std::shared_ptr< Node > child : children ) {
+
+            if( predicate( child ) ) {
+              items.emplace_back( child );
+            }
+
+            if( std::shared_ptr< Container > container = std::dynamic_pointer_cast< Container >( child ) ) {
+              std::vector< std::shared_ptr< Node > > childItems = container->getByPredicate( predicate );
+              items.insert( items.end(), childItems.begin(), childItems.end() );
+            }
+
+          }
+
+          return items;
+        }
+
         std::deque< std::shared_ptr< Node > >& Container::getChildren() {
           return children;
         }
@@ -136,16 +155,6 @@ namespace BlueBear {
 
         std::shared_ptr< Container > Container::create() {
           return std::shared_ptr< Container >( new Container() );
-        }
-
-        bool Container::fireSignal( const std::string& signalId, const stx::any& data ) {
-          bool result = Node::fireSignal( signalId, data );
-
-          for( std::shared_ptr< Node > child : children ) {
-            result = child->fireSignal( signalId, data ) || result;
-          }
-
-          return result;
         }
 
       }

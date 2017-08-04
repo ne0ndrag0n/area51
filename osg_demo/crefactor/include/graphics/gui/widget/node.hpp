@@ -22,6 +22,9 @@ namespace BlueBear {
       class Drawable;
 
       namespace Widget {
+        namespace Signal {
+          class MouseSignal;
+        }
 
         /**
          * Base class for all GUI widgets
@@ -38,11 +41,13 @@ namespace BlueBear {
           Style::NodeStyle style;
           std::map< std::string, stx::any > attributes;
 
-          Signal::SignalBank signalBank;
-
           Node();
 
         public:
+
+          // Signals live on node but an external manager (such as WidgetEngine) is responsible
+          // for triggering them
+          Signal::SignalBank signalBank;
 
           virtual ~Node() = default;
           virtual std::shared_ptr< Drawable > getOrCreateDrawable() = 0;
@@ -72,8 +77,6 @@ namespace BlueBear {
           void addClass( const std::string& classID );
           void removeClass( const std::string& classID );
           void clearClasses();
-
-          virtual bool fireSignal( const std::string& signalId, const stx::any& data );
 
           virtual std::string getName() const = 0;
         };

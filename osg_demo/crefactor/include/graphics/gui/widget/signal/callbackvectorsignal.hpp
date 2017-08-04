@@ -16,12 +16,8 @@ namespace BlueBear {
           template< typename CallbackArg >
           class CallbackVectorSignal {
             std::vector< std::function< void( CallbackArg& ) > > callbacks;
-          protected:
-            Node* parent;
 
           public:
-            CallbackVectorSignal( Node* parent ) : parent( parent ) {}
-
             unsigned int connect( std::function< void( CallbackArg& ) > callback ) {
               for( unsigned int i = 0; i != callbacks.size(); i++ ) {
                 if( !callbacks[ i ] ) {

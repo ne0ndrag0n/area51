@@ -7,7 +7,9 @@ namespace BlueBear {
     namespace GUI {
       namespace Widget {
 
-        Node::Node() : signalBank( Signal::SignalBank( this ) ) {}
+        Node::Node() {
+          
+        }
 
         std::shared_ptr< Node > Node::getParent() const {
           return parent.lock();
@@ -63,11 +65,6 @@ namespace BlueBear {
 
         void Node::setAttributeValue( const std::string& key, stx::any value ) {
           attributes[ key ] = value;
-        }
-
-        bool Node::fireSignal( const std::string& signalId, const stx::any& data ) {
-          // Pass-through to SignalBank that can also call node children in override methods
-          return signalBank.fireSignal( signalId, data );
         }
 
       }

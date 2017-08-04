@@ -5,16 +5,6 @@ namespace BlueBear {
     namespace GUI {
       namespace Widget {
 
-        bool RootContainer::fireSignal( const std::string& signalId, const stx::any& data ) {
-          bool result = false;
-
-          for( std::shared_ptr< Node > child : children ) {
-            result = child->fireSignal( signalId, data ) || result;
-          }
-
-          return result;
-        }
-
         std::string RootContainer::getName() const {
           return "RootContainer";
         }

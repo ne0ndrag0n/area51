@@ -1,9 +1,11 @@
 #ifndef SIGNAL_BANK
 #define SIGNAL_BANK
 
-#include "graphics/gui/widget/signal/mousesignal.hpp"
+#include "graphics/gui/widget/signal/callbackvectorsignal.hpp"
+#include "device/eventtype/mouse.hpp"
 #include <map>
 #include <string>
+#include <memory>
 #include <any>
 
 namespace BlueBear {
@@ -14,20 +16,11 @@ namespace BlueBear {
 
         namespace Signal {
 
-          class SignalBank {
-            std::map< std::string, MouseSignal > mouseSignals;
-            // std::map< std::string, KeySignal > keySignals;
-            // std::map< std::string, MiscSignal > miscSignals;
-
-            // Neither a Signal nor a SignalBank should ever exist independently of a Node
-            // This is fine
-            Node* parent;
-
-          public:
-            SignalBank( Node* parent );
-
-            MouseSignal& getMouseSignal( const std::string& signalId );
-            bool fireSignal( const std::string& signalId, const stx::any& data );
+          struct SignalBank {
+            std::map< std::string, CallbackVectorSignal< Device::EventType::Mouse > > mouse = {
+              { "mousedown", CallbackVectorSignal< Device::EventType::Mouse >() },
+              { "mouseup", CallbackVectorSignal< Device::EventType::Mouse >() }
+            };
           };
 
         }

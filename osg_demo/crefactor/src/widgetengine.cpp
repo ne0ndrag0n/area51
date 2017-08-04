@@ -1,12 +1,15 @@
 #include "graphics/gui/widget/widgetengine.hpp"
+#include "graphics/gui/widget/signal/callbackvectorsignal.hpp"
 #include "graphics/gui/widget/node.hpp"
 #include "graphics/gui/widget/container.hpp"
 #include "graphics/gui/widget/rootcontainer.hpp"
+#include "graphics/gui/widget/window.hpp"
 #include "graphics/gui/overlay.hpp"
 #include "device/display.hpp"
 #include "device/input.hpp"
 #include "device/eventtype/mouse.hpp"
 #include "containers/color.hpp"
+#include "containers/rect.hpp"
 #include "eventmanager.hpp"
 #include <functional>
 #include <vector>
@@ -234,18 +237,71 @@ namespace BlueBear {
           overlay.setDrawables( drawables );
         }
 
+        osg::Vec2i WidgetEngine::getAbsolutePosition( std::shared_ptr< Node > node, int left, int top ) {
+          osg::Vec2i result;
+
+          result.set( left, top );
+
+          std::shared_ptr< Node > current = node->getParent();
+          while( current ) {
+            result.set(
+              result.x() + current->getStyleValue< int >( "left" ),
+              result.y() + current->getStyleValue< int >( "top" )
+            );
+
+            current = current->getParent();
+          }
+
+          return result;
+        }
+
+        void WidgetEngine::checkMouseEvent( const std::string& eventId, std::unique_ptr< Device::EventType::Mouse >& data ) {
+          if( data ) {
+            // fire from leaf nodes up, eat the event if necessary
+            std::vector< std::shared_ptr< Node > > matchingNodes = root->getByPredicate( [ & ]( std::shared_ptr< Node > node ) {
+              // Reject if it's not drawable
+              if( !node->getOrCreateDrawable() ) {
+                return false;
+              }
+
+              osg::Vec2i absolutePosition = getAbsolutePosition( node, node->getStyleValue< int >( "left" ), node->getStyleValue< int >( "top" ) );
+
+              Containers::Rect< int > dimensions{
+                absolutePosition.x(),
+                absolutePosition.y(),
+                ( int ) node->getStyleValue< double >( "width" ),
+                ( int ) node->getStyleValue< double >( "height" )
+              };
+
+              return dimensions.pointWithin( data->x, data->y );
+            } );
+
+            // Sort by z-order and take the last element in the list
+            if( matchingNodes.size() ) {
+              // Sort the nodes by z-index
+              std::stable_sort( matchingNodes.begin(), matchingNodes.end(), []( const std::shared_ptr< Node > lhs, const std::shared_ptr< Node > rhs ) {
+                return lhs->getOrCreateDrawable()->zOrder < rhs->getOrCreateDrawable()->zOrder;
+              } );
+
+              // Trigger the event (bubble up)
+              std::shared_ptr< Node > node = matchingNodes.back();
+              while( node ) {
+                node->signalBank.mouse.at( eventId ).fire( *data );
+                node = node->getParent();
+              }
+
+              // Eat the event
+              data.reset();
+            }
+          }
+        }
+
         /**
          * Process events here
          */
         void WidgetEngine::checkInputDevice() {
-          if( input.frameMouseDown ) {
-            bool eat = root->fireSignal( "mousedown", *input.frameMouseDown );
-
-            if( eat ) {
-              std::cout << "Eating the event" << std::endl;
-              input.frameMouseDown = nullptr;
-            }
-          }
+          checkMouseEvent( "mousedown", input.frameMouseDown );
+          checkMouseEvent( "mouseup", input.frameMouseUp );
         }
 
         void WidgetEngine::zTraverse( std::shared_ptr< Node > node, int& globalMaximum, std::vector< std::shared_ptr< Drawable > >& drawables ) {
@@ -277,18 +333,37 @@ namespace BlueBear {
           }
         }
 
+        void WidgetEngine::windowDragBegin( std::shared_ptr< Window > target, Device::EventType::Mouse event ) {
+          std::cout << "Mousedown in target " << std::hex << target.get() << std::endl;
+        }
+
+        void WidgetEngine::windowDragEnd() {
+
+        }
+
+        void WidgetEngine::attachWindowManagerEvents( std::shared_ptr< Window > window ) {
+          if( window ) {
+            window->signalBank.mouse.at( "mousedown" ).connect( std::bind( &WidgetEngine::windowDragBegin, this, window, std::placeholders::_1 ) );
+          }
+        }
+
         void WidgetEngine::append( std::shared_ptr< Node > node ) {
           auto& children = root->getChildren();
 
           if( !children.empty() ) {
+            // TODO: Better way to get next z-order (tombstoning closed window indices)
             node->setStyleValue( "z-order", ( int ) children.back()->getStyleValue< int >( "z-order" ) + 1 );
           }
 
           root->append( node );
+
+          attachWindowManagerEvents( std::dynamic_pointer_cast< Window >( node ) );
         }
 
         void WidgetEngine::prepend( std::shared_ptr< Node > node ) {
           root->prepend( node );
+
+          attachWindowManagerEvents( std::dynamic_pointer_cast< Window >( node ) );
         }
 
         void WidgetEngine::remove( std::shared_ptr< Node > node ) {

@@ -14,8 +14,6 @@ namespace BlueBear {
         class RootContainer : public Container {
 
         public:
-          bool fireSignal( const std::string& signalId, const stx::any& data ) override;
-
           std::string getName() const override;
 
           static std::shared_ptr< RootContainer > create();

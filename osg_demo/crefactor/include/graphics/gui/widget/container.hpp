@@ -36,6 +36,7 @@ namespace BlueBear {
           std::shared_ptr< Node > getByID( const std::string& id ) const;
           std::vector< std::shared_ptr< Node > > getByClass( const std::vector< std::string >& classes ) const;
           std::vector< std::shared_ptr< Node > > getByName( const std::string& name ) const;
+          std::vector< std::shared_ptr< Node > > getByPredicate( std::function< bool( std::shared_ptr< Node > ) > predicate ) const;
 
           std::deque< std::shared_ptr< Node > >& getChildren();
 
@@ -43,8 +44,6 @@ namespace BlueBear {
           void append( std::shared_ptr< Node > node );
           void detach( std::shared_ptr< Node > node );
           void clear();
-
-          bool fireSignal( const std::string& signalId, const stx::any& data ) override;
 
           std::string getName() const;
         };
