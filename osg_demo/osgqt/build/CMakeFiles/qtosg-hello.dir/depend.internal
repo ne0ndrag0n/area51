@@ -232,6 +232,7 @@ CMakeFiles/qtosg-hello.dir/main.cpp.o
  /usr/local/include/osg/PagedLOD
  /usr/local/include/osg/Plane
  /usr/local/include/osg/Polytope
+ /usr/local/include/osg/PositionAttitudeTransform
  /usr/local/include/osg/PrimitiveSet
  /usr/local/include/osg/Program
  /usr/local/include/osg/Projection

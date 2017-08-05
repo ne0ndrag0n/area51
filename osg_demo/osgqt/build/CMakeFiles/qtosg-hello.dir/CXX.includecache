@@ -45,6 +45,8 @@ osgViewer/ViewerEventHandlers
 -
 osgViewer/Viewer
 -
+osg/PositionAttitudeTransform
+-
 osgQt/QWidgetImage
 -
 iostream
@@ -2180,6 +2182,18 @@ vector
 osg/Plane
 -
 osg/fast_back_stack
+-
+
+/usr/local/include/osg/PositionAttitudeTransform
+osg/Group
+-
+osg/Transform
+-
+osg/AnimationPath
+-
+osg/Vec3d
+-
+osg/Quat
 -
 
 /usr/local/include/osg/PrimitiveSet

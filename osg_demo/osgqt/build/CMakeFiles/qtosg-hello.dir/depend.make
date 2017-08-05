@@ -231,6 +231,7 @@ CMakeFiles/qtosg-hello.dir/main.cpp.o: /usr/local/include/osg/OperationThread
 CMakeFiles/qtosg-hello.dir/main.cpp.o: /usr/local/include/osg/PagedLOD
 CMakeFiles/qtosg-hello.dir/main.cpp.o: /usr/local/include/osg/Plane
 CMakeFiles/qtosg-hello.dir/main.cpp.o: /usr/local/include/osg/Polytope
+CMakeFiles/qtosg-hello.dir/main.cpp.o: /usr/local/include/osg/PositionAttitudeTransform
 CMakeFiles/qtosg-hello.dir/main.cpp.o: /usr/local/include/osg/PrimitiveSet
 CMakeFiles/qtosg-hello.dir/main.cpp.o: /usr/local/include/osg/Program
 CMakeFiles/qtosg-hello.dir/main.cpp.o: /usr/local/include/osg/Projection
