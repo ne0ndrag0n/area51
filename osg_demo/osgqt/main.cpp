@@ -69,6 +69,8 @@ int main( int argc, char** argv )
 
     osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
     texture->setImage( widgetImage.get() );
+    texture->setFilter(osg::Texture::MIN_FILTER , osg::Texture::NEAREST);
+    texture->setFilter(osg::Texture::MAG_FILTER , osg::Texture::NEAREST);
 
     osg::ref_ptr<osg::Geometry> quad =
         osg::createTexturedQuadGeometry( osg::Vec3(), osg::Vec3( widgetImage->s(), 0.0, 0.0 ), osg::Vec3( 0.0, widgetImage->t(), 0.0 ) );
