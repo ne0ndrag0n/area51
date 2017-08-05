@@ -22,6 +22,7 @@
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/Viewer>
+#include <osg/PositionAttitudeTransform>
 #include <osgQt/QWidgetImage>
 #include <iostream>
 
@@ -52,7 +53,7 @@ int main( int argc, char** argv )
 
     osg::ref_ptr< osg::GraphicsContext::Traits > traits = new osg::GraphicsContext::Traits();
     traits->x = 20; traits->y = 30;
-    traits->width = 1920; traits->height = 1080;
+    traits->width = 1200; traits->height = 700;
     traits->windowDecoration = true;
     traits->doubleBuffer = true;
     traits->glContextVersion = "3.3";
@@ -66,16 +67,11 @@ int main( int argc, char** argv )
     osg::ref_ptr<osgQt::QWidgetImage> widgetImage =
         new osgQt::QWidgetImage( createDemoWidget("./animation.gif") );
 
-    osg::ref_ptr<osgViewer::InteractiveImageHandler> handler =
-        new osgViewer::InteractiveImageHandler( widgetImage.get() );
-
     osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
     texture->setImage( widgetImage.get() );
 
     osg::ref_ptr<osg::Geometry> quad =
-        osg::createTexturedQuadGeometry(osg::Vec3(), osg::X_AXIS, osg::Z_AXIS);
-    quad->setEventCallback( handler.get() );
-    quad->setCullCallback( handler.get() );
+        osg::createTexturedQuadGeometry( osg::Vec3(), osg::Vec3( widgetImage->s(), 0.0, 0.0 ), osg::Vec3( 0.0, widgetImage->t(), 0.0 ) );
 
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
     geode->setCullingActive( false );
@@ -84,8 +80,21 @@ int main( int argc, char** argv )
     geode->getOrCreateStateSet()->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
     geode->getOrCreateStateSet()->setTextureAttributeAndModes( 0, texture.get() );
 
+    osg::ref_ptr<osg::Camera> overlay = new osg::Camera;
+    overlay->setCullingActive( false );
+    overlay->setClearMask( GL_DEPTH_BUFFER_BIT );
+    overlay->setReferenceFrame( osg::Transform::ABSOLUTE_RF );
+    overlay->setRenderOrder( osg::Camera::POST_RENDER );
+    overlay->setAllowEventFocus( false );
+    overlay->setProjectionMatrix( osg::Matrix::ortho2D( 0.0, 1200.0, 0.0, 700.0 ) );
+    overlay->addChild( geode.get() );
+
+    osg::ref_ptr<osgViewer::InteractiveImageHandler> handler = new osgViewer::InteractiveImageHandler( widgetImage.get(), texture, nullptr );
+    quad->setEventCallback( handler.get() );
+    quad->setCullCallback( handler.get() );
+
     osg::ref_ptr<osg::Group> root = new osg::Group;
-    root->addChild( geode.get() );
+    root->addChild( overlay.get() );
 
     osgViewer::Viewer viewer;
     viewer.setSceneData( root.get() );
@@ -94,7 +103,7 @@ int main( int argc, char** argv )
 
     osg::ref_ptr< osg::Camera > camera = viewer.getCamera();
     camera->setGraphicsContext( gc );
-    camera->setViewport( 0, 0, 1920, 1080 );
+    camera->setViewport( 0, 0, 1200, 700 );
 
     while ( !viewer.done() )
     {
