@@ -1,0 +1,2 @@
+# Hashes of file build rules.
+77eea3c4b8a91d494fdc7f39f794f678 CMakeFiles/qtosg-hello_automoc

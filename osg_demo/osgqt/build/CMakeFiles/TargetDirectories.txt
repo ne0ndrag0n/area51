@@ -1,0 +1,4 @@
+/home/ashley/Projects/area51/osg_demo/osgqt/build/CMakeFiles/edit_cache.dir
+/home/ashley/Projects/area51/osg_demo/osgqt/build/CMakeFiles/rebuild_cache.dir
+/home/ashley/Projects/area51/osg_demo/osgqt/build/CMakeFiles/qtosg-hello.dir
+/home/ashley/Projects/area51/osg_demo/osgqt/build/CMakeFiles/qtosg-hello_automoc.dir
