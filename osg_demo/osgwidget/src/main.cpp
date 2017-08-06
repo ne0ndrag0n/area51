@@ -47,46 +47,49 @@ osgWidget::Label* createLabel( const std::string& name, const std::string& text,
     label->addSize( 10.0f, 10.0f );
     label->setCanFill( true );
 
-    //label->getText()->getOrCreateStateSet()->setAttributeAndModes( shaderProgram, osg::StateAttribute::ON );
+    label->getText()->getOrCreateStateSet()->setAttributeAndModes( shaderProgram, osg::StateAttribute::ON );
 
     return label.release();
 }
 
 osgWidget::Window* createSimpleTabs( float winX, float winY )
 {
-    osg::ref_ptr<osgWidget::Canvas> contents = new osgWidget::Canvas("contents");
+    //osg::ref_ptr<osgWidget::Canvas> contents = new osgWidget::Canvas("contents");
     osg::ref_ptr<osgWidget::Box> tabs =
         new osgWidget::Box("tabs", osgWidget::Box::HORIZONTAL);
 
     for ( unsigned int i=0; i<3; ++i )
     {
         osg::Vec4 color(0.0f, (float)i / 3.0f, 0.0f, 1.0f);
-        std::stringstream ss, ss2;
-        ss << "Tab-" << i;
-        ss2 << "Tab content:" << std::endl << "Some text for Tab-" << i;
+        std::string str = std::string( "Tab-" ) + std::to_string( i );
 
+        /*
         osgWidget::Label* content = createLabel(ss.str(), ss2.str(), 10.0f, color);
         content->setLayer( osgWidget::Widget::LAYER_MIDDLE, i );
         contents->addWidget( content, 0.0f, 0.0f );
+        */
 
-        osgWidget::Label* tab = createLabel(ss.str(), ss.str(), 20.0f, color);
+        osgWidget::Label* tab = createLabel(str, str, 20.0f, color);
+        /*
         tab->setEventMask( osgWidget::EVENT_MOUSE_PUSH );
         tab->addCallback( new osgWidget::Callback(
-            &tabPressed, osgWidget::EVENT_MOUSE_PUSH, content) );
+            &tabPressed, osgWidget::EVENT_MOUSE_PUSH ) );
+        */
         tabs->addWidget( tab );
     }
 
     osg::ref_ptr<osgWidget::Box> main = new osgWidget::Box("main", osgWidget::Box::VERTICAL);
     main->setOrigin( winX, winY );
     main->attachMoveCallback();
-    main->addWidget( contents->embed() );
-    main->addWidget( tabs->embed() );
+    //main->addWidget( contents->embed() );
+    //main->addWidget( tabs->embed() );
     main->addWidget( createLabel("title", "Tabs Demo", 15.0f, osg::Vec4(0.0f, 0.4f, 1.0f, 1.0f)) );
     return main.release();
 }
 
 bool tabPressed( osgWidget::Event& ev )
 {
+  /*
     osgWidget::Label* content = static_cast<osgWidget::Label*>( ev.getData() );
     if ( !content ) return false;
 
@@ -101,6 +104,8 @@ bool tabPressed( osgWidget::Event& ev )
         canvas->resize();
     }
     return true;
+    */
+    return false;
 }
 
 int main( int argc, char** argv )
