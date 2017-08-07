@@ -9,7 +9,6 @@
 #include "graphics/rendering/sceneview_camera.hpp"
 #include "graphics/rendering/group.hpp"
 #include "graphics/rendering/types.hpp"
-#include "graphics/gui/overlay.hpp"
 #include "graphics/gui/drawables/window.hpp"
 #include "graphics/gui/widget/widgetengine.hpp"
 #include "graphics/gui/widget/window.hpp"
@@ -24,9 +23,8 @@ std::shared_ptr< Group > myGroup = Group::create();
 int main( int argc, char** argv ) {
 	Display displayDevice( 1200, 700 );
 	Input inputDevice;
-	Graphics::GUI::Overlay overlay( displayDevice );
-	SceneView sceneView( displayDevice, inputDevice, &overlay );
-	Graphics::GUI::Widget::WidgetEngine widgetEngine( displayDevice, inputDevice, overlay );
+	Graphics::GUI::Widget::WidgetEngine widgetEngine( displayDevice, inputDevice );
+	SceneView sceneView( displayDevice, inputDevice, widgetEngine );
 
 	std::shared_ptr< Graphics::GUI::Widget::Window > windowWidget = Graphics::GUI::Widget::Window::create( "Debug Options" );
 	windowWidget->setStyleValue( "left", 10 );

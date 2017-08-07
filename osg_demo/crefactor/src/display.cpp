@@ -1,5 +1,4 @@
 #include "device/display.hpp"
-#include "graphics/gui/overlay.hpp"
 
 namespace BlueBear {
   namespace Device {

@@ -1,16 +1,22 @@
 #include "graphics/gui/widget/widgetengine.hpp"
+#include "graphics/gui/widget/widgetengine_adapter.hpp"
 #include "graphics/gui/widget/signal/callbackvectorsignal.hpp"
 #include "graphics/gui/widget/node.hpp"
 #include "graphics/gui/widget/container.hpp"
 #include "graphics/gui/widget/rootcontainer.hpp"
 #include "graphics/gui/widget/window.hpp"
-#include "graphics/gui/overlay.hpp"
+#include "graphics/gui/drawable.hpp"
 #include "device/display.hpp"
 #include "device/input.hpp"
 #include "device/eventtype/mouse.hpp"
 #include "containers/color.hpp"
 #include "containers/rect.hpp"
 #include "eventmanager.hpp"
+#include <osg/Geode>
+#include <osg/Camera>
+#include <osg/StateAttribute>
+#include <osg/StateSet>
+#include <osg/Matrix>
 #include <functional>
 #include <vector>
 #include <any>
@@ -26,7 +32,9 @@ namespace BlueBear {
     namespace GUI {
       namespace Widget {
 
-        WidgetEngine::WidgetEngine( const Device::Display& display, Device::Input& input, Overlay& overlay ) : display( display ), input( input ), overlay( overlay ) {
+        WidgetEngine::WidgetEngine( const Device::Display& display, Device::Input& input ) : display( display ), input( input ) {
+          prepareOverlay();
+
           root = RootContainer::create();
 
           buildDefaultStylesheet();
@@ -36,6 +44,24 @@ namespace BlueBear {
 
         WidgetEngine::~WidgetEngine () {
           eventManager.REFLOW_REQUIRED.stopListening( this );
+        }
+
+        void WidgetEngine::prepareOverlay() {
+          osg::ref_ptr< Adapter > adapter = new Adapter( *this );
+
+          osg::ref_ptr< osg::Geode > geode = new osg::Geode();
+          geode->setCullingActive( false );
+          geode->getOrCreateStateSet()->setMode( GL_BLEND, osg::StateAttribute::ON );
+          geode->getOrCreateStateSet()->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
+          geode->addDrawable( adapter );
+
+          overlay = new osg::Camera;
+          overlay->setClearMask( GL_DEPTH_BUFFER_BIT );
+          overlay->setReferenceFrame( osg::Transform::ABSOLUTE_RF );
+          overlay->setRenderOrder( osg::Camera::POST_RENDER );
+          overlay->setAllowEventFocus( false );
+          overlay->setProjectionMatrix( osg::Matrix::ortho2D(0.0, 1.0, 0.0, 1.0) );
+          overlay->addChild( geode );
         }
 
         /**
@@ -118,6 +144,17 @@ namespace BlueBear {
             for( std::shared_ptr< Node > match : matches ) {
               match->pushMatchingQuery( &sQuery.rules );
             }
+          }
+        }
+
+        void WidgetEngine::drawUnits( NVGcontext* context ) {
+          // Sort units by zOrder
+          std::stable_sort( drawableUnits.begin(), drawableUnits.end(), []( const std::shared_ptr< Drawable > lhs, const std::shared_ptr< Drawable > rhs ) {
+            return lhs->zOrder < rhs->zOrder;
+          } );
+
+          for( std::shared_ptr< Drawable > drawable : drawableUnits ) {
+            drawable->draw( context );
           }
         }
 
@@ -225,16 +262,11 @@ namespace BlueBear {
          * Remanage the order of all the drawables
          */
         void WidgetEngine::update() {
-
           checkInputDevice();
+          drawableUnits.clear();
 
           int maximum = -1;
-
-          std::vector< std::shared_ptr< Drawable > > drawables;
-          zTraverse( root, maximum, drawables );
-
-          // Add drawables to overlay
-          overlay.setDrawables( drawables );
+          zTraverse( root, maximum );
         }
 
         osg::Vec2i WidgetEngine::getAbsolutePosition( std::shared_ptr< Node > node, int left, int top ) {
@@ -304,7 +336,7 @@ namespace BlueBear {
           checkMouseEvent( "mouseup", input.frameMouseUp );
         }
 
-        void WidgetEngine::zTraverse( std::shared_ptr< Node > node, int& globalMaximum, std::vector< std::shared_ptr< Drawable > >& drawables ) {
+        void WidgetEngine::zTraverse( std::shared_ptr< Node > node, int& globalMaximum ) {
           int lastChildZ = 0;
 
           if( std::shared_ptr< Container > container = std::dynamic_pointer_cast< Container >( node ) ) {
@@ -322,11 +354,11 @@ namespace BlueBear {
                 }
 
                 if( std::shared_ptr< Drawable > drawable = child->getOrCreateDrawable() ) {
-                  drawables.emplace_back( drawable );
+                  drawableUnits.emplace_back( drawable );
                   drawable->zOrder = localMaximum;
                 }
 
-                zTraverse( child, globalMaximum, drawables );
+                zTraverse( child, globalMaximum );
               }
             }
 
@@ -368,6 +400,10 @@ namespace BlueBear {
 
         void WidgetEngine::remove( std::shared_ptr< Node > node ) {
           root->detach( node );
+        }
+
+        OverlayHelper WidgetEngine::getOverlayHelper() const {
+          return overlay;
         }
 
       }

@@ -1,7 +1,7 @@
 #include "graphics/rendering/sceneview.hpp"
 #include "graphics/rendering/sceneview_camera.hpp"
 #include "graphics/rendering/group.hpp"
-#include "graphics/gui/overlay.hpp"
+#include "graphics/gui/widget/widgetengine.hpp"
 #include "device/display.hpp"
 #include "device/input.hpp"
 #include <osg/GraphicsContext>
@@ -11,7 +11,7 @@ namespace BlueBear {
   namespace Graphics {
     namespace Rendering {
 
-      SceneView::SceneView( const Device::Display& display, const Device::Input& input, const GUI::Overlay* overlay ) :
+      SceneView::SceneView( const Device::Display& display, const Device::Input& input, const GUI::Widget::WidgetEngine& widgetEngine ) :
         rootGroup( new osg::Group() ) {
         unsigned int width = display.getWidth();
         unsigned int height = display.getHeight();
@@ -19,9 +19,7 @@ namespace BlueBear {
         viewer.setThreadingModel( osgViewer::ViewerBase::ThreadingModel::SingleThreaded );
         viewer.addEventHandler( input.getAdapter() );
 
-        if( overlay ) {
-          rootGroup->addChild( overlay->getOverlayHelper() );
-        }
+        rootGroup->addChild( widgetEngine.getOverlayHelper() );
 
         viewer.setSceneData( rootGroup );
 

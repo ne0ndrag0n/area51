@@ -1,7 +1,9 @@
 #ifndef WIDGET_ENGINE
 #define WIDGET_ENGINE
 
+#include "graphics/gui/types.hpp"
 #include "graphics/gui/widget/style/types.hpp"
+#include <nanovg/nanovg.h>
 #include <osg/Vec2i>
 #include <vector>
 #include <set>
@@ -23,7 +25,6 @@ namespace BlueBear {
   namespace Graphics {
     namespace GUI {
       class Drawable;
-      class Overlay;
 
       namespace Widget {
         class Node;
@@ -36,6 +37,8 @@ namespace BlueBear {
          * the re-draw of Overlay.
          */
         class WidgetEngine {
+          class Adapter;
+
           struct Selector {
             std::string tag;
             std::string id;
@@ -49,9 +52,13 @@ namespace BlueBear {
 
           const Device::Display& display;
           Device::Input& input;
-          Overlay& overlay;
+          OverlayHelper overlay;
           std::vector< StylesheetQuery > styleSheet;
           std::shared_ptr< RootContainer > root;
+          std::vector< std::shared_ptr< Drawable > > drawableUnits;
+
+          void drawUnits( NVGcontext* context );
+          void prepareOverlay();
 
           void buildDefaultStylesheet();
           void refreshStylesheet();
@@ -61,11 +68,7 @@ namespace BlueBear {
              const std::set< std::shared_ptr< Node > > from
           );
 
-          void zTraverse(
-            std::shared_ptr< Node > node,
-            int& globalMaximum,
-            std::vector< std::shared_ptr< Drawable > >& drawables
-          );
+          void zTraverse( std::shared_ptr< Node > node, int& globalMaximum );
           void checkInputDevice();
 
           osg::Vec2i getAbsolutePosition( std::shared_ptr< Node > node, int left, int top );
@@ -77,8 +80,10 @@ namespace BlueBear {
           void checkMouseEvent( const std::string& eventId, std::unique_ptr< Device::EventType::Mouse >& data );
 
         public:
-          WidgetEngine( const Device::Display& display, Device::Input& input, Overlay& overlay );
+          WidgetEngine( const Device::Display& display, Device::Input& input );
           ~WidgetEngine();
+
+          OverlayHelper getOverlayHelper() const;
 
           void update();
 
