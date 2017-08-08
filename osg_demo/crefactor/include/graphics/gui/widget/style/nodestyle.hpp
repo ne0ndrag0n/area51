@@ -22,6 +22,11 @@ namespace BlueBear {
             stx::any getValue( const std::string& key ) const;
             void setValue( const std::string& key, stx::any value );
 
+            template< typename T >
+            T getValue( const std::string& key ) const {
+              return stx::any_cast< T >( getValue( key ) );
+            };
+
             void clearMatchingQueries();
             void pushMatchingQuery( const RuleMap* ruleMap );
           };

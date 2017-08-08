@@ -13,14 +13,14 @@ namespace BlueBear {
 
         void Window::draw( DrawableContext* context ) {
           if( std::shared_ptr< Widget::Node > node = parent.lock() ) {
-            Containers::Color< unsigned char > windowFillColor = node->getStyleValue< Containers::Color< unsigned char > >( "fill-color" );
-            Containers::Color< unsigned char > titlebarColor = node->getStyleValue< Containers::Color< unsigned char > >( "primary-color" );
-            Containers::Color< unsigned char > primaryTextColor = node->getStyleValue< Containers::Color< unsigned char > >( "default-text-color" );
+            Containers::Color< unsigned char > windowFillColor = node->getStyle().getValue< Containers::Color< unsigned char > >( "fill-color" );
+            Containers::Color< unsigned char > titlebarColor = node->getStyle().getValue< Containers::Color< unsigned char > >( "primary-color" );
+            Containers::Color< unsigned char > primaryTextColor = node->getStyle().getValue< Containers::Color< unsigned char > >( "default-text-color" );
             Containers::Rect< int > dimensions{
-              node->getStyleValue< int >( "left" ),
-              node->getStyleValue< int >( "top" ),
-              ( int ) node->getStyleValue< double >( "width" ),
-              ( int ) node->getStyleValue< double >( "height" )
+              node->getStyle().getValue< int >( "left" ),
+              node->getStyle().getValue< int >( "top" ),
+              ( int ) node->getStyle().getValue< double >( "width" ),
+              ( int ) node->getStyle().getValue< double >( "height" )
             };
             std::string titlebarTitle = node->getAttributeValue< std::string >( "title" );
 
@@ -63,7 +63,7 @@ namespace BlueBear {
             nvgText( context, dimensions.x + dimensions.width - 15, dimensions.y + 15, "\uf00d", NULL );
 
             nvgFontSize( context, 24.0f );
-            nvgFontFace( context, node->getStyleValue< const char* >( "font" ) );
+            nvgFontFace( context, node->getStyle().getValue< const char* >( "font" ) );
             nvgFillColor( context, toColor( primaryTextColor ) );
             nvgTextAlign( context, NVG_ALIGN_LEFT );
             nvgText( context, dimensions.x + 5, dimensions.y + 45, titlebarTitle.c_str(), NULL );

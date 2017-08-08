@@ -53,19 +53,12 @@ namespace BlueBear {
           virtual std::shared_ptr< Drawable > getOrCreateDrawable() = 0;
 
           template< typename T >
-          T getStyleValue( const std::string& key ) const {
-            return stx::any_cast< T >( style.getValue( key ) );
-          };
-          virtual void setStyleValue( const std::string& key, stx::any value );
-
-          template< typename T >
           T getAttributeValue( const std::string& key ) const {
             return stx::any_cast< T >( attributes.at( key ) );
           };
           void setAttributeValue( const std::string& key, stx::any value );
 
-          void clearStyleQueries();
-          void pushMatchingQuery( const Style::RuleMap* ruleMap );
+          Style::NodeStyle& getStyle();
 
           std::shared_ptr< Node > getParent() const;
           void setParent( std::shared_ptr< Node > parent );

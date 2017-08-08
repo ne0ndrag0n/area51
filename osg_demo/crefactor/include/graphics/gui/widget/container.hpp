@@ -30,8 +30,6 @@ namespace BlueBear {
 
           unsigned int getNumChildren() const;
 
-          void setStyleValue( const std::string& key, stx::any value ) override;
-
           std::shared_ptr< Node > getByIndex( unsigned int index ) const;
           std::shared_ptr< Node > getByID( const std::string& id ) const;
           std::vector< std::shared_ptr< Node > > getByClass( const std::vector< std::string >& classes ) const;
@@ -39,6 +37,8 @@ namespace BlueBear {
           std::vector< std::shared_ptr< Node > > getByPredicate( std::function< bool( std::shared_ptr< Node > ) > predicate ) const;
 
           std::deque< std::shared_ptr< Node > >& getChildren();
+
+          virtual void positionChildren();
 
           void prepend( std::shared_ptr< Node > node );
           void append( std::shared_ptr< Node > node );

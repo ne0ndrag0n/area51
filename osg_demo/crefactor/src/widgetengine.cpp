@@ -86,11 +86,11 @@ namespace BlueBear {
                 { "fill-color", Containers::Color< unsigned char >( "#FAFAFAFF" ) },
                 { "font", "default" },
                 { "flow", "ltr" },
+                { "position", "flow" },
                 { "left", 0 },
                 { "top", 0 },
                 { "width", 1.0 },
                 { "height", 1.0 },
-                { "margin", 0 },
                 { "padding", 5 },
                 { "vertical-align", "middle" },
                 { "horizontal-align", "middle" }
@@ -99,13 +99,13 @@ namespace BlueBear {
           );
 
           // Root element should still have all the same style shit
-          root->pushMatchingQuery( &styleSheet[ 0 ].rules );
+          root->getStyle().pushMatchingQuery( &styleSheet[ 0 ].rules );
 
           // root element has a flow of "none", allowing window elements to float around (and for GUI elements to be placed arbitrarily)
           // root element is intended to be inaccessible from Lua, etc
-          root->setStyleValue( "flow", "none" );
-          root->setStyleValue( "width", ( double ) display.getWidth() );
-          root->setStyleValue( "height", ( double ) display.getHeight() );
+          root->getStyle().setValue( "flow", "none" );
+          root->getStyle().setValue( "width", ( double ) display.getWidth() );
+          root->getStyle().setValue( "height", ( double ) display.getHeight() );
         }
 
         /**
@@ -116,7 +116,7 @@ namespace BlueBear {
           std::vector< std::shared_ptr< Node > > allNodes = root->getByName( "*" );
           // Clear ALL matching queries
           for( std::shared_ptr< Node > node : allNodes ) {
-            node->clearStyleQueries();
+            node->getStyle().clearMatchingQueries();
           }
 
           // Match each stylesheet query's rules to the nodes its query matches
@@ -142,7 +142,7 @@ namespace BlueBear {
 
             // In the list of all matches for this selector, spray sQuery.rules across them
             for( std::shared_ptr< Node > match : matches ) {
-              match->pushMatchingQuery( &sQuery.rules );
+              match->getStyle().pushMatchingQuery( &sQuery.rules );
             }
           }
         }
@@ -262,7 +262,7 @@ namespace BlueBear {
          * Remanage the order of all the drawables
          */
         void WidgetEngine::update() {
-          checkInputDevice();
+          //checkInputDevice();
           drawableUnits.clear();
 
           int maximum = -1;
@@ -277,8 +277,8 @@ namespace BlueBear {
           std::shared_ptr< Node > current = node->getParent();
           while( current ) {
             result.set(
-              result.x() + current->getStyleValue< int >( "left" ),
-              result.y() + current->getStyleValue< int >( "top" )
+              result.x() + current->getStyle().getValue< int >( "left" ),
+              result.y() + current->getStyle().getValue< int >( "top" )
             );
 
             current = current->getParent();
@@ -296,13 +296,13 @@ namespace BlueBear {
                 return false;
               }
 
-              osg::Vec2i absolutePosition = getAbsolutePosition( node, node->getStyleValue< int >( "left" ), node->getStyleValue< int >( "top" ) );
+              osg::Vec2i absolutePosition = getAbsolutePosition( node, node->getStyle().getValue< int >( "left" ), node->getStyle().getValue< int >( "top" ) );
 
               Containers::Rect< int > dimensions{
                 absolutePosition.x(),
                 absolutePosition.y(),
-                ( int ) node->getStyleValue< double >( "width" ),
-                ( int ) node->getStyleValue< double >( "height" )
+                ( int ) node->getStyle().getValue< double >( "width" ),
+                ( int ) node->getStyle().getValue< double >( "height" )
               };
 
               return dimensions.pointWithin( data->x, data->y );
@@ -346,7 +346,7 @@ namespace BlueBear {
               int localMaximum = ++globalMaximum;
 
               for( std::shared_ptr< Node > child : children ) {
-                int childZ = child->getStyleValue< int >( "z-order" );
+                int childZ = child->getStyle().getValue< int >( "z-order" );
 
                 if( childZ > lastChildZ ) {
                   lastChildZ = childZ;
@@ -384,7 +384,7 @@ namespace BlueBear {
 
           if( !children.empty() ) {
             // TODO: Better way to get next z-order (tombstoning closed window indices)
-            node->setStyleValue( "z-order", ( int ) children.back()->getStyleValue< int >( "z-order" ) + 1 );
+            node->getStyle().setValue( "z-order", ( int ) children.back()->getStyle().getValue< int >( "z-order" ) + 1 );
           }
 
           root->append( node );

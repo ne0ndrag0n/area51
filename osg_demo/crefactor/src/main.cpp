@@ -27,17 +27,17 @@ int main( int argc, char** argv ) {
 	SceneView sceneView( displayDevice, inputDevice, widgetEngine );
 
 	std::shared_ptr< Graphics::GUI::Widget::Window > windowWidget = Graphics::GUI::Widget::Window::create( "Debug Options" );
-	windowWidget->setStyleValue( "left", 10 );
-	windowWidget->setStyleValue( "top", 10 );
-	windowWidget->setStyleValue( "width", 400.0 );
-	windowWidget->setStyleValue( "height", 300.0 );
+	windowWidget->getStyle().setValue( "left", 10 );
+	windowWidget->getStyle().setValue( "top", 10 );
+	windowWidget->getStyle().setValue( "width", 400.0 );
+	windowWidget->getStyle().setValue( "height", 300.0 );
 	widgetEngine.append( windowWidget );
 
 	std::shared_ptr< Graphics::GUI::Widget::Window > windowWidget2 = Graphics::GUI::Widget::Window::create( "Test Window 2" );
-	windowWidget2->setStyleValue( "left", 100 );
-	windowWidget2->setStyleValue( "top", 100 );
-	windowWidget2->setStyleValue( "width", 400.0 );
-	windowWidget2->setStyleValue( "height", 300.0 );
+	windowWidget2->getStyle().setValue( "left", 100 );
+	windowWidget2->getStyle().setValue( "top", 100 );
+	windowWidget2->getStyle().setValue( "width", 400.0 );
+	windowWidget2->getStyle().setValue( "height", 300.0 );
 	widgetEngine.append( windowWidget2 );
 
 	std::shared_ptr< Model > cylinder = Model::create( "mydata/cylinder.fbx" );

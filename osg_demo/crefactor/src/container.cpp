@@ -106,6 +106,28 @@ namespace BlueBear {
           return children;
         }
 
+        /**
+         * Positioning rules so far
+         * - RootContainer does not respect overlay vs flow and treats every element as overlay.
+         * - This container and most others calculates flow and overlay separately. Overlay elements have higher z-order on their drawables.
+         * - ltr, rtl flow: height of children is 100% of the width, minus padding
+         * - ttb, btt flow: width of children is 100% of the height, minus padding
+         * - if elements cannot be properly calculated, they will not be drawn!
+         */
+        void Container::positionChildren() {
+          std::vector< std::shared_ptr< Node > > flowNodes = getByPredicate( []( std::shared_ptr< Node > child ) {
+            return std::string( child->getStyle().getValue< const char* >( "position" ) ) == "flow";
+          } );
+
+          // Overlay nodes are the easiest to position - use positions on stylesheet exact - we can leave these items go, don't even need to look for them in a Base container
+          // Flow nodes have somewhat more complicated positioning
+
+          // Get the padding so we know how much to shrink items by on each side
+          int padding = getStyle().getValue< int >( "padding" );
+
+
+        }
+
         void Container::prepend( std::shared_ptr< Node > node ) {
           children.insert( children.begin(), node );
 
@@ -135,7 +157,7 @@ namespace BlueBear {
 
         void Container::sort() {
           std::stable_sort( children.begin(), children.end(), []( const std::shared_ptr< Node > lhs, const std::shared_ptr< Node > rhs ) {
-            return lhs->getStyleValue< int >( "z-order" ) < rhs->getStyleValue< int >( "z-order" );
+            return lhs->getStyle().getValue< int >( "z-order" ) < rhs->getStyle().getValue< int >( "z-order" );
           } );
         }
 
@@ -143,14 +165,6 @@ namespace BlueBear {
           children.clear();
 
           eventManager.REFLOW_REQUIRED.trigger();
-        }
-
-        void Container::setStyleValue( const std::string& key, stx::any value ) {
-          Node::setStyleValue( key, value );
-
-          if( key == "z-order" ) {
-            sort();
-          }
         }
 
         std::shared_ptr< Container > Container::create() {

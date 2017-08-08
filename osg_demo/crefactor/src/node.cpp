@@ -8,7 +8,7 @@ namespace BlueBear {
       namespace Widget {
 
         Node::Node() {
-          
+
         }
 
         std::shared_ptr< Node > Node::getParent() const {
@@ -51,20 +51,12 @@ namespace BlueBear {
           eventManager.REFLOW_REQUIRED.trigger();
         }
 
-        void Node::setStyleValue( const std::string& key, stx::any value ) {
-          style.setValue( key, value );
-        }
-
-        void Node::clearStyleQueries() {
-          style.clearMatchingQueries();
-        }
-
-        void Node::pushMatchingQuery( const Style::RuleMap* ruleMap ) {
-          style.pushMatchingQuery( ruleMap );
-        }
-
         void Node::setAttributeValue( const std::string& key, stx::any value ) {
           attributes[ key ] = value;
+        }
+
+        Style::NodeStyle& Node::getStyle() {
+          return style;
         }
 
       }
