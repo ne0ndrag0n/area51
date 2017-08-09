@@ -148,14 +148,7 @@ namespace BlueBear {
         }
 
         void WidgetEngine::drawUnits( NVGcontext* context ) {
-          // Sort units by zOrder
-          std::stable_sort( drawableUnits.begin(), drawableUnits.end(), []( const std::shared_ptr< Drawable > lhs, const std::shared_ptr< Drawable > rhs ) {
-            return lhs->zOrder < rhs->zOrder;
-          } );
 
-          for( std::shared_ptr< Drawable > drawable : drawableUnits ) {
-            drawable->draw( context );
-          }
         }
 
         std::set< std::shared_ptr< Node > > WidgetEngine::selectItems( const Selector& selector, const std::set< std::shared_ptr< Node > > from ) {
@@ -263,10 +256,7 @@ namespace BlueBear {
          */
         void WidgetEngine::update() {
           //checkInputDevice();
-          drawableUnits.clear();
 
-          int maximum = -1;
-          zTraverse( root, maximum );
         }
 
         osg::Vec2i WidgetEngine::getAbsolutePosition( std::shared_ptr< Node > node, int left, int top ) {
@@ -334,35 +324,6 @@ namespace BlueBear {
         void WidgetEngine::checkInputDevice() {
           checkMouseEvent( "mousedown", input.frameMouseDown );
           checkMouseEvent( "mouseup", input.frameMouseUp );
-        }
-
-        void WidgetEngine::zTraverse( std::shared_ptr< Node > node, int& globalMaximum ) {
-          int lastChildZ = 0;
-
-          if( std::shared_ptr< Container > container = std::dynamic_pointer_cast< Container >( node ) ) {
-            std::deque< std::shared_ptr< Node > >& children = container->getChildren();
-
-            if( !children.empty() ) {
-              int localMaximum = ++globalMaximum;
-
-              for( std::shared_ptr< Node > child : children ) {
-                int childZ = child->getStyle().getValue< int >( "z-order" );
-
-                if( childZ > lastChildZ ) {
-                  lastChildZ = childZ;
-                  localMaximum = ++globalMaximum;
-                }
-
-                if( std::shared_ptr< Drawable > drawable = child->getOrCreateDrawable() ) {
-                  drawableUnits.emplace_back( drawable );
-                  drawable->zOrder = localMaximum;
-                }
-
-                zTraverse( child, globalMaximum );
-              }
-            }
-
-          }
         }
 
         void WidgetEngine::windowDragBegin( std::shared_ptr< Window > target, Device::EventType::Mouse event ) {

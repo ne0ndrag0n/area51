@@ -68,7 +68,6 @@ namespace BlueBear {
              const std::set< std::shared_ptr< Node > > from
           );
 
-          void zTraverse( std::shared_ptr< Node > node, int& globalMaximum );
           void checkInputDevice();
 
           osg::Vec2i getAbsolutePosition( std::shared_ptr< Node > node, int left, int top );

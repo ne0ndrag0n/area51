@@ -1,6 +1,7 @@
 #ifndef WIDGET_NODE
 #define WIDGET_NODE
 
+#include "graphics/gui/types.hpp"
 #include "graphics/gui/widget/style/types.hpp"
 #include "graphics/gui/widget/style/nodestyle.hpp"
 // dangerous
@@ -65,6 +66,8 @@ namespace BlueBear {
 
           std::string getID() const;
           void setID( const std::string& newID );
+
+          virtual void draw( DrawableContext* context );
 
           bool hasClass( const std::string& classID ) const;
           void addClass( const std::string& classID );

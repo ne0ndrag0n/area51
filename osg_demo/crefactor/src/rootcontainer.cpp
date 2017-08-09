@@ -13,6 +13,15 @@ namespace BlueBear {
           return std::shared_ptr< RootContainer >( new RootContainer );
         }
 
+        void RootContainer::draw( DrawableContext* context ) {
+          // Rootcontainer has no drawable of its own
+
+          // Rootcontainer sets and renders children as overlay positioned
+          for( std::shared_ptr< Node > node : children ) {
+            node->draw( context );
+          }
+        }
+
       }
     }
   }

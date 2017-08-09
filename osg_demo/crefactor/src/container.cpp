@@ -1,4 +1,5 @@
 #include "graphics/gui/widget/container.hpp"
+#include "graphics/gui/drawable.hpp"
 #include "device/eventtype/mouse.hpp"
 #include "eventmanager.hpp"
 #include <any>
@@ -115,16 +116,6 @@ namespace BlueBear {
          * - if elements cannot be properly calculated, they will not be drawn!
          */
         void Container::positionChildren() {
-          std::vector< std::shared_ptr< Node > > flowNodes = getByPredicate( []( std::shared_ptr< Node > child ) {
-            return std::string( child->getStyle().getValue< const char* >( "position" ) ) == "flow";
-          } );
-
-          // Overlay nodes are the easiest to position - use positions on stylesheet exact - we can leave these items go, don't even need to look for them in a Base container
-          // Flow nodes have somewhat more complicated positioning
-
-          // Get the padding so we know how much to shrink items by on each side
-          int padding = getStyle().getValue< int >( "padding" );
-
 
         }
 
@@ -165,6 +156,25 @@ namespace BlueBear {
           children.clear();
 
           eventManager.REFLOW_REQUIRED.trigger();
+        }
+
+        void Container::draw( DrawableContext* context ) {
+          Node::draw( context );
+
+          std::vector< std::shared_ptr< Node > > flowNodes = getByPredicate( []( std::shared_ptr< Node > child ) {
+            return std::string( child->getStyle().getValue< const char* >( "position" ) ) == "flow";
+          } );
+          std::vector< std::shared_ptr< Node > > overlayNodes = getByPredicate( []( std::shared_ptr< Node > child ) {
+            return std::string( child->getStyle().getValue< const char* >( "position" ) ) == "overlay";
+          } );
+
+          for( std::shared_ptr< Node > node : flowNodes ) {
+            node->draw( context );
+          }
+
+          for( std::shared_ptr< Node > node : overlayNodes ) {
+            node->draw( context );
+          }
         }
 
         std::shared_ptr< Container > Container::create() {

@@ -2,6 +2,7 @@
 #define WIDGET_CONTAINER
 
 #include "graphics/gui/widget/node.hpp"
+#include "graphics/gui/types.hpp"
 #include <memory>
 #include <vector>
 #include <deque>
@@ -39,6 +40,8 @@ namespace BlueBear {
           std::deque< std::shared_ptr< Node > >& getChildren();
 
           virtual void positionChildren();
+
+          virtual void draw( DrawableContext* context );
 
           void prepend( std::shared_ptr< Node > node );
           void append( std::shared_ptr< Node > node );

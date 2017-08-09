@@ -2,6 +2,7 @@
 #define ROOT_WIDGET
 
 #include "graphics/gui/widget/container.hpp"
+#include "graphics/gui/types.hpp"
 #include <string>
 #include <memory>
 #include <any>
@@ -15,6 +16,8 @@ namespace BlueBear {
 
         public:
           std::string getName() const override;
+
+          virtual void draw( DrawableContext* context );
 
           static std::shared_ptr< RootContainer > create();
 

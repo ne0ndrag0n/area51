@@ -1,4 +1,5 @@
 #include "graphics/gui/widget/node.hpp"
+#include "graphics/gui/drawable.hpp"
 #include "eventmanager.hpp"
 #include <algorithm>
 
@@ -57,6 +58,12 @@ namespace BlueBear {
 
         Style::NodeStyle& Node::getStyle() {
           return style;
+        }
+
+        void Node::draw( DrawableContext* context ) {
+          if( std::shared_ptr< Drawable > drawable = getOrCreateDrawable() ) {
+            drawable->draw( context );
+          }
         }
 
       }
