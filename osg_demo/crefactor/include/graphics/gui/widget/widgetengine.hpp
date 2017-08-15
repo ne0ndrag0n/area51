@@ -38,6 +38,7 @@ namespace BlueBear {
          */
         class WidgetEngine {
           class Adapter;
+          class InputManager;
 
           struct Selector {
             std::string tag;
@@ -55,7 +56,7 @@ namespace BlueBear {
           OverlayHelper overlay;
           std::vector< StylesheetQuery > styleSheet;
           std::shared_ptr< RootContainer > root;
-          std::vector< std::shared_ptr< Drawable > > drawableUnits;
+          std::shared_ptr< InputManager > inputManager;
 
           void drawUnits( NVGcontext* context );
           void prepareOverlay();
@@ -67,16 +68,6 @@ namespace BlueBear {
              const Selector& selector,
              const std::set< std::shared_ptr< Node > > from
           );
-
-          void checkInputDevice();
-
-          osg::Vec2i getAbsolutePosition( std::shared_ptr< Node > node );
-
-          void windowDragBegin( std::shared_ptr< Window > target, Device::EventType::Mouse event );
-          void windowDragEnd();
-
-          void attachWindowManagerEvents( std::shared_ptr< Window > window );
-          void checkMouseEvent( const std::string& eventId, std::unique_ptr< Device::EventType::Mouse >& data );
 
         public:
           WidgetEngine( const Device::Display& display, Device::Input& input );
