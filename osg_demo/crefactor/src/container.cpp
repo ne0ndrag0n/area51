@@ -122,15 +122,11 @@ namespace BlueBear {
         void Container::prepend( std::shared_ptr< Node > node ) {
           children.insert( children.begin(), node );
 
-          sort();
-
           eventManager.REFLOW_REQUIRED.trigger();
         }
 
         void Container::append( std::shared_ptr< Node > node ) {
           children.emplace_back( node );
-
-          sort();
 
           eventManager.REFLOW_REQUIRED.trigger();
         }
@@ -141,15 +137,7 @@ namespace BlueBear {
             children.end()
           );
 
-          sort();
-
           eventManager.REFLOW_REQUIRED.trigger();
-        }
-
-        void Container::sort() {
-          std::stable_sort( children.begin(), children.end(), []( const std::shared_ptr< Node > lhs, const std::shared_ptr< Node > rhs ) {
-            return lhs->getStyle().getValue< int >( "z-order" ) < rhs->getStyle().getValue< int >( "z-order" );
-          } );
         }
 
         void Container::clear() {

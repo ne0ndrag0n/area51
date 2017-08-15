@@ -70,7 +70,7 @@ namespace BlueBear {
 
           void checkInputDevice();
 
-          osg::Vec2i getAbsolutePosition( std::shared_ptr< Node > node, int left, int top );
+          osg::Vec2i getAbsolutePosition( std::shared_ptr< Node > node );
 
           void windowDragBegin( std::shared_ptr< Window > target, Device::EventType::Mouse event );
           void windowDragEnd();

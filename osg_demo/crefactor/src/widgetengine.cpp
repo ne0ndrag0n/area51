@@ -148,7 +148,10 @@ namespace BlueBear {
         }
 
         void WidgetEngine::drawUnits( NVGcontext* context ) {
-
+          for( std::shared_ptr< Node > immediateChild : root->getChildren() ) {
+            // Draw element top-down so that each child is drawn after its parent
+            immediateChild->draw( context );
+          }
         }
 
         std::set< std::shared_ptr< Node > > WidgetEngine::selectItems( const Selector& selector, const std::set< std::shared_ptr< Node > > from ) {
@@ -255,12 +258,14 @@ namespace BlueBear {
          * Remanage the order of all the drawables
          */
         void WidgetEngine::update() {
-          //checkInputDevice();
-
+          checkInputDevice();
         }
 
-        osg::Vec2i WidgetEngine::getAbsolutePosition( std::shared_ptr< Node > node, int left, int top ) {
+        osg::Vec2i WidgetEngine::getAbsolutePosition( std::shared_ptr< Node > node ) {
           osg::Vec2i result;
+
+          int left = node->getStyle().getValue< int >( "left" );
+          int top = node->getStyle().getValue< int >( "top" );
 
           result.set( left, top );
 
@@ -279,43 +284,66 @@ namespace BlueBear {
 
         void WidgetEngine::checkMouseEvent( const std::string& eventId, std::unique_ptr< Device::EventType::Mouse >& data ) {
           if( data ) {
-            // fire from leaf nodes up, eat the event if necessary
-            std::vector< std::shared_ptr< Node > > matchingNodes = root->getByPredicate( [ & ]( std::shared_ptr< Node > node ) {
-              // Reject if it's not drawable
+
+            // Step backwards through rootElement children, and stop at the FIRST mouse event that matches a top-level element
+            auto& children = root->getChildren();
+            std::shared_ptr< Node > foundElement = nullptr;
+
+            for ( auto it = children.rbegin(); it != children.rend(); ++it ) {
+              std::shared_ptr< Node > node = *it;
+
+              // Skip this child if it can't be drawn (don't really know why there'd be a GUI element here without a drawable)
               if( !node->getOrCreateDrawable() ) {
-                return false;
+                continue;
               }
 
-              osg::Vec2i absolutePosition = getAbsolutePosition( node, node->getStyle().getValue< int >( "left" ), node->getStyle().getValue< int >( "top" ) );
-
               Containers::Rect< int > dimensions{
-                absolutePosition.x(),
-                absolutePosition.y(),
+                node->getStyle().getValue< int >( "left" ),
+                node->getStyle().getValue< int >( "top" ),
                 ( int ) node->getStyle().getValue< double >( "width" ),
                 ( int ) node->getStyle().getValue< double >( "height" )
               };
 
-              return dimensions.pointWithin( data->x, data->y );
-            } );
+              if( dimensions.pointWithin( data->x, data->y ) ) {
+                // We've found the top-level element!
+                foundElement = node;
+                break;
+              }
+            }
 
-            // Sort by z-order and take the last element in the list
-            if( matchingNodes.size() ) {
-              // Sort the nodes by z-index
-              std::stable_sort( matchingNodes.begin(), matchingNodes.end(), []( const std::shared_ptr< Node > lhs, const std::shared_ptr< Node > rhs ) {
-                return lhs->getOrCreateDrawable()->zOrder < rhs->getOrCreateDrawable()->zOrder;
-              } );
+            if( foundElement ) {
+              std::vector< std::shared_ptr< Node > > eventChain = { foundElement };
 
-              // Trigger the event (bubble up)
-              std::shared_ptr< Node > node = matchingNodes.back();
-              while( node ) {
-                node->signalBank.mouse.at( eventId ).fire( *data );
-                node = node->getParent();
+              // Go through this element and add any matching children
+              if( std::shared_ptr< Container > asContainer = std::dynamic_pointer_cast< Container >( foundElement ) ) {
+                std::vector< std::shared_ptr< Node > > children = asContainer->getByPredicate( [ & ]( std::shared_ptr< Node > node ) {
+                  osg::Vec2i absolutePosition = getAbsolutePosition( node );
+
+                  Containers::Rect< int > dimensions{
+                    absolutePosition.x(),
+                    absolutePosition.y(),
+                    ( int ) node->getStyle().getValue< double >( "width" ),
+                    ( int ) node->getStyle().getValue< double >( "height" )
+                  };
+
+                  return dimensions.pointWithin( data->x, data->y );
+                } );
+
+                eventChain.insert( eventChain.end(), children.begin(), children.end() );
+              }
+
+              // Rip those events!
+              for( std::shared_ptr< Node > eventChild : eventChain ) {
+                eventChild->signalBank.mouse.at( eventId ).fire( *data );
               }
 
               // Eat the event
               data.reset();
+
             }
+
           }
+
         }
 
         /**
@@ -341,13 +369,6 @@ namespace BlueBear {
         }
 
         void WidgetEngine::append( std::shared_ptr< Node > node ) {
-          auto& children = root->getChildren();
-
-          if( !children.empty() ) {
-            // TODO: Better way to get next z-order (tombstoning closed window indices)
-            node->getStyle().setValue( "z-order", ( int ) children.back()->getStyle().getValue< int >( "z-order" ) + 1 );
-          }
-
           root->append( node );
 
           attachWindowManagerEvents( std::dynamic_pointer_cast< Window >( node ) );

@@ -20,7 +20,6 @@ namespace BlueBear {
           std::deque< std::shared_ptr< Node > > children;
 
           virtual std::shared_ptr< Drawable > getOrCreateDrawable() override;
-          void sort();
 
           using Node::Node;
 
