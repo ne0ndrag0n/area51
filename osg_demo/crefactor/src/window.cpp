@@ -24,6 +24,22 @@ namespace BlueBear {
             };
             std::string titlebarTitle = node->getAttributeValue< std::string >( "title" );
 
+            auto gradFill = nvgBoxGradient(
+              context,
+              dimensions.x, dimensions.y, dimensions.width + 3, dimensions.height + 3,
+              10.0f,
+              10,
+              nvgRGBA( 0, 0, 0, 64 ),
+              nvgRGBA( 0, 0, 0, 0 )
+            );
+            nvgBeginPath( context );
+            nvgRect( context, dimensions.x - 10 , dimensions.y - 10, dimensions.width + 20, dimensions.height + 30 );
+            nvgRoundedRect( context, dimensions.x, dimensions.y, dimensions.width, dimensions.height, 5.0f );
+            nvgPathWinding( context, NVG_HOLE );
+            nvgFillPaint( context, gradFill );
+            nvgFill( context );
+            nvgClosePath( context );
+
             nvgScissor( context, dimensions.x, dimensions.y, dimensions.width, dimensions.height );
 
             nvgBeginPath( context );

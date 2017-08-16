@@ -40,6 +40,13 @@ int main( int argc, char** argv ) {
 	windowWidget2->getStyle().setValue( "height", 300.0 );
 	widgetEngine.append( windowWidget2 );
 
+	std::shared_ptr< Graphics::GUI::Widget::Window > windowWidget3 = Graphics::GUI::Widget::Window::create( "Test Window 3" );
+	windowWidget3->getStyle().setValue( "left", 200 );
+	windowWidget3->getStyle().setValue( "top", 200 );
+	windowWidget3->getStyle().setValue( "width", 400.0 );
+	windowWidget3->getStyle().setValue( "height", 300.0 );
+	widgetEngine.append( windowWidget3 );
+
 	std::shared_ptr< Model > cylinder = Model::create( "mydata/cylinder.fbx" );
 	std::shared_ptr< Model > floorPanel = Model::create( "mydata/floorpanel.fbx" );
 

@@ -9,6 +9,7 @@
 #include <vector>
 #include <iostream>
 #include <functional>
+#include <algorithm>
 
 namespace BlueBear {
   namespace Graphics {
@@ -113,7 +114,28 @@ namespace BlueBear {
         }
 
         void WidgetEngine::InputManager::windowDragBegin( std::shared_ptr< Window > target, Device::EventType::Mouse event ) {
-          std::cout << "Mousedown in target " << std::hex << target.get() << std::endl;
+          std::cout << "Mousedown in target " << std::hex << target.get() << std::dec << std::endl;
+
+          Containers::Rect< int > titlebar{
+            target->getStyle().getValue< int >( "left" ),
+            target->getStyle().getValue< int >( "top" ),
+            ( int ) target->getStyle().getValue< double >( "width" ),
+            20
+          };
+
+          if( titlebar.pointWithin( event.x, event.y ) ) {
+            // Mousedown in titlebar
+          }
+
+          auto& children = parent.root->getChildren();
+          if( children.size() && *children.rbegin() != target ) {
+            children.erase(
+              std::remove( children.begin(), children.end(), target ),
+              children.end()
+            );
+
+            children.emplace_back( target );
+          }
         }
 
         void WidgetEngine::InputManager::windowDragEnd() {
