@@ -17,7 +17,9 @@ namespace BlueBear {
         case osgGA::GUIEventAdapter::KEYUP: {
           break;
         }
-        case osgGA::GUIEventAdapter::MOVE: {
+        case osgGA::GUIEventAdapter::MOVE:
+        case osgGA::GUIEventAdapter::DRAG: {
+          input.frameMouseMove = std::make_unique< EventType::Mouse >( eventAdapter.getX(), ( eventAdapter.getWindowHeight() - eventAdapter.getY() ), eventAdapter.getButtonMask() );
           break;
         }
         case osgGA::GUIEventAdapter::PUSH: {

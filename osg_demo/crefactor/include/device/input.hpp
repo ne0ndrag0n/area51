@@ -142,6 +142,7 @@ namespace BlueBear {
     public:
       std::unique_ptr< EventType::Mouse > frameMouseDown;
       std::unique_ptr< EventType::Mouse > frameMouseUp;
+      std::unique_ptr< EventType::Mouse > frameMouseMove;
 
       Input();
 

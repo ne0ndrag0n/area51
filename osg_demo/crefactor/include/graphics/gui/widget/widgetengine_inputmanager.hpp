@@ -4,6 +4,7 @@
 #include "graphics/gui/widget/widgetengine.hpp"
 #include <string>
 #include <memory>
+#include <any>
 #include <osg/Vec2i>
 
 namespace BlueBear {
@@ -22,11 +23,20 @@ namespace BlueBear {
 
           WidgetEngine& parent;
 
+          struct DragEventPair {
+            unsigned int moveEvent;
+            unsigned int endEvent;
+          };
+
+          stx::any lockedEventPair;
+
           void checkMouseEvent( const std::string& eventId, std::unique_ptr< Device::EventType::Mouse >& data );
           osg::Vec2i getAbsolutePosition( std::shared_ptr< Node > node );
 
           void windowDragBegin( std::shared_ptr< Window > target, Device::EventType::Mouse event );
-          void windowDragEnd();
+          void windowDragEnd( Device::EventType::Mouse event );
+
+          void onWindowDrag( std::shared_ptr< Window > target, int diffX, int diffY, Device::EventType::Mouse event );
 
         public:
           InputManager( WidgetEngine& parent );

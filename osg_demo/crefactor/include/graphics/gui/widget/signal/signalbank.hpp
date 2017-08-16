@@ -19,7 +19,8 @@ namespace BlueBear {
           struct SignalBank {
             std::map< std::string, CallbackVectorSignal< Device::EventType::Mouse > > mouse = {
               { "mousedown", CallbackVectorSignal< Device::EventType::Mouse >() },
-              { "mouseup", CallbackVectorSignal< Device::EventType::Mouse >() }
+              { "mouseup", CallbackVectorSignal< Device::EventType::Mouse >() },
+              { "mousemove", CallbackVectorSignal< Device::EventType::Mouse >() }
             };
           };
 

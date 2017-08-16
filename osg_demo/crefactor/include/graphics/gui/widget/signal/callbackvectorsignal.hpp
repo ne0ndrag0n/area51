@@ -36,7 +36,9 @@ namespace BlueBear {
 
             virtual bool fire( CallbackArg param ) {
               for( std::function< void( CallbackArg& ) > callback : callbacks ) {
-                callback( param );
+                if( callback ) {
+                  callback( param );
+                }
               }
 
               return true;
