@@ -93,6 +93,7 @@ namespace BlueBear {
                 { "width", 1.0 },
                 { "height", 1.0 },
                 { "padding", 5 },
+                { "flow-padding", 5 },
                 { "vertical-align", "middle" },
                 { "horizontal-align", "middle" }
               }
@@ -146,6 +147,9 @@ namespace BlueBear {
               match->getStyle().pushMatchingQuery( &sQuery.rules );
             }
           }
+
+          // After styles are reapplied, recompute all computed styles
+          //root->positionChildren();
         }
 
         void WidgetEngine::drawUnits( NVGcontext* context ) {

@@ -1,6 +1,7 @@
 #ifndef WIDGET_CONTAINER
 #define WIDGET_CONTAINER
 
+#include "containers/rect.hpp"
 #include "graphics/gui/widget/node.hpp"
 #include "graphics/gui/types.hpp"
 #include <memory>
@@ -38,7 +39,9 @@ namespace BlueBear {
 
           std::deque< std::shared_ptr< Node > >& getChildren();
 
-          virtual void positionChildren();
+          void positionChildren();
+          virtual Containers::Rect< int > getFlowPositionRegion();
+          virtual Containers::Rect< int > getOverlayPositionRegion();
 
           virtual void draw( DrawableContext* context );
 

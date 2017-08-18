@@ -17,10 +17,14 @@ namespace BlueBear {
           class NodeStyle {
             std::vector< const RuleMap* > matchingQueries;
             RuleMap localRules;
+            RuleMap computedRules;
 
           public:
             stx::any getValue( const std::string& key ) const;
             void setValue( const std::string& key, stx::any value );
+
+            void setComputedValue( const std::string& key, stx::any value );
+            void resetComputedRules();
 
             template< typename T >
             T getValue( const std::string& key ) const {

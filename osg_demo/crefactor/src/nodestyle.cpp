@@ -9,7 +9,15 @@ namespace BlueBear {
 
           stx::any NodeStyle::getValue( const std::string& key ) const {
 
-            // Local rules take precedence over everything else
+            // Cmoputed rules take precedence over everything else
+            {
+              auto it = computedRules.find( key );
+              if( it != computedRules.end() ) {
+                return it->second;
+              }
+            }
+
+            // Now move onto local rules
             auto it = localRules.find( key );
             if( it != localRules.end() ) {
               return it->second;
@@ -27,6 +35,14 @@ namespace BlueBear {
             }
 
             return result;
+          }
+
+          void NodeStyle::setComputedValue( const std::string& key, stx::any value ) {
+            computedRules[ key ] = value;
+          }
+
+          void NodeStyle::resetComputedRules() {
+            computedRules.clear();
           }
 
           void NodeStyle::setValue( const std::string& key, stx::any value ) {

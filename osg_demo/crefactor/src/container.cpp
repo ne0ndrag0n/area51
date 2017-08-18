@@ -117,6 +117,58 @@ namespace BlueBear {
          */
         void Container::positionChildren() {
 
+          // Do absolutely nothing if there's no children
+          if( children.empty() ) {
+            return;
+          }
+
+          std::vector< std::shared_ptr< Node > > flowNodes;
+          std::vector< std::shared_ptr< Node > > overlayNodes;
+
+          std::copy_if( children.begin(), children.end(), std::back_inserter( flowNodes ), []( std::shared_ptr< Node > child ) {
+            return std::string( child->getStyle().getValue< const char* >( "position" ) ) == "flow";
+          } );
+
+          std::copy_if( children.begin(), children.end(), std::back_inserter( overlayNodes ), []( std::shared_ptr< Node > child ) {
+            return std::string( child->getStyle().getValue< const char* >( "position" ) ) == "overlay";
+          } );
+
+          // Position flow nodes
+          std::string flowDirection( getStyle().getValue< const char* >( "flow" ) );
+          Containers::Rect< int > flowRegion = getFlowPositionRegion();
+          int padding = getStyle().getValue< int >( "padding" );
+
+          // Adjust flowRegion width and height by padding
+          flowRegion.x += padding;
+          flowRegion.y += padding;
+          flowRegion.width -= padding;
+          flowRegion.height -= padding;
+
+          if( flowDirection == "ltr" || flowDirection == "rtl" ) {
+
+            // TODO
+
+          } else {
+            // btt or ttb
+          }
+        }
+
+        Containers::Rect< int > Container::getFlowPositionRegion() {
+          return Containers::Rect< int >{
+            getStyle().getValue< int >( "left" ),
+            getStyle().getValue< int >( "top" ),
+            ( int ) getStyle().getValue< double >( "width" ),
+            ( int ) getStyle().getValue< double >( "height" )
+          };
+        }
+
+        Containers::Rect< int > Container::getOverlayPositionRegion() {
+          return Containers::Rect< int >{
+            getStyle().getValue< int >( "left" ),
+            getStyle().getValue< int >( "top" ),
+            ( int ) getStyle().getValue< double >( "width" ),
+            ( int ) getStyle().getValue< double >( "height" )
+          };
         }
 
         void Container::prepend( std::shared_ptr< Node > node ) {
