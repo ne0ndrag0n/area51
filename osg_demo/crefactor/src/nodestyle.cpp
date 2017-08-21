@@ -1,4 +1,5 @@
 #include "graphics/gui/widget/style/nodestyle.hpp"
+#include "eventmanager.hpp"
 #include <iostream>
 
 namespace BlueBear {
@@ -47,6 +48,8 @@ namespace BlueBear {
 
           void NodeStyle::setValue( const std::string& key, stx::any value ) {
             localRules[ key ] = value;
+
+            eventManager.REFLOW_REQUIRED.trigger();
           }
 
           void NodeStyle::clearMatchingQueries() {

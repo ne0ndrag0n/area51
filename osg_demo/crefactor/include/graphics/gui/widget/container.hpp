@@ -17,6 +17,8 @@ namespace BlueBear {
       namespace Widget {
 
         class Container : public Node {
+          class Positioner;
+
         protected:
           std::deque< std::shared_ptr< Node > > children;
 

@@ -1,4 +1,5 @@
 #include "graphics/gui/widget/container.hpp"
+#include "graphics/gui/widget/container_positioner.hpp"
 #include "graphics/gui/drawable.hpp"
 #include "device/eventtype/mouse.hpp"
 #include "eventmanager.hpp"
@@ -122,35 +123,11 @@ namespace BlueBear {
             return;
           }
 
-          std::vector< std::shared_ptr< Node > > flowNodes;
-          std::vector< std::shared_ptr< Node > > overlayNodes;
-
-          std::copy_if( children.begin(), children.end(), std::back_inserter( flowNodes ), []( std::shared_ptr< Node > child ) {
-            return std::string( child->getStyle().getValue< const char* >( "position" ) ) == "flow";
-          } );
-
-          std::copy_if( children.begin(), children.end(), std::back_inserter( overlayNodes ), []( std::shared_ptr< Node > child ) {
-            return std::string( child->getStyle().getValue< const char* >( "position" ) ) == "overlay";
-          } );
-
-          // Position flow nodes
-          std::string flowDirection( getStyle().getValue< const char* >( "flow" ) );
-          Containers::Rect< int > flowRegion = getFlowPositionRegion();
-          int padding = getStyle().getValue< int >( "padding" );
-
-          // Adjust flowRegion width and height by padding
-          flowRegion.x += padding;
-          flowRegion.y += padding;
-          flowRegion.width -= padding;
-          flowRegion.height -= padding;
-
-          if( flowDirection == "ltr" || flowDirection == "rtl" ) {
-
-            // TODO
-
-          } else {
-            // btt or ttb
+          for( std::shared_ptr< Node > child : children ) {
+            child->getStyle().resetComputedRules();
           }
+
+          Container::Positioner positioner( *this );
         }
 
         Containers::Rect< int > Container::getFlowPositionRegion() {
