@@ -75,6 +75,8 @@ namespace BlueBear {
           void clearClasses();
 
           virtual std::string getName() const = 0;
+
+          int getComposedValue( const std::string& composedAttribute );
         };
 
       }

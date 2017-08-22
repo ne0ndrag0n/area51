@@ -72,6 +72,23 @@ namespace BlueBear {
             }
           }
 
+          // Position flow nodes left-to-right, with flow-padding on the left of all but the first ones
+          auto it = flowNodes.begin();
+          if( it != flowNodes.end() ) {
+            int currentLeft = flowRegion.x;
+            int flowPadding = parent.getStyle().getValue< int >( "flow-padding" );
+
+            ( *it )->getStyle().setComputedValue( "left", currentLeft );
+            ( *it )->getStyle().setComputedValue( "top", flowRegion.y );
+            it++;
+
+            for( ; it != flowNodes.end(); ++it ) {
+              currentLeft += flowPadding;
+
+              ( *it )->getStyle().setComputedValue( "left", currentLeft );
+              ( *it )->getStyle().setComputedValue( "top", flowRegion.y );
+            }
+          }
         }
       }
     }

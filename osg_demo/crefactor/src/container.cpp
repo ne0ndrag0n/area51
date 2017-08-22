@@ -128,6 +128,17 @@ namespace BlueBear {
           }
 
           Container::Positioner positioner( *this );
+          std::string flow( getStyle().getValue< const char* >( "flow" ) );
+
+          if( flow == "ltr" ) {
+            positioner.positionLTR();
+          }
+
+          for( std::shared_ptr< Node > child : children ) {
+            if( std::shared_ptr< Container > container = std::dynamic_pointer_cast< Container >( child ) ) {
+              container->positionChildren();
+            }
+          }
         }
 
         Containers::Rect< int > Container::getFlowPositionRegion() {

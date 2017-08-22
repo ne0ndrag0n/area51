@@ -66,6 +66,16 @@ namespace BlueBear {
           }
         }
 
+        int Node::getComposedValue( const std::string& composedAttribute ) {
+          if( std::shared_ptr< Node > parentNode = parent.lock() ) {
+            // Parent present
+            return parentNode->getComposedValue( composedAttribute ) + getStyle().getValue< int >( composedAttribute );
+          } else {
+            // Parent not present
+            return getStyle().getValue< int >( composedAttribute );
+          }
+        }
+
       }
     }
   }
