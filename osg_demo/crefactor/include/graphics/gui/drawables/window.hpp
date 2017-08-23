@@ -25,6 +25,9 @@ namespace BlueBear {
           Window( std::weak_ptr< Widget::Node > parent );
 
           virtual void draw( DrawableContext* context ) override;
+
+          void drawBeforeChildren( DrawableContext* context );
+          void drawAfterChildren( DrawableContext* context );
         };
 
       }

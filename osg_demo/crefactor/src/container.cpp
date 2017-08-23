@@ -187,8 +187,15 @@ namespace BlueBear {
         }
 
         void Container::draw( DrawableContext* context ) {
-          Node::draw( context );
+          drawSelf( context );
+          drawChildren( context );
+        }
 
+        void Container::drawSelf( DrawableContext* context ) {
+          Node::draw( context );
+        }
+
+        void Container::drawChildren( DrawableContext* context ) {
           std::vector< std::shared_ptr< Node > > flowNodes = getByPredicate( []( std::shared_ptr< Node > child ) {
             return std::string( child->getStyle().getValue< const char* >( "position" ) ) == "flow";
           } );

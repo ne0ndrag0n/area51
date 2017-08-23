@@ -25,6 +25,14 @@ namespace BlueBear {
           }
         }
 
+        void Window::draw( DrawableContext* context ) {
+          if( std::shared_ptr< Graphics::GUI::Drawables::Window > windowDrawable = std::dynamic_pointer_cast< Graphics::GUI::Drawables::Window >( getOrCreateDrawable() ) ) {
+            windowDrawable->drawBeforeChildren( context );
+            drawChildren( context );
+            windowDrawable->drawAfterChildren( context );
+          }
+        }
+
         std::string Window::getName() const {
           return "Window";
         }

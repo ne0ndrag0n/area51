@@ -46,6 +46,8 @@ namespace BlueBear {
           virtual Containers::Rect< int > getOverlayPositionRegion();
 
           virtual void draw( DrawableContext* context );
+          virtual void drawSelf( DrawableContext* context );
+          virtual void drawChildren( DrawableContext* context );
 
           void prepend( std::shared_ptr< Node > node );
           void append( std::shared_ptr< Node > node );
